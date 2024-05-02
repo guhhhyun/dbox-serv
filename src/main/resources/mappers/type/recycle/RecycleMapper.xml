@@ -1,0 +1,907 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.recycle.RecycleMapper">
+	<resultMap id="RecycleMap"
+		type="com.dongkuksystems.dbox.models.type.recycle.Recycle">
+		<id property="uObjId" column="U_OBJ_ID" />
+		<result property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uCabinetType" column="U_CABINET_TYPE" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />
+		<result property="uObjType" column="U_OBJ_TYPE" />
+		<result property="uDeleteUser" column="U_DELETE_USER" />
+		<result property="uDeleteDate" column="U_DELETE_DATE" />
+
+
+		<association property="recycleDetail" javaType="Doc">
+			<id property="rObjectId" column="B_R_OBJECT_ID" />
+			<result property="objectName" column="B_OBJECT_NAME" />
+			<result property="rContentSize" column="B_R_CONTENT_SIZE" />
+			<result property="uCabinetCode" column="B_U_CABINET_CODE" />
+			<result property="uDocKey" column="B_U_DOC_KEY" />
+			<result property="uFolId" column="B_U_FOL_ID" />
+			<result property="uPrType" column="B_U_PR_TYPE" />
+			<result property="uPrCode" column="B_U_PR_CODE" />
+			<result property="uSecLevel" column="B_U_SEC_LEVEL" />
+			<result property="uDocStatus" column="B_U_DOC_STATUS" />
+			<result property="uDocFlag" column="B_U_DOC_FLAG" />
+			<result property="uDeleteStatus" column="B_U_DELETE_STATUS" />
+			<result property="uClosedDate" column="B_U_CLOSED_DATE" />
+			<result property="uCloser" column="B_U_CLOSER" />
+			<result property="uCopyOrgId" column="B_U_COPY_ORG_ID" />
+			<result property="uFileExt" column="B_U_FILE_EXT" />
+			<result property="uDocTag" column="B_U_DOC_TAG" />
+			<result property="uDocClass" column="B_U_DOC_CLASS" />
+			<result property="uRegSource" column="B_U_REG_SOURCE" />
+			<result property="uRegUser" column="B_U_REG_USER" />
+			<result property="uRegDate" column="B_U_REG_DATE" />
+			<result property="uFolderPath" column="B_U_FOLDER_PATH" />
+			<result property="uUpdateDate" column="B_U_UPDATE_DATE" />
+			<association property="ownDeptDetail" javaType="VDept">
+				<id property="rObjectId" column="BB_R_OBJECT_ID" />
+				<result property="unitFullName" column="BB_UNIT_FULL_NAME" />
+			</association>
+		</association>
+		<association property="folderDetail" javaType="Folder">
+			<id property="rObjectId" column="C_R_OBJECT_ID" />
+			<result property="uFolName" column="C_U_FOL_NAME" />
+			<result property="uCabinetCode" column="C_U_CABINET_CODE" />
+			<result property="uFolType" column="C_U_FOL_TYPE" />
+			<result property="uUpFolId" column="C_U_UP_FOL_ID" />
+      <result property="uPrCode" column="C_U_PR_CODE" />
+      <result property="uPrType" column="C_U_PR_TYPE" />
+		</association>
+
+		<association property="userDetail" javaType="VUser">
+			<id property="userId" column="D_USER_ID" />
+			<result property="displayName" column="D_DISPLAY_NAME" />
+			<result property="comOrgId" column="D_COM_ORG_ID" />
+			<result property="orgId" column="D_ORG_ID" />
+			<result property="orgNm" column="D_ORG_NM" />
+			<result property="pstnCode" column="D_PSTN_CODE" />
+			<result property="levelCode" column="D_LEVEL_CODE" />
+			<result property="titleCode" column="D_TITLE_CODE" />
+			<association property="jobTitleDetail"
+				javaType="GwJobTitle">
+				<id property="titleCode" column="D_TITLE_CODE" />
+				<result property="name" column="DA_TITLE_NAME" />
+			</association>
+			<association property="deptDetail" javaType="VDept">
+				<association property="companyDetail" javaType="Code">
+					<id property="uCodeVal1" column="D_COM_ORG_ID" />
+					<result property="uCodeName1" column="DB_COM_NAME" />
+				</association>
+			</association>
+		</association>
+
+		<association property="recycleUserDetail" javaType="VUser">
+			<id property="userId" column="G_USER_ID" />
+			<result property="displayName" column="G_DISPLAY_NAME" />
+			<result property="comOrgId" column="G_COM_ORG_ID" />
+			<result property="orgId" column="G_ORG_ID" />
+			<result property="orgNm" column="G_ORG_NM" />
+			<result property="pstnCode" column="G_PSTN_CODE" />
+			<result property="levelCode" column="G_LEVEL_CODE" />
+			<result property="titleCode" column="G_TITLE_CODE" />
+			<association property="jobTitleDetail"
+				javaType="GwJobTitle">
+				<id property="titleCode" column="G_TITLE_CODE" />
+				<result property="name" column="GA_TITLE_NAME" />
+			</association>
+			<association property="deptDetail" javaType="VDept">
+				<association property="companyDetail" javaType="Code">
+					<id property="uCodeVal1" column="G_COM_ORG_ID" />
+					<result property="uCodeName1" column="GB_COM_NAME" />
+				</association>
+			</association>
+		</association>
+
+
+
+	</resultMap>
+
+	<resultMap id="RecycleFolMap"
+		type="com.dongkuksystems.dbox.models.type.recycle.Recycle">
+		<id property="uObjId" column="U_OBJ_ID" />
+		<result property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uCabinetType" column="U_CABINET_TYPE" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />
+		<result property="uObjType" column="U_OBJ_TYPE" />
+		<result property="uDeleteUser" column="U_DELETE_USER" />
+		<result property="uDeleteDate" column="U_DELETE_DATE" />
+
+		<association property="recycleUserDetail" javaType="VUser">
+			<id property="userId" column="B_USER_ID" />
+			<result property="displayName" column="B_DISPLAY_NAME" />
+			<result property="comOrgId" column="B_COM_ORG_ID" />
+			<result property="orgId" column="B_ORG_ID" />
+			<result property="orgNm" column="B_ORG_NM" />
+			<result property="pstnCode" column="B_PSTN_CODE" />
+			<result property="levelCode" column="B_LEVEL_CODE" />
+			<result property="titleCode" column="B_TITLE_CODE" />
+			<association property="jobTitleDetail"
+				javaType="GwJobTitle">
+				<id property="titleCode" column="B_TITLE_CODE" />
+				<result property="name" column="BA_TITLE_NAME" />
+			</association>
+			<association property="deptDetail" javaType="VDept">
+				<association property="companyDetail" javaType="Code">
+					<id property="uCodeVal1" column="B_COM_ORG_ID" />
+					<result property="uCodeName1" column="BC_COM_NAME" />
+				</association>
+			</association>
+		</association>
+
+		<association property="folderDetail" javaType="Folder">
+			<id property="rObjectId" column="C_R_OBJECT_ID" />
+			<result property="uFolName" column="C_U_FOL_NAME" />
+			<result property="uUpFolId" column="C_U_UP_FOL_ID" />
+			<result property="uPrCode" column="C_U_PR_CODE" />
+			<result property="uPrType" column="C_U_PR_TYPE" />
+			<result property="uCabinetCode" column="C_U_CABINET_CODE" />
+			<result property="uSecLevel" column="C_U_SEC_LEVEL" />
+			<result property="uDeleteStatus" column="C_U_DELETE_STATUS" />
+			<result property="uFolTag" column="C_U_FOL_TAG" />
+			<result property="uFolClass" column="C_U_FOL_CLASS" />
+			<result property="uCreateUser" column="C_U_CREATE_USER" />
+			<result property="uCreateDate" column="C_U_CREATE_DATE" />
+			<result property="folSize" column="FOL_SIZE" />
+			<result property="uFolType" column="C_U_FOL_TYPE" />
+			<result property="maxPermitType" column="D_MAX_PERMIT_TYPE" />
+			<association property="ownDeptDetail" javaType="VDept">
+        <id property="rObjectId" column="CC_R_OBJECT_ID" />
+        <result property="unitFullName" column="CC_UNIT_FULL_NAME" />
+      </association>
+		</association>
+		
+		<association property="folderUserDetail" javaType="VUser">
+			<id property="userId" column="E_USER_ID" />
+			<result property="displayName" column="E_DISPLAY_NAME" />
+			<result property="comOrgId" column="E_COM_ORG_ID" />
+			<result property="orgId" column="E_ORG_ID" />
+			<result property="orgNm" column="E_ORG_NM" />
+			<result property="pstnCode" column="E_PSTN_CODE" />
+			<result property="levelCode" column="E_LEVEL_CODE" />
+			<result property="titleCode" column="E_TITLE_CODE" />
+			<association property="jobTitleDetail"
+				javaType="GwJobTitle">
+				<id property="titleCode" column="E_TITLE_CODE" />
+				<result property="name" column="EA_TITLE_NAME" />
+			</association>
+			<association property="deptDetail" javaType="VDept">
+				<association property="companyDetail" javaType="Code">
+					<id property="uCodeVal1" column="E_COM_ORG_ID" />
+					<result property="uCodeName1" column="EC_COM_NAME" />
+				</association>
+			</association>
+		</association>
+	</resultMap>
+	
+	<resultMap id="RecycleProjectMap"
+    type="com.dongkuksystems.dbox.models.type.recycle.Recycle">
+    <id property="uObjId" column="U_OBJ_ID" />
+    <result property="rObjectId" column="R_OBJECT_ID" />
+    <result property="uCabinetType" column="U_CABINET_TYPE" />
+    <result property="uCabinetCode" column="U_CABINET_CODE" />
+    <result property="uObjType" column="U_OBJ_TYPE" />
+    <result property="uDeleteUser" column="U_DELETE_USER" />
+    <result property="uDeleteDate" column="U_DELETE_DATE" />
+
+    <association property="recycleUserDetail" javaType="VUser">
+      <id property="userId" column="B_USER_ID" />
+      <result property="displayName" column="B_DISPLAY_NAME" />
+      <result property="comOrgId" column="B_COM_ORG_ID" />
+      <result property="orgId" column="B_ORG_ID" />
+      <result property="orgNm" column="B_ORG_NM" />
+      <result property="pstnCode" column="B_PSTN_CODE" />
+      <result property="levelCode" column="B_LEVEL_CODE" />
+      <result property="titleCode" column="B_TITLE_CODE" />
+      <association property="jobTitleDetail"
+        javaType="GwJobTitle">
+        <id property="titleCode" column="B_TITLE_CODE" />
+        <result property="name" column="BA_TITLE_NAME" />
+      </association>
+      <association property="deptDetail" javaType="VDept">
+        <association property="companyDetail" javaType="Code">
+          <id property="uCodeVal1" column="B_COM_ORG_ID" />
+          <result property="uCodeName1" column="BC_COM_NAME" />
+        </association>
+      </association>
+    </association>
+
+    <association property="projectDetail" javaType="Project">
+      <id property="rObjectId" column="C_R_OBJECT_ID" />
+      <result property="uPjtName" column="C_U_PJT_NAME" />
+      <result property="uPjtCode" column="C_U_PJT_CODE" />
+      <result property="uCabinetCode" column="C_U_CABINET_CODE" />
+      <result property="uSecLevel" column="C_U_SEC_LEVEL" />
+      <result property="uDeleteStatus" column="C_U_DELETE_STATUS" />
+      <result property="uOwnDept" column="C_U_OWN_DEPT" />
+      <result property="uCreateUser" column="C_U_CREATE_USER" />
+      <result property="uCreateDate" column="C_U_CREATE_DATE" />
+      <association property="ownDeptDetail" javaType="VDept">
+        <id property="rObjectId" column="CC_R_OBJECT_ID" />
+        <result property="unitFullName" column="CC_UNIT_FULL_NAME" />
+      </association>
+    </association>
+    
+    <association property="projectUserDetail" javaType="VUser">
+      <id property="userId" column="E_USER_ID" />
+      <result property="displayName" column="E_DISPLAY_NAME" />
+      <result property="comOrgId" column="E_COM_ORG_ID" />
+      <result property="orgId" column="E_ORG_ID" />
+      <result property="orgNm" column="E_ORG_NM" />
+      <result property="pstnCode" column="E_PSTN_CODE" />
+      <result property="levelCode" column="E_LEVEL_CODE" />
+      <result property="titleCode" column="E_TITLE_CODE" />
+      <association property="jobTitleDetail"
+        javaType="GwJobTitle">
+        <id property="titleCode" column="E_TITLE_CODE" />
+        <result property="name" column="EA_TITLE_NAME" />
+      </association>
+      <association property="deptDetail" javaType="VDept">
+        <association property="companyDetail" javaType="Code">
+          <id property="uCodeVal1" column="E_COM_ORG_ID" />
+          <result property="uCodeName1" column="EC_COM_NAME" />
+        </association>
+      </association>
+    </association>
+  </resultMap>
+  
+  <resultMap id="RecycleResearchMap"
+    type="com.dongkuksystems.dbox.models.type.recycle.Recycle">
+    <id property="uObjId" column="U_OBJ_ID" />
+    <result property="rObjectId" column="R_OBJECT_ID" />
+    <result property="uCabinetType" column="U_CABINET_TYPE" />
+    <result property="uCabinetCode" column="U_CABINET_CODE" />
+    <result property="uObjType" column="U_OBJ_TYPE" />
+    <result property="uDeleteUser" column="U_DELETE_USER" />
+    <result property="uDeleteDate" column="U_DELETE_DATE" />
+
+    <association property="recycleUserDetail" javaType="VUser">
+      <id property="userId" column="B_USER_ID" />
+      <result property="displayName" column="B_DISPLAY_NAME" />
+      <result property="comOrgId" column="B_COM_ORG_ID" />
+      <result property="orgId" column="B_ORG_ID" />
+      <result property="orgNm" column="B_ORG_NM" />
+      <result property="pstnCode" column="B_PSTN_CODE" />
+      <result property="levelCode" column="B_LEVEL_CODE" />
+      <result property="titleCode" column="B_TITLE_CODE" />
+      <association property="jobTitleDetail"
+        javaType="GwJobTitle">
+        <id property="titleCode" column="B_TITLE_CODE" />
+        <result property="name" column="BA_TITLE_NAME" />
+      </association>
+      <association property="deptDetail" javaType="VDept">
+        <association property="companyDetail" javaType="Code">
+          <id property="uCodeVal1" column="B_COM_ORG_ID" />
+          <result property="uCodeName1" column="BC_COM_NAME" />
+        </association>
+      </association>
+    </association>
+
+    <association property="researchDetail" javaType="Research">
+      <id property="rObjectId" column="C_R_OBJECT_ID" />
+      <result property="uRschName" column="C_U_RSCH_NAME" />
+      <result property="uRschCode" column="C_U_RSCH_CODE" />
+      <result property="uCabinetCode" column="C_U_CABINET_CODE" />
+      <result property="uSecLevel" column="C_U_SEC_LEVEL" />
+      <result property="uDeleteStatus" column="C_U_DELETE_STATUS" />
+      <result property="uOwnDept" column="C_U_OWN_DEPT" />
+      <result property="uCreateUser" column="C_U_CREATE_USER" />
+      <result property="uCreateDate" column="C_U_CREATE_DATE" />
+      <association property="ownDeptDetail" javaType="VDept">
+        <id property="rObjectId" column="CC_R_OBJECT_ID" />
+        <result property="unitFullName" column="CC_UNIT_FULL_NAME" />
+      </association>
+    </association>
+    
+    <association property="researchUserDetail" javaType="VUser">
+      <id property="userId" column="E_USER_ID" />
+      <result property="displayName" column="E_DISPLAY_NAME" />
+      <result property="comOrgId" column="E_COM_ORG_ID" />
+      <result property="orgId" column="E_ORG_ID" />
+      <result property="orgNm" column="E_ORG_NM" />
+      <result property="pstnCode" column="E_PSTN_CODE" />
+      <result property="levelCode" column="E_LEVEL_CODE" />
+      <result property="titleCode" column="E_TITLE_CODE" />
+      <association property="jobTitleDetail"
+        javaType="GwJobTitle">
+        <id property="titleCode" column="E_TITLE_CODE" />
+        <result property="name" column="EA_TITLE_NAME" />
+      </association>
+      <association property="deptDetail" javaType="VDept">
+        <association property="companyDetail" javaType="Code">
+          <id property="uCodeVal1" column="E_COM_ORG_ID" />
+          <result property="uCodeName1" column="EC_COM_NAME" />
+        </association>
+      </association>
+    </association>
+  </resultMap>
+
+	<resultMap id="RecycleOneMap"
+		type="com.dongkuksystems.dbox.models.type.recycle.Recycle">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uObjId" column="U_OBJ_ID" />
+		<result property="uCabinetType" column="U_CABINET_TYPE" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />
+		<result property="uObjType" column="U_OBJ_TYPE" />
+		<result property="uDeleteUser" column="U_DELETE_USER" />
+		<result property="uDeleteDate" column="U_DELETE_DATE" />
+
+
+	</resultMap>
+  
+  <select id="oneRecycleById" resultMap="RecycleOneMap">
+  /* DBOX-PGM-DOC-025 | 휴지통 목록 | 강구현 */
+    SELECT
+    *
+    From edms_recycle_sp
+    <where>
+      r_object_id = #{dataId}
+    </where>
+  </select>
+    <!-- DBOX-PGM-DOC-025 || 휴지통 목록 || 이우영 -->
+  <select id="selectRecycleCaCode" resultMap="RecycleOneMap">
+    SELECT
+    *
+    From edms_recycle_sp
+    <where>
+       u_cabinet_code  = #{orgId};
+    </where>
+  </select>
+  
+  <!-- DBOX-PGM-DOC-025 || 휴지통 목록 || 강구현 -->
+	<select id="oneDocById" resultMap="RecycleMap">
+	/* DBOX-PGM-DOC-025 | 휴지통 목록 | 강구현 */
+    WITH com_code_temp as (
+    SELECT
+    u_code_val1,
+    u_code_name1
+    FROM
+    edms_code_s
+    WHERE
+    u_code_type = 'COM_CODE'
+    )
+		SELECT
+		a.*,
+    b.r_object_id     AS b_r_object_id,
+    b.object_name     AS b_object_name,
+    b.r_content_size  AS b_r_content_size,
+    b.u_cabinet_code  AS b_u_cabinet_code,
+    b.u_doc_key       AS b_u_doc_key,
+    b.u_fol_id        AS b_u_fol_id,
+    b.u_sec_level     AS b_u_sec_level,
+    b.u_doc_status    AS b_u_doc_status,
+    b.u_doc_flag      AS b_u_doc_flag,
+    b.u_delete_status AS b_u_delete_status,
+    b.u_closed_date   AS b_u_closed_date,
+    b.u_closer        AS b_u_closer,
+    b.u_copy_org_id   AS b_u_copy_org_id,
+    b.u_file_ext      AS b_u_file_ext,
+    b.u_doc_tag       AS b_u_doc_tag,
+    b.u_doc_class     AS b_u_doc_class,
+    b.u_reg_source    AS b_u_reg_source,
+    b.u_reg_user      AS b_u_reg_user,
+    b.u_reg_date      AS b_u_reg_date,
+    b.u_folder_path   AS b_u_folder_path,
+    b.u_update_date   AS b_u_update_date,
+    bb.unit_full_name AS bb_unit_full_name,
+    c.r_object_id     AS c_r_object_id,
+    c.u_fol_name      AS c_u_fol_name,
+    c.u_cabinet_code  AS c_u_cabinet_code,
+    c.u_sec_level     AS c_u_sec_level,
+    c.u_fol_tag       AS c_u_fol_tag,
+    c.u_fol_class     AS c_u_fol_class,
+    c.u_delete_status AS c_u_delete_status,
+    c.u_create_user   AS c_u_create_user,
+    c.u_create_date   AS c_u_create_date,
+    c.u_fol_type      AS c_u_fol_type,
+    d.user_id         AS d_user_id,
+    d.display_name    AS d_display_name,
+    d.com_org_id      AS d_com_org_id,
+    db.u_code_name1   AS db_com_name,
+    d.org_id          AS d_org_id,
+    d.org_nm          AS d_org_nm,
+    d.pstn_code       AS d_pstn_code,
+    d.level_code      AS d_level_code,
+    d.title_code      AS d_title_code,
+    da.name           AS da_title_name,
+    g.user_id         AS g_user_id,
+    g.display_name    AS g_display_name,
+    g.com_org_id      AS g_com_org_id,
+    gb.u_code_name1   AS gb_com_name,
+    g.org_id          AS g_org_id,
+    g.org_nm          AS g_org_nm,
+    g.pstn_code       AS g_pstn_code,
+    g.level_code      AS g_level_code,
+    g.title_code      AS g_title_code,
+    ga.name           AS ga_title_name
+
+
+		FROM
+		edms_recycle_sp a LEFT OUTER
+    JOIN
+    edms_doc_sp b ON a.u_obj_id = b.r_object_id LEFT OUTER JOIN
+    edms_v_dept_info bb ON b.u_cabinet_code = bb.u_cabinet_code LEFT OUTER
+    JOIN
+    edms_folder_sp c ON b.u_fol_id = c.r_object_id LEFT OUTER JOIN
+    edms_v_user_info d ON b.u_reg_user = d.user_id LEFT OUTER JOIN
+    edms_gw_job_title da ON d.title_code = da.title_code LEFT OUTER JOIN
+    com_code_temp db ON d.com_org_id = db.u_code_val1 LEFT OUTER JOIN
+    edms_v_user_info g ON a.u_delete_user = g.user_id LEFT OUTER
+    JOIN
+    edms_gw_job_title ga ON g.title_code = ga.title_code LEFT OUTER
+    JOIN
+    com_code_temp gb ON g.com_org_id = gb.u_code_val1
+
+		<where>
+			a.r_object_id = #{dataId}
+			AND a.u_obj_type NOT IN('P','R')
+			AND b.u_doc_status NOT IN('C')
+		</where>
+
+	</select>
+	<!-- DBOX-PGM-DOC-025 || 휴지통 목록 || 강구현 -->
+	 <select id="oneFolById" resultMap="RecycleFolMap">
+	 /* DBOX-PGM-DOC-025 | 휴지통 목록 | 강구현 */
+    WITH com_code_temp as (
+    SELECT
+    u_code_val1,
+    u_code_name1
+    FROM
+    edms_code_s
+    WHERE
+    u_code_type = 'COM_CODE'
+    )
+    SELECT
+    r.*,
+    b.user_id         AS b_user_id,
+    b.display_name    AS b_display_name,
+    b.com_org_id      AS b_com_org_id,
+    bb.u_code_name1   AS bb_com_name,
+    b.org_id          AS b_org_id,
+    b.org_nm          AS b_org_nm,
+    b.pstn_code       AS b_pstn_code,
+    b.level_code      AS b_level_code,
+    b.title_code      AS b_title_code,
+    ba.name           AS ba_title_name,
+    c.r_object_id     AS c_r_object_id,
+    c.u_fol_name      AS c_u_fol_name,
+    c.u_cabinet_code  AS c_u_cabinet_code,
+    c.u_sec_level     AS c_u_sec_level,
+    c.u_fol_tag       AS c_u_fol_tag,
+    c.u_fol_class     AS c_u_fol_class,
+    c.u_delete_status AS c_u_delete_status,
+    c.u_create_user   AS c_u_create_user,
+    c.u_create_date   AS c_u_create_date,
+    c.u_fol_type      AS c_u_fol_type,
+    cc.unit_full_name AS cc_unit_full_name,
+    e.user_id         AS e_user_id,
+    e.display_name    AS e_display_name,
+    e.com_org_id      AS e_com_org_id,
+    eb.u_code_name1   AS eb_com_name,
+    e.org_id          AS e_org_id,
+    e.org_nm          AS e_org_nm,
+    e.pstn_code       AS e_pstn_code,
+    e.level_code      AS e_level_code,
+    e.title_code      AS e_title_code,
+    ea.name           AS ea_title_name
+    
+    FROM
+    edms_recycle_sp     r   LEFT OUTER JOIN
+    edms_v_user_info    b   ON r.u_delete_user = b.user_id LEFT OUTER JOIN
+    edms_gw_job_title   ba  ON b.title_code = ba.title_code LEFT OUTER JOIN
+    com_code_temp       bb  ON b.com_org_id = bb.u_code_val1 LEFT OUTER JOIN
+    edms_folder_sp      c   ON r.u_obj_id = c.r_object_id LEFT OUTER JOIN
+    edms_v_dept_info    cc ON c.u_cabinet_code = cc.u_cabinet_code LEFT OUTER JOIN
+    edms_v_user_info    e   ON c.u_create_user = e.user_id LEFT OUTER JOIN
+    edms_gw_job_title   ea  ON e.title_code = ea.title_code LEFT OUTER JOIN
+    com_code_temp       eb  ON e.com_org_id = eb.u_code_val1 
+
+    <where>
+      r.r_object_id = #{dataId}
+      AND r.u_obj_type NOT IN('P','R')
+    </where>
+
+  </select>
+  <!-- DBOX-PGM-DOC-025 || 휴지통 목록 || 강구현 -->
+  <select id="projectList" resultMap="RecycleProjectMap">
+  /* DBOX-PGM-DOC-025 | 휴지통 목록 | 강구현 */
+    WITH com_code_temp as (
+    SELECT
+    u_code_val1,
+    u_code_name1
+    FROM
+    edms_code_s
+    WHERE
+    u_code_type = 'COM_CODE'
+    )
+    SELECT
+    r.*,
+    b.user_id         AS b_user_id,
+    b.display_name    AS b_display_name,
+    b.com_org_id      AS b_com_org_id,
+    bb.u_code_name1   AS bb_com_name,
+    b.org_id          AS b_org_id,
+    b.org_nm          AS b_org_nm,
+    b.pstn_code       AS b_pstn_code,
+    b.level_code      AS b_level_code,
+    b.title_code      AS b_title_code,
+    ba.name           AS ba_title_name,
+    c.r_object_id     AS c_r_object_id,
+    c.u_pjt_name      AS c_u_pjt_name,
+    c.u_pjt_code      AS c_u_pjt_code,
+    c.u_cabinet_code  AS c_u_cabinet_code,
+    c.u_sec_level     AS c_u_sec_level,
+    c.u_delete_status AS c_u_delete_status,
+    c.u_create_user   AS c_u_create_user,
+    c.u_create_date   AS c_u_create_date,
+    cc.unit_full_name AS cc_unit_full_name,
+    e.user_id         AS e_user_id,
+    e.display_name    AS e_display_name,
+    e.com_org_id      AS e_com_org_id,
+    eb.u_code_name1   AS eb_com_name,
+    e.org_id          AS e_org_id,
+    e.org_nm          AS e_org_nm,
+    e.pstn_code       AS e_pstn_code,
+    e.level_code      AS e_level_code,
+    e.title_code      AS e_title_code,
+    ea.name           AS ea_title_name
+    
+    FROM
+    edms_recycle_sp     r   LEFT OUTER JOIN
+    edms_v_user_info    b   ON r.u_delete_user = b.user_id LEFT OUTER JOIN
+    edms_gw_job_title   ba  ON b.title_code = ba.title_code LEFT OUTER JOIN
+    com_code_temp       bb  ON b.com_org_id = bb.u_code_val1 LEFT OUTER JOIN
+    edms_project_sp     c   ON r.u_obj_id = c.r_object_id LEFT OUTER JOIN
+    edms_v_dept_info    cc  ON c.u_cabinet_code = cc.u_cabinet_code LEFT OUTER JOIN
+    edms_v_user_info    e   ON c.u_create_user = e.user_id LEFT OUTER JOIN
+    edms_gw_job_title   ea  ON e.title_code = ea.title_code LEFT OUTER JOIN
+    com_code_temp       eb  ON e.com_org_id = eb.u_code_val1 
+    <where>
+       r.u_obj_type IN ('P')
+    </where>
+  </select>
+  <!-- DBOX-PGM-DOC-025 || 휴지통 목록 || 강구현 -->
+  <select id="researchList" resultMap="RecycleResearchMap">
+  /* DBOX-PGM-DOC-025 | 휴지통 목록 | 강구현 */
+    WITH com_code_temp as (
+    SELECT
+    u_code_val1,
+    u_code_name1
+    FROM
+    edms_code_s
+    WHERE
+    u_code_type = 'COM_CODE'
+    )
+    SELECT
+    r.*,
+    b.user_id         AS b_user_id,
+    b.display_name    AS b_display_name,
+    b.com_org_id      AS b_com_org_id,
+    bb.u_code_name1   AS bb_com_name,
+    b.org_id          AS b_org_id,
+    b.org_nm          AS b_org_nm,
+    b.pstn_code       AS b_pstn_code,
+    b.level_code      AS b_level_code,
+    b.title_code      AS b_title_code,
+    ba.name           AS ba_title_name,
+    c.r_object_id     AS c_r_object_id,
+    c.u_rsch_name      AS c_u_rsch_name,
+    c.u_rsch_code      AS c_u_rsch_code,
+    c.u_cabinet_code  AS c_u_cabinet_code,
+    c.u_sec_level     AS c_u_sec_level,
+    c.u_delete_status AS c_u_delete_status,
+    c.u_create_user   AS c_u_create_user,
+    c.u_create_date   AS c_u_create_date,
+    cc.unit_full_name AS cc_unit_full_name,
+    e.user_id         AS e_user_id,
+    e.display_name    AS e_display_name,
+    e.com_org_id      AS e_com_org_id,
+    eb.u_code_name1   AS eb_com_name,
+    e.org_id          AS e_org_id,
+    e.org_nm          AS e_org_nm,
+    e.pstn_code       AS e_pstn_code,
+    e.level_code      AS e_level_code,
+    e.title_code      AS e_title_code,
+    ea.name           AS ea_title_name
+    
+    FROM
+    edms_recycle_sp     r   LEFT OUTER JOIN
+    edms_v_user_info    b   ON r.u_delete_user = b.user_id LEFT OUTER JOIN
+    edms_gw_job_title   ba  ON b.title_code = ba.title_code LEFT OUTER JOIN
+    com_code_temp       bb  ON b.com_org_id = bb.u_code_val1 LEFT OUTER JOIN
+    edms_research_sp    c   ON r.u_obj_id = c.r_object_id LEFT OUTER JOIN
+    edms_v_dept_info    cc  ON c.u_cabinet_code = cc.u_cabinet_code LEFT OUTER JOIN
+    edms_v_user_info    e   ON c.u_create_user = e.user_id LEFT OUTER JOIN
+    edms_gw_job_title   ea  ON e.title_code = ea.title_code LEFT OUTER JOIN
+    com_code_temp       eb  ON e.com_org_id = eb.u_code_val1 
+    <where>
+       r.u_obj_type IN ('R')
+    </where>
+  </select>
+  <!-- DBOX-PGM-DOC-025 || 휴지통 목록 || 강구현 -->
+	<select id="docAuthorizedDetailList" resultMap="RecycleMap">
+	/* DBOX-PGM-DOC-025 | 휴지통 목록 | 강구현 */
+		WITH ug AS (
+		SELECT DISTINCT gs.group_name
+		FROM dm_group_sp gs,
+		(SELECT DISTINCT
+		gr1.users_names         AS i_all_users_names,
+		gr2.i_supergroups_names AS  group_name
+		FROM 
+		dm_group_r gr1,
+		dm_group_r gr2
+		WHERE 1=1
+		AND
+		gr1.r_object_id = gr2.r_object_id
+		AND gr1.users_names IS NOT NULL
+		) gr3
+		WHERE 1=1
+		AND gr3.group_name = gs.group_name
+		AND gr3.i_all_users_names = #{userId}
+		), acl AS (
+		SELECT
+		acs.owner_name,
+		acs.object_name,
+		MAX(acr.r_accessor_permit) AS max_level
+		FROM
+		dm_acl_s acs
+		, dm_acl_r acr
+		, (select b.acl_domain, b.acl_name
+       from edms_recycle_sp a,
+            edms_doc_sp b
+      where a.u_obj_id = b.r_object_id
+        and a.u_obj_type not in ('P','R')
+        and a.u_cabinet_code = #{uCabinetCode} <!-- aaaaaaaaaaaaaaaaaaaaaaaaaaaaa -->
+        and b.u_doc_status not in ('C')
+      ) doc
+		WHERE 1=1
+		AND doc.acl_domain = acs.owner_name and doc.acl_name = acs.object_name
+		AND acs.r_object_id = acr.r_object_id
+		AND (acr.r_accessor_name
+		= #{userId} OR acr.r_accessor_name IN (SELECT
+		group_name FROM ug))
+		GROUP BY acs.owner_name, acs.object_name
+		), com_code_temp as (
+		SELECT
+		u_code_val1,
+		u_code_name1
+		FROM
+		edms_code_s
+		WHERE
+		u_code_type = 'COM_CODE'
+		)
+		SELECT
+		a.*,
+		b.r_object_id     AS b_r_object_id,
+		b.object_name     AS b_object_name,
+		b.r_content_size  AS b_r_content_size,
+		b.u_cabinet_code  AS b_u_cabinet_code,
+		b.u_doc_key       AS b_u_doc_key,
+		b.u_fol_id        AS b_u_fol_id,
+		b.u_sec_level     AS b_u_sec_level,
+		b.u_doc_status    AS b_u_doc_status,
+		b.u_doc_flag      AS b_u_doc_flag,
+		b.u_delete_status AS b_u_delete_status,
+		b.u_closed_date   AS b_u_closed_date,
+		b.u_closer        AS b_u_closer,
+		b.u_copy_org_id   AS b_u_copy_org_id,
+		b.u_file_ext      AS b_u_file_ext,
+		b.u_pr_type       AS b_u_pr_type,
+    b.u_pr_code       AS b_u_pr_code,
+		b.u_doc_tag       AS b_u_doc_tag,
+		b.u_doc_class     AS b_u_doc_class,
+		b.u_reg_source    AS b_u_reg_source,
+		b.u_reg_user      AS b_u_reg_user,
+		b.u_reg_date      AS b_u_reg_date,
+		b.u_folder_path   AS b_u_folder_path,
+		b.u_update_date   AS b_u_update_date,
+		bb.unit_full_name AS bb_unit_full_name,
+		c.r_object_id     AS c_r_object_id,
+    c.u_fol_name      AS c_u_fol_name,
+    c.u_up_fol_id     AS c_u_up_fol_id,
+    c.u_pr_type       AS c_u_pr_type,
+    c.u_pr_code       AS c_u_pr_code,
+    c.u_cabinet_code  AS c_u_cabinet_code,
+    c.u_sec_level     AS c_u_sec_level,
+    c.u_fol_tag       AS c_u_fol_tag,
+    c.u_fol_class     AS c_u_fol_class,
+    c.u_delete_status AS c_u_delete_status,
+    c.u_create_user   AS c_u_create_user,
+    c.u_create_date   AS c_u_create_date,
+    c.u_fol_type      AS c_u_fol_type,
+		d.user_id         AS d_user_id,
+		d.display_name    AS d_display_name,
+		d.com_org_id      AS d_com_org_id,
+		db.u_code_name1   AS db_com_name,
+		d.org_id          AS d_org_id,
+		d.org_nm          AS d_org_nm,
+		d.pstn_code       AS d_pstn_code,
+		d.level_code      AS d_level_code,
+		d.title_code      AS d_title_code,
+		da.name           AS da_title_name,
+		g.user_id         AS g_user_id,
+		g.display_name    AS g_display_name,
+		g.com_org_id      AS g_com_org_id,
+		gb.u_code_name1   AS gb_com_name,
+		g.org_id          AS g_org_id,
+		g.org_nm          AS g_org_nm,
+		g.pstn_code       AS g_pstn_code,
+		g.level_code      AS g_level_code,
+		g.title_code      AS g_title_code,
+		ga.name           AS ga_title_name,
+
+		CASE
+		WHEN (b.owner_name = #{userId} OR b.owner_name IN
+		(SELECT group_name FROM
+		ug)) THEN GREATEST(f.max_level, b.owner_permit)
+		ELSE f.max_level
+		END AS f_max_level
+
+
+		FROM
+		edms_recycle_sp a LEFT OUTER
+		JOIN
+		edms_doc_sp b ON a.u_obj_id = b.r_object_id LEFT OUTER JOIN
+		edms_v_dept_info bb ON b.u_cabinet_code = bb.u_cabinet_code LEFT OUTER
+		JOIN
+		edms_folder_sp c ON b.u_fol_id = c.r_object_id LEFT OUTER JOIN
+		edms_v_user_info d ON b.u_reg_user = d.user_id LEFT OUTER JOIN
+		edms_gw_job_title da ON d.title_code = da.title_code LEFT OUTER JOIN
+		com_code_temp db ON d.com_org_id = db.u_code_val1 LEFT OUTER JOIN
+		acl f
+		ON (b.acl_domain = f.owner_name AND b.acl_name = f.object_name)
+		LEFT
+		OUTER JOIN
+		edms_v_user_info g ON a.u_delete_user = g.user_id LEFT OUTER
+		JOIN
+		edms_gw_job_title ga ON g.title_code = ga.title_code LEFT OUTER
+		JOIN
+		com_code_temp gb ON g.com_org_id = gb.u_code_val1
+		<where>
+		  a.u_obj_type NOT IN ('P', 'R') and
+		  b.u_doc_status NOT IN ('C')
+		  and a.u_cabinet_code = #{uCabinetCode} <!-- aaaaaaaaaaaaaaaaaaaaaaaaaaaaa -->
+		  
+		  AND ( (b.owner_name = #{userId} OR b.owner_name 
+			IN (SELECT group_name FROM ug)) 
+			AND b.owner_permit >= COALESCE(2, 2) OR f.max_level >= COALESCE(2, 2) ) 
+		</where>
+	</select>
+	<!-- DBOX-PGM-DOC-025 || 휴지통 목록 || 강구현 -->
+	<select id="folAuthorizedDetailList" resultMap="RecycleFolMap">
+	/* DBOX-PGM-DOC-025 | 휴지통 목록 | 강구현 */
+		WITH ug AS (
+		SELECT DISTINCT gs.group_name
+		FROM dm_group_sp gs,
+		(SELECT
+		DISTINCT gr1.users_names AS i_all_users_names,
+		gr2.i_supergroups_names
+		AS group_name
+		FROM dm_group_r gr1,
+		dm_group_r gr2
+		WHERE 1=1
+		AND
+		gr1.r_object_id = gr2.r_object_id
+		AND gr1.users_names IS NOT NULL
+		) gr3
+		WHERE 1=1
+		AND gr3.group_name = gs.group_name
+		AND gr3.i_all_users_names =
+		#{userId}
+		), auth_base AS (
+		SELECT
+		u_obj_id,
+		CASE
+		WHEN
+		max_permit_type_value = 7 THEN 'D'
+		WHEN max_permit_type_value = 3 THEN
+		'R'
+		WHEN max_permit_type_value = 2 THEN 'B'
+		ELSE NULL
+		END AS
+		max_permit_type
+		FROM (
+		SELECT
+		a.u_obj_id,
+		MAX(
+		CASE
+		WHEN a.u_permit_type = 'D'
+		THEN 7
+		WHEN a.u_permit_type = 'R' THEN 3
+		WHEN a.u_permit_type = 'B' THEN 2
+		ELSE NULL
+		END
+		) AS max_permit_type_value
+		FROM
+		edms_auth_base_sp a,
+		edms_recycle_sp b
+		WHERE
+		a.u_obj_id = b.u_obj_id
+		AND a.u_doc_status = 'L'
+    AND a.u_obj_type not in ('P', 'R')
+		AND (a.u_author_id = #{userId} OR a.u_author_id IN (SELECT group_name FROM
+		ug))
+		AND b.u_cabinet_code = #{uCabinetCode} <!-- aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa -->
+		<!-- AND u_doc_status = 'L' ************************************************************************** -->
+		GROUP BY a.u_obj_id
+		)
+		), com_code_temp as (
+		SELECT
+		u_code_val1,
+		u_code_name1
+		FROM
+		edms_code_s
+		WHERE
+		u_code_type = 'COM_CODE'
+		)
+		SELECT
+		r.*,
+		b.user_id         AS b_user_id,
+		b.display_name    AS b_display_name,
+		b.com_org_id      AS b_com_org_id,
+		bb.u_code_name1   AS bb_com_name,
+		b.org_id          AS b_org_id,
+		b.org_nm          AS b_org_nm,
+		b.pstn_code       AS b_pstn_code,
+		b.level_code      AS b_level_code,
+		b.title_code      AS b_title_code,
+		ba.name           AS ba_title_name,
+		c.r_object_id     AS c_r_object_id,
+		c.u_fol_name      AS c_u_fol_name,
+		c.u_cabinet_code  AS c_u_cabinet_code,
+		c.u_sec_level     AS c_u_sec_level,
+		c.u_fol_tag       AS c_u_fol_tag,
+		c.u_fol_class     AS c_u_fol_class,
+		c.u_delete_status AS c_u_delete_status,
+		c.u_create_user   AS c_u_create_user,
+		c.u_create_date   AS c_u_create_date,
+		c.u_fol_type      AS c_u_fol_type,
+		c.u_up_fol_id     AS c_u_up_fol_id,
+    c.u_pr_type       AS c_u_pr_type,
+    c.u_pr_code       AS c_u_pr_code,
+		cc.unit_full_name AS cc_unit_full_name,
+		e.user_id         AS e_user_id,
+		e.display_name    AS e_display_name,
+		e.com_org_id      AS e_com_org_id,
+		eb.u_code_name1   AS eb_com_name,
+		e.org_id          AS e_org_id,
+		e.org_nm          AS e_org_nm,
+		e.pstn_code       AS e_pstn_code,
+		e.level_code      AS e_level_code,
+		e.title_code      AS e_title_code,
+		ea.name           AS ea_title_name,
+		d.max_permit_type AS d_max_permit_type
+		FROM
+		edms_recycle_sp r LEFT OUTER JOIN
+		edms_v_user_info b ON r.u_delete_user
+		= b.user_id LEFT OUTER JOIN
+		edms_gw_job_title ba ON b.title_code =
+		ba.title_code LEFT OUTER JOIN
+		com_code_temp bb ON b.com_org_id =
+		bb.u_code_val1 LEFT OUTER JOIN
+		edms_folder_sp c ON r.u_obj_id =
+		c.r_object_id LEFT OUTER JOIN
+		edms_v_dept_info cc ON c.u_cabinet_code = cc.u_cabinet_code LEFT OUTER
+    JOIN
+		edms_v_user_info e ON c.u_create_user =
+		e.user_id LEFT OUTER JOIN
+		edms_gw_job_title ea ON e.title_code =
+		ea.title_code LEFT OUTER JOIN
+		com_code_temp eb ON e.com_org_id =
+		eb.u_code_val1 LEFT OUTER JOIN
+		auth_base d ON c.r_object_id =
+		d.u_obj_id
+		<where>
+			d.max_permit_type IN ('B', 'R', 'D') AND
+			r.u_obj_type NOT IN ('P', 'R') AND
+			r.u_cabinet_code = #{uCabinetCode} <!-- aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa -->
+		</where>
+
+	</select>
+
+</mapper>
+	

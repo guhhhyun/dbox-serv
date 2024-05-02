@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.noticonfig.NotiConfigMapper">
+	<resultMap id="AlarmMap"
+		type="com.dongkuksystems.dbox.models.type.manager.noticonfig.NotiConfig">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uComCode" column="U_COM_CODE" />
+		<result property="uEventCode" column="U_EVENT_CODE" />
+		<result property="uAlarmYn" column="U_ALARM_YN" />
+		<result property="uEmailYn" column="U_EMAIL_YN" />
+		<result property="uMmsYn" column="U_MMS_YN" />
+		<result property="uCodeName1" column="U_CODE_NAME1" />
+		<result property="uCodeName2" column="U_CODE_NAME2" />
+	</resultMap>
+	
+	<select id="selectAll" resultMap="AlarmMap">
+	/* DBOX-PGM-MNG-006 | 관리 권한 - 알림/통보 방식 관리 사별 조회 | 이성현 */
+		SELECT
+			a.r_object_id,
+			a.u_com_code,
+			a.u_event_code,
+			a.u_alarm_yn,
+			a.u_email_yn,
+			a.u_mms_yn,
+			b.u_code_name1,
+			b.u_code_name2
+		FROM
+			edms_noti_config_s a
+		LEFT OUTER JOIN edms_code_s b ON
+			a.u_event_code = b.u_code_val1
+
+		<where>
+			a.u_com_code = #{uComCode} 
+			AND b.u_code_type = 'NOTI_ITEM'
+		</where>
+			ORDER BY a.r_object_id ASC
+	</select>
+	
+	<select id="selectOneByCodes" resultMap="AlarmMap">
+		/* DBOX-PGM-MNG-006 | 관리 권한 - 알림/통보 방식 사별, 코드별 조회 | 이성현 */	
+    SELECT
+    a.r_object_id,
+    a.u_com_code,
+    a.u_event_code,
+    a.u_alarm_yn,
+    a.u_email_yn,
+    a.u_mms_yn
+  
+
+    FROM
+    edms_noti_config_s a
+
+    <where>
+      a.u_com_code = #{uComCode} and 
+      a.u_event_code = #{uEventCode}
+    </where>
+    ORDER BY a.r_object_id ASC
+
+
+  </select>
+
+</mapper>

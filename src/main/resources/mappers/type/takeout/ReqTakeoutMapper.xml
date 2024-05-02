@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper
+    namespace="com.dongkuksystems.dbox.daos.table.takeout.ReqTakeoutMapper">
+    <resultMap id="ReqTakeoutMap"
+        type="com.dongkuksystems.dbox.models.type.request.ReqTakeout">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="uReqTitle" column="U_REQ_TITLE" />
+        <result property="uReqUser" column="U_REQ_USER" />
+        <result property="uReqDeptCode" column="U_REQ_DEPT_CODE" />
+        <result property="uReqDate" column="U_REQ_DATE" />
+        <result property="uReqReason" column="U_REQ_REASON" />
+        <result property="uReqStatus" column="U_REQ_STATUS" />
+        <result property="uOwnDeptCode" column="U_OWN_DEPT_CODE" />
+        <result property="uApprover" column="U_APPROVER" />
+        <result property="uLimitFlag" column="U_LIMIT_FLAG" />
+        <result property="uLimitDate" column="U_LIMIT_DATE" />
+        <result property="uActionDate" column="U_ACTION_DATE" />
+        <result property="uRejectReason" column="U_REJECT_REASON" />
+        <result property="uApprType" column="U_APPR_TYPE" />
+        <result property="sumContentSize" column="SUM_CONTENT_SIZE" />
+        <result property="cnt" column="CNT" />
+        <association property="approverDetail" javaType="VUser">
+       		<id property="userId" column="USER_ID" />
+            <result property="displayName" column="DISPLAY_NAME" />
+        </association>
+    </resultMap>
+    
+    <resultMap id="ReqTakeoutDocMap" type="com.dongkuksystems.dbox.models.type.request.ReqTakeoutDoc">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="uReqId" column="U_REQ_ID" />
+        <result property="uReqDocId" column="U_REQ_DOC_ID" />
+        <result property="uReqDocKey" column="U_REQ_DOC_KEY" />
+    </resultMap>
+    
+    <resultMap id="ReqTakeoutConfigMap" 
+        type="com.dongkuksystems.dbox.models.type.manager.TakeoutConfig">
+    
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="uComCode" column="U_COM_CODE" />
+        <result property="uDeptCode" column="U_DEPT_CODE" />
+        <result property="uAutoApprYn" column="U_AUTO_APPR_YN" />
+        <result property="uFreePassYn" column="U_FREE_PASS_YN" />
+        <result property="uDeleteOption" column="U_DELETE_OPTION" />
+        <result property="uDeleteDays" column="U_DELETE_DAYS" />
+        <result property="uAutoName" column="U_AUTO_NAME" />
+        <result property="uAutoRegister" column="U_AUTO_REGISTER" />
+        <result property="uAutoRegistDate" column="U_AUTO_REGIST_DATE" />
+        <result property="uFreeName" column="U_FREE_NAME" />
+        <result property="uFreeRegister" column="U_FREE_REGISTER" />
+        <result property="uFreeRegistDate" column="U_FREE_REGIST_DATE" />
+        <result property="uCreateUser" column="U_CREATE_USER" />
+        <result property="uCreateDate" column="U_CREATE_DATE" />
+        <result property="uModifyUser" column="U_MODIFY_USER" />
+        <result property="uModifyDate" column="U_MODIFY_DATE" />
+    
+        <collection property="autoNames" column="{rObjectId=r_object_id}" select="authNameListByObjId"/>
+        <collection property="freeNames" column="{rObjectId=r_object_id}" select="freeNameListByObjId"/>
+        
+    </resultMap>
+    
+    <resultMap id="ReqTakeoutConfigListMap" 
+        type="com.dongkuksystems.dbox.models.dto.type.request.ReqTakeoutConfigDto">
+        
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="uDeptCode" column="U_DEPT_CODE" />
+        <result property="uAutoName" column="U_AUTO_NAME" />
+        <result property="uFreeName" column="U_FREE_NAME" />
+ 
+    </resultMap>
+    
+    
+     <resultMap id="ReqTakeoutDetailSimpleMap"
+      type="com.dongkuksystems.dbox.models.dto.type.request.ReqTakeoutDetailDto">
+      <id property="rObjectId" column="R_OBJECT_ID" />
+      <result property="uReqTitle" column="u_req_title" />
+      <result property="uReqUser" column="u_req_user" />
+      <result property="uReqDeptCode" column="u_req_dept_code" />
+      <result property="uReqDate" column="u_req_date" />
+      <result property="uReqStatus" column="u_req_status" />
+      <result property="uReqReason" column="u_req_reason" />
+      <result property="uOwnDeptCode" column="u_own_dept_code" />
+      <result property="uLimitFlag" column="u_limit_flag" />
+      <result property="uLimitDate" column="u_limit_date" />
+      <result property="uApprover" column="u_approver" />
+      <result property="uActionDate" column="u_action_date" />
+      <result property="uRejectReason" column="u_reject_reason" />
+      <result property="uApprType" column="U_APPR_TYPE" />
+	  
+      <result property="uReqUserName" column="req_display_name" />
+      <result property="uReqUserJobPstnName" column="req_pstn_name" />
+      <result property="uReqUserJobPstnCode" column="req_pstn_code" />
+      <result property="uReqUserJobLevelName" column="req_level_name" />
+      <result property="uReqUserJobLevelCode" column="req_level_code" />
+      <result property="uReqUserJobTitleCode" column="req_title_code" />
+      <result property="uReqUserJobTitleName" column="req_title_name" />
+      <result property="uReqUserOrgId" column="req_org_id" />
+      <result property="uReqUserOrgName" column="req_org_nm" />
+      <result property="uReqUserComId" column="req_com_org_id" />
+      <result property="uReqUserComName" column="req_com_name" />
+	  
+      <result property="uApproverId" column="appr_user_id" />
+      <result property="uApproverName" column="appr_display_name" />
+      <result property="uApproverOrgId" column="appr_org_id" />
+      <result property="uApproverOrgName" column="appr_org_nm" />
+      <result property="uApproverComId" column="appr_com_org_id" />
+      <result property="uApproverComName" column="appr_com_name" />
+      <result property="uApproverJobPstnName" column="appr_pstn_name" />
+      <result property="uApproverJobPstnCode" column="appr_pstn_code" />
+      <result property="uApproverJobLevelCode" column="appr_level_code" />
+      <result property="uApproverJobLevelName" column="appr_level_name" />
+      <result property="uApproverJobTitleCode" column="appr_title_code" />
+      <result property="uApproverJobTitleName" column="appr_title_name" />
+  
+      <result property="uReqDocId" column="d_r_object_id" />
+      <result property="uReqDocKey" column="d_doc_key" />
+      <result property="uReqDocName" column="d_object_name" />
+      <result property="uReqDocTitle" column="d_title" />
+      <result property="uReqDocExt" column="d_file_ext" />
+      <result property="uDocSize" column="d_r_content_size" />
+      <result property="uFolPath" column="d_path" />
+      <result property="uSecLevel" column="d_sec_level" />
+      <result property="uVersionLabel" column="d_version_label" />
+      <result property="uPrCode" column="d_u_pr_code" />
+      <result property="uPrType" column="d_u_pr_type" />
+      
+      <result property="prOwnDeptCode" column="pr_own_dept_code" />
+      <result property="hamType" column="ham_type" />
+      <result property="hamName" column="ham_name" />
+      
+      <result property="docEditorName" column="doc_editor_name" />
+      <result property="docEditorId" column="doc_editor_id" />
+      <result property="docUpdateDate" column="doc_update_date" />
+      <result property="docCabinetCode" column="doc_cabinet_code" />
+      <result property="docOrgNm" column="doc_org_nm" /> 
+     </resultMap> 
+     
+    <resultMap id="ReqTakeoutDetailMap"
+        type="com.dongkuksystems.dbox.models.type.request.ReqTakeout">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="orgId" column="ORG_ID" />
+        <result property="uReqTitle" column="U_REQ_Title" />
+        <result property="uReqUser" column="U_REQ_USER" />
+        <result property="uReqDeptCode" column="U_REQ_DEPT_CODE" />
+        <result property="uReqDate" column="U_REQ_DATE" />
+        <result property="uReqReason" column="U_REQ_REASON" />
+        <result property="uReqStatus" column="U_REQ_STATUS" />
+        <result property="uOwnDeptCode" column="U_OWN_DEPT_CODE" />
+        <result property="uApprover" column="U_APPROVER" />
+        <result property="uLimitFlag" column="U_LIMIT_FLAG" />
+        <result property="uLimitDate" column="U_LIMIT_DATE" />
+        <result property="uActionDate" column="U_ACTION_DATE" />
+        <result property="uRejectReason" column="U_REJECT_REASON" />
+        <result property="uApprType" column="U_APPR_TYPE" />
+        
+        <association property="reqUserDetail" javaType="VUser">
+            <id property="userId" column="B_USER_ID" />
+            <result property="displayName" column="B_DISPLAY_NAME" />
+            <result property="comOrgId" column="B_COM_ORG_ID" />
+            <result property="orgId" column="B_ORG_ID" />
+            <result property="orgNm" column="B_ORG_NM" />
+            <result property="pstnCode" column="B_PSTN_CODE" />
+            <result property="levelCode" column="B_LEVEL_CODE" />
+            <result property="titleCode" column="B_TITLE_CODE" />
+            <association property="jobTitleDetail" javaType="GwJobTitle">
+                <id property="titleCode" column="B_TITLE_CODE" />
+                <result property="name" column="BA_TITLE_NAME" />
+            </association>
+            <association property="deptDetail" javaType="VDept">
+                <association property="companyDetail" javaType="Code">
+                    <id property="uCodeVal1" column="B_COM_ORG_ID" />
+                    <result property="uCodeName1" column="BB_COM_NAME" />
+                </association>
+            </association>
+        </association>
+        <association property="approverDetail" javaType="VUser">
+            <id property="userId" column="C_USER_ID" />
+            <result property="displayName" column="C_DISPLAY_NAME" />
+            <result property="comOrgId" column="C_COM_ORG_ID" />
+            <result property="orgId" column="C_ORG_ID" />
+            <result property="orgNm" column="C_ORG_NM" />
+            <result property="pstnCode" column="C_PSTN_CODE" />
+            <result property="levelCode" column="C_LEVEL_CODE" />
+            <result property="titleCode" column="C_TITLE_CODE" />
+            <association property="jobTitleDetail" javaType="GwJobTitle">
+                <id property="titleCode" column="C_TITLE_CODE" />
+                <result property="name" column="CA_TITLE_NAME" />
+            </association>
+            <association property="deptDetail" javaType="VDept">
+                <association property="companyDetail" javaType="Code">
+                    <id property="uCodeVal1" column="C_COM_ORG_ID" />
+                    <result property="uCodeName1" column="CC_COM_NAME" />
+                </association>
+            </association>
+            
+        </association>
+        <association property="docDetail" javaType="Doc">
+            <id property="rObjectId" column="D_R_OBJECT_ID" />
+            <result property="objectName" column="D_OBJECT_NAME" />
+            <result property="rContentSize" column="D_R_CONTENT_SIZE" />
+        </association>
+        <association property="takeoutDoc" javaType="ReqTakeoutDoc">
+            <id property="uReqId" column="E_REQ_ID" />
+            <result property="rObjectId" column="E_R_OBJECT_ID" />
+            <result property="uReqDocId" column="E_REQ_DOC_ID" />
+            <result property="uReqDocKey" column="E_REQ_DOC_KEY" />
+        </association>
+        
+    </resultMap>
+    
+     <resultMap id="ReqTakeoutConfigRepeatingMap" 
+        type="com.dongkuksystems.dbox.models.type.manager.TakeoutConfigRepeating">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="iPosition" column="I_POSITION" />
+        <result property="uAutoName" column="U_AUTO_NAME" />
+        <result property="uAutoRegister" column="U_AUTO_REGISTER" />
+        <result property="uAutoRegisterName" column="U_AUTO_REGISTER_NAME" />
+        <result property="uAutoRegistDate" column="U_AUTO_REGIST_DATE" />
+        <result property="uFreeName" column="U_FREE_NAME" />
+        <result property="uFreeRegister" column="U_FREE_REGISTER" />
+        <result property="uFreeRegisterName" column="U_FREE_REGISTER_NAME" />
+        <result property="uFreeRegistDate" column="U_FREE_REGIST_DATE" />
+    </resultMap>
+    
+     <resultMap id="ReqTakeoutInfoMap" type="com.dongkuksystems.dbox.models.dto.type.request.ReqTakeoutDto">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="objectName" column="OBJECT_NAME" />
+        <result property="rVersionLabel" column="R_VERSION_LABEL" />
+        <result property="rContentSize" column="R_CONTENT_SIZE" />
+        <result property="displayName" column="DISPLAY_NAME" />
+    </resultMap>
+    
+    
+    <select id="selectReqTakeoutDetails" resultMap="ReqTakeoutDetailSimpleMap">
+    /* DBOX-PGM-DOC-021 | 반출 조회 | 강구현 */
+      WITH com_code_temp as (
+       SELECT
+        u_code_val1,
+                 u_code_name1
+       FROM
+        edms_code_s
+       WHERE
+        u_code_type = 'COM_CODE'
+      )
+      SELECT
+       a.*,
+       b.user_id  AS req_user_id,
+          b.display_name AS req_display_name,
+          b.com_org_id AS req_com_org_id,
+          bb.u_code_name1 AS req_com_name,
+          b.org_id  AS req_org_id,
+          b.org_nm  AS req_org_nm,
+          b.pstn_code  AS req_pstn_code,
+          b.PSTN_NAME  AS req_pstn_name,
+          b.level_code AS req_level_code,
+          b.LEVEL_NAME  AS req_level_name,
+          b.title_code AS req_title_code,
+          b.title_name AS req_title_name,
+          c.user_id  AS appr_user_id,
+          c.display_name AS appr_display_name,
+          c.com_org_id AS appr_com_org_id,
+          cc.u_code_name1 AS appr_com_name,
+          c.org_id  AS appr_org_id,
+          c.org_nm  AS appr_org_nm,
+          c.pstn_code  AS appr_pstn_code,
+          c.PSTN_NAME  AS appr_pstn_name,
+          c.level_code AS appr_level_code,
+          c.LEVEL_NAME  AS appr_level_name,
+          c.title_code AS appr_title_code,
+          c.TITLE_NAME  AS appr_title_name,
+          d.r_object_id   AS d_r_object_id,
+          d.U_DOC_KEY     AS d_doc_key,
+          d.object_name   AS d_object_name,
+          d.title		  AS d_title,
+          d.U_FILE_EXT    AS d_file_ext,
+          d.r_content_size AS d_r_content_size,
+          d.u_folder_path  AS d_path,
+          d.u_pr_type     AS d_u_pr_type,
+          d.u_pr_code     AS d_u_pr_code,
+          (SELECT Max(R_VERSION_LABEL) FROM edms_doc_rp WHERE R_VERSION_LABEL != 'CURRENT' AND R_OBJECT_ID = d.R_OBJECT_ID) AS d_version_label,
+          d.U_SEC_LEVEL   AS d_sec_level,
+          CASE WHEN p.U_PJT_NAME IS NOT NULL THEN p.U_OWN_DEPT 
+               WHEN r.U_RSCH_NAME IS NOT NULL THEN r.U_OWN_DEPT 
+               ELSE null END AS pr_own_dept_code,
+          CASE WHEN p.U_PJT_NAME IS NOT NULL THEN 'P'
+               WHEN r.U_RSCH_NAME IS NOT NULL THEN 'R' 
+               ELSE 'D' END AS ham_type,
+          CASE WHEN p.U_PJT_NAME IS NOT NULL THEN p.U_PJT_NAME
+               WHEN r.U_RSCH_NAME IS NOT NULL THEN r.U_RSCH_NAME 
+               ELSE '부서함' END AS ham_name,
+          vu.DISPLAY_NAME AS doc_editor_name,
+          d.U_LAST_EDITOR AS doc_editor_id,
+          d.U_UPDATE_DATE AS doc_update_date,
+          vd.U_CABINET_CODE AS doc_cabinet_code,
+          vd.ORG_NM  AS doc_org_nm
+      FROM 
+       edms_req_takeout_sp     a   LEFT OUTER JOIN
+       edms_req_takeout_doc_sp aa  ON a.r_object_id = aa.u_req_id      LEFT OUTER JOIN 
+       edms_v_user_info        b   ON a.u_req_user = b.user_id        LEFT OUTER JOIN  
+       com_code_temp           bb  ON b.com_org_id = bb.u_code_val1   LEFT OUTER JOIN 
+       edms_v_user_info        c   ON a.u_approver = c.user_id        LEFT OUTER JOIN 
+       com_code_temp           cc  ON c.com_org_id = cc.u_code_val1   LEFT OUTER JOIN 
+       edms_doc_sp             d   ON aa.u_req_doc_id = d.r_object_id LEFT OUTER JOIN
+       edms_project_sp         p   ON d.U_PR_CODE = p.U_PJT_CODE      LEFT OUTER JOIN
+       edms_research_sp        r   ON d.U_PR_CODE = r.U_RSCH_CODE	  LEFT OUTER JOIN
+       edms_v_dept_info        vd  ON d.U_CABINET_CODE = vd.U_CABINET_CODE LEFT OUTER JOIN
+       edms_v_user_info        vu  ON d.U_LAST_EDITOR = vu.USER_ID 
+      <where>
+       1=1 
+       AND A.U_REQ_STATUS = 'A'
+       AND (   a.U_LIMIT_DATE <![CDATA[>]]> TO_TIMESTAMP('2022-01-27 17:03:39', 'YYYY-MM-DD HH24:MI:SS')
+       OR A.U_LIMIT_DATE <![CDATA[<]]> TO_TIMESTAMP('1753-01-02 00:00:00', 'YYYY-MM-DD HH24:MI:SS')
+       OR A.U_LIMIT_DATE IS NULL
+       )
+       AND A.U_REQ_USER = #{takeout.uReqUser}
+       AND (aa.U_STATUS = ' ' OR aa.U_STATUS IS NULL)
+   
+      </where>
+      ORDER BY a.u_req_date DESC
+     </select>
+     
+     <select id="reqTakeoutDetailAll" resultMap="ReqTakeoutDetailSimpleMap">
+      WITH com_code_temp as (
+       SELECT
+        u_code_val1,
+                 u_code_name1
+       FROM
+        edms_code_s
+       WHERE
+        u_code_type = 'COM_CODE'
+      ), version_tb AS (
+	      SELECT R_OBJECT_ID, Max(R_VERSION_LABEL) AS doc_version
+	       FROM edms_doc_rp 
+	       WHERE R_VERSION_LABEL != 'CURRENT' 
+	       GROUP BY R_OBJECT_ID
+      )
+      SELECT
+       a.*,
+       b.user_id  AS req_user_id,
+          b.display_name AS req_display_name,
+          b.com_org_id AS req_com_org_id,
+          bb.u_code_name1 AS req_com_name,
+          b.org_id  AS req_org_id,
+          b.org_nm  AS req_org_nm,
+          b.pstn_code  AS req_pstn_code,
+          b.PSTN_NAME  AS req_pstn_name,
+          b.level_code AS req_level_code,
+          b.LEVEL_NAME  AS req_level_name,
+          b.title_code AS req_title_code,
+          b.title_name AS req_title_name,
+          c.user_id  AS appr_user_id,
+          c.display_name AS appr_display_name,
+          c.com_org_id AS appr_com_org_id,
+          cc.u_code_name1 AS appr_com_name,
+          c.org_id  AS appr_org_id,
+          c.org_nm  AS appr_org_nm,
+          c.pstn_code  AS appr_pstn_code,
+          c.PSTN_NAME  AS appr_pstn_name,
+          c.level_code AS appr_level_code,
+          c.LEVEL_NAME  AS appr_level_name,
+          c.title_code AS appr_title_code,
+          c.TITLE_NAME  AS appr_title_name,
+          d.r_object_id   AS d_r_object_id,
+          d.U_DOC_KEY     AS d_doc_key,
+          d.object_name   AS d_object_name,
+          d.title		  AS d_title,
+          d.U_FILE_EXT    AS d_file_ext,
+          d.r_content_size AS d_r_content_size,
+          d.u_folder_path  AS d_path,
+          d.u_pr_type     AS d_u_pr_type,
+          d.u_pr_code     AS d_u_pr_code,
+		  dd.doc_version  AS d_version_label,
+          d.U_SEC_LEVEL   AS d_sec_level,
+          CASE WHEN p.U_PJT_NAME IS NOT NULL THEN p.U_OWN_DEPT 
+               WHEN r.U_RSCH_NAME IS NOT NULL THEN r.U_OWN_DEPT 
+               ELSE null END AS pr_own_dept_code,
+          CASE WHEN p.U_PJT_NAME IS NOT NULL THEN 'P'
+               WHEN r.U_RSCH_NAME IS NOT NULL THEN 'R' 
+               ELSE 'D' END AS ham_type,
+          CASE WHEN p.U_PJT_NAME IS NOT NULL THEN p.U_PJT_NAME
+               WHEN r.U_RSCH_NAME IS NOT NULL THEN r.U_RSCH_NAME 
+               ELSE '부서함' END AS ham_name
+      FROM 
+       edms_req_takeout_sp     a   LEFT OUTER JOIN
+       edms_req_takeout_doc_sp aa  ON a.r_object_id = aa.u_req_id      LEFT OUTER JOIN 
+       edms_v_user_info        b   ON a.u_req_user = b.user_id        LEFT OUTER JOIN  
+       com_code_temp           bb  ON b.com_org_id = bb.u_code_val1   LEFT OUTER JOIN 
+       edms_v_user_info        c   ON a.u_approver = c.user_id        LEFT OUTER JOIN 
+       com_code_temp           cc  ON c.com_org_id = cc.u_code_val1   LEFT OUTER JOIN 
+       edms_doc_sp             d   ON aa.u_req_doc_id = d.r_object_id LEFT OUTER JOIN
+       version_tb              dd  ON dd.r_object_id = d.r_object_id  LEFT OUTER JOIN
+       edms_project_sp         p   ON d.U_PR_CODE = p.U_PJT_CODE      LEFT OUTER JOIN
+       edms_research_sp        r   ON d.U_PR_CODE = r.U_RSCH_CODE
+      ORDER BY a.u_req_date DESC
+     </select>
+    
+    
+    <select id="selectOneByReqId" resultMap="ReqTakeoutDocMap">
+    /* DBOX-PGM-DOC-021 | 반출 조회 | 강구현 */
+        SELECT
+            *
+        FROM
+            edms_req_takeout_doc_sv
+        <where>
+            u_req_id = #{uReqId}
+        </where>
+    </select>
+    
+    <select id="selectCountByReqDocId" resultType="int">
+    /* DBOX-PGM-DOC-021 | 반출 건수 조회 | 강구현 */
+        SELECT
+            count(*)
+        FROM
+            edms_req_takeout_doc_sv
+        <where>
+            U_REQ_DOC_ID = #{reqDocId}
+        </where>
+    </select>
+    <!-- DBOX-PGM-DOC-021 || 반출 조회 || 강구현 -->
+    <select id="selectReasonOneByDeptCode" resultMap="ReqTakeoutConfigMap">
+    /* DBOX-PGM-DOC-021 | 반출설정 조회 | 강구현 */
+        SELECT
+            *
+        FROM
+            edms_takeout_config_sv
+        <where>
+            u_dept_code = #{uDeptCode}
+        </where>
+    </select>
+    
+   <!--  <select id="nameListByObjId" resultMap="ReqTakeoutConfigListMap">
+        SELECT
+            u_auto_name,
+            u_free_name
+        FROM
+            edms_takeout_config_rv
+        <where>
+            r_object_id = #{rObjectId}
+        </where>
+    </select> -->
+    
+
+    <select id="nameListByOrgId" resultMap="ReqTakeoutConfigListMap">
+    /* DBOX-PGM-DOC-021 | 반출 프리, 자동 조회 | 강구현 */
+        SELECT
+            a.u_auto_name,
+            a.u_free_name
+        FROM
+		    edms_takeout_config_rv a
+		   WHERE R_OBJECT_ID = (
+		   SELECT b.R_OBJECT_ID 
+		   FROM edms_takeout_config_sp b
+		   WHERE b.U_DEPT_CODE = #{orgId})
+		AND (a.u_auto_name IS NOT NULL OR a.u_free_name IS NOT NULL)
+		AND (a.u_auto_name != ' ' OR a.u_free_name != ' ' );
+    </select>
+    
+    <select id="nameListByObjId" resultMap="ReqTakeoutConfigListMap">
+    /* DBOX-PGM-DOC-021 | 반출 프리, 조회조회 | 강구현 */
+        SELECT
+            a.*
+        FROM
+		    edms_takeout_config_rv a
+		   WHERE R_OBJECT_ID = #{rObjectId}
+		AND (a.u_auto_name IS NOT NULL OR a.u_free_name IS NOT NULL)
+		AND (a.u_auto_name != ' ' OR a.u_free_name != ' ' );
+    </select>
+    
+    <select id="authNameListByObjId" resultType="string">
+    /* DBOX-PGM-DOC-021 | 반출 자동 조회 | 강구현 */
+        SELECT
+            a.u_auto_name
+        FROM
+		    edms_takeout_config_rv a
+		   WHERE R_OBJECT_ID = #{rObjectId}
+		AND (a.u_auto_name IS NOT NULL )
+		AND (a.u_auto_name != ' ' );
+    </select>
+    
+    <select id="freeNameListByObjId" resultType="string">
+    /* DBOX-PGM-DOC-021 | 반출 프리 조회 | 강구현 */
+        SELECT
+            a.u_free_name
+        FROM
+		    edms_takeout_config_rv a
+		   WHERE R_OBJECT_ID = #{rObjectId}
+		AND (a.u_free_name IS NOT NULL)
+		AND (a.u_free_name != ' ' );
+    </select>
+    
+    <select id="reqTakeoutListByObjId" resultMap="ReqTakeoutDetailSimpleMap">
+    /* DBOX-PGM-DOC-021 | 반출 조회 | 강구현 */
+WITH com_code_temp as (
+       SELECT
+        u_code_val1,
+                 u_code_name1
+       FROM
+        edms_code_s
+       WHERE
+        u_code_type = 'COM_CODE'
+      ), version_tb AS (
+	      SELECT R_OBJECT_ID, Max(R_VERSION_LABEL) AS doc_version
+	       FROM edms_doc_rp 
+	       WHERE R_VERSION_LABEL != 'CURRENT' 
+	       GROUP BY R_OBJECT_ID
+      )
+      SELECT
+       a.*,
+       b.user_id  AS req_user_id,
+          b.display_name AS req_display_name,
+          b.com_org_id AS req_com_org_id,
+          bb.u_code_name1 AS req_com_name,
+          b.org_id  AS req_org_id,
+          b.org_nm  AS req_org_nm,
+          b.pstn_code  AS req_pstn_code,
+          b.PSTN_NAME  AS req_pstn_name,
+          b.level_code AS req_level_code,
+          b.LEVEL_NAME  AS req_level_name,
+          b.title_code AS req_title_code,
+          b.title_name AS req_title_name,
+          c.user_id  AS appr_user_id,
+          c.display_name AS appr_display_name,
+          c.com_org_id AS appr_com_org_id,
+          cc.u_code_name1 AS appr_com_name,
+          c.org_id  AS appr_org_id,
+          c.org_nm  AS appr_org_nm,
+          c.pstn_code  AS appr_pstn_code,
+          c.PSTN_NAME  AS appr_pstn_name,
+          c.level_code AS appr_level_code,
+          c.LEVEL_NAME  AS appr_level_name,
+          c.title_code AS appr_title_code,
+          c.TITLE_NAME  AS appr_title_name,
+          d.r_object_id   AS d_r_object_id,
+          d.U_DOC_KEY     AS d_doc_key,
+          d.object_name   AS d_object_name,
+          d.title		  AS d_title,
+          d.U_FILE_EXT    AS d_file_ext,
+          d.r_content_size AS d_r_content_size,
+          d.u_folder_path  AS d_path,
+          d.u_pr_type     AS d_u_pr_type,
+          d.u_pr_code     AS d_u_pr_code,
+		  dd.doc_version  AS d_version_label,
+          d.U_SEC_LEVEL   AS d_sec_level,
+          CASE WHEN p.U_PJT_NAME IS NOT NULL THEN p.U_OWN_DEPT 
+               WHEN r.U_RSCH_NAME IS NOT NULL THEN r.U_OWN_DEPT 
+               ELSE null END AS pr_own_dept_code,
+          CASE WHEN p.U_PJT_NAME IS NOT NULL THEN 'P'
+               WHEN r.U_RSCH_NAME IS NOT NULL THEN 'R' 
+               ELSE 'D' END AS ham_type,
+          CASE WHEN p.U_PJT_NAME IS NOT NULL THEN p.U_PJT_NAME
+               WHEN r.U_RSCH_NAME IS NOT NULL THEN r.U_RSCH_NAME 
+               ELSE '부서함' END AS ham_name
+      FROM 
+       edms_req_takeout_sp     a   LEFT OUTER JOIN
+       edms_req_takeout_doc_sp aa  ON a.r_object_id = aa.u_req_id      LEFT OUTER JOIN 
+       edms_v_user_info        b   ON a.u_req_user = b.user_id        LEFT OUTER JOIN  
+       com_code_temp           bb  ON b.com_org_id = bb.u_code_val1   LEFT OUTER JOIN 
+       edms_v_user_info        c   ON a.u_approver = c.user_id        LEFT OUTER JOIN 
+       com_code_temp           cc  ON c.com_org_id = cc.u_code_val1   LEFT OUTER JOIN 
+       edms_doc_sp             d   ON aa.u_req_doc_id = d.r_object_id LEFT OUTER JOIN
+       version_tb              dd  ON dd.r_object_id = d.r_object_id  LEFT OUTER JOIN
+       edms_project_sp         p   ON d.U_PR_CODE = p.U_PJT_CODE      LEFT OUTER JOIN
+       edms_research_sp        r   ON d.U_PR_CODE = r.U_RSCH_CODE
+        <where>
+         
+              a.r_object_id = #{rObjectId}
+  
+        </where>
+        ORDER BY a.u_req_date DESC 
+    </select>
+    
+ 
+    <!-- DBOX-PGM-DOC-021 || 반출 조회 || 강구현 -->
+    <select id="selectOneByObjectId" resultMap="ReqTakeoutDetailMap">
+    /* DBOX-PGM-DOC-021 | 반출 조회 | 강구현 */
+        SELECT
+            a.*,
+            d.r_object_id   AS d_r_object_id,
+            d.object_name   AS d_object_name,
+            d.title			AS d_title,
+            d.r_content_size AS d_r_content_size,
+            e.r_object_id    AS e_r_object_id,
+            e.u_req_id        AS e_u_req_id,
+            e.u_req_doc_id    AS e_u_req_doc_id,
+            e.u_req_doc_key    AS e_u_req_doc_key
+        FROM
+            edms_req_takeout_sp     a   LEFT OUTER JOIN
+            edms_req_takeout_doc_sp    e     ON a.r_object_id = e.u_req_id LEFT OUTER JOIN
+            edms_doc_sp               d   ON e.u_req_doc_id = d.r_object_id 
+            
+        <where>
+            a.r_object_id = #{rObjectId}
+        </where>
+    
+    </select>
+    
+    <select id="selectRepeatingList" resultMap="ReqTakeoutConfigRepeatingMap">
+    /* DBOX-PGM-DOC-021 | 반출설정 repeating 조회 | 강구현 */
+        SELECT
+            *,
+		(
+		SELECT
+			display_name
+		FROM
+			edms_v_user_info
+		WHERE
+			usage_state = 'A'
+			AND user_id = u_auto_register) as u_auto_register_name,
+		(
+		SELECT
+			display_name
+		FROM
+			edms_v_user_info
+		WHERE
+			usage_state = 'A'
+			AND user_id = u_free_register) as u_free_register_name
+		FROM
+			edms_takeout_config_rv
+        <where>
+            r_object_id = #{rObjectId}
+        </where>
+        ORDER BY i_position DESC
+    </select>
+     <select id="selectListByDeptCode" resultMap="ReqTakeoutMap">
+     /* DBOX-PGM-DOC-021 | 반출 조회 | 강구현 */
+	    SELECT
+			a.*,
+			(
+			SELECT
+				display_name
+			FROM
+				edms_v_user_info
+			WHERE
+				user_id = a.u_req_user) as display_name,
+			(
+			SELECT
+				SUM(c.r_content_size)
+			FROM
+				edms_req_takeout_doc_sp as b
+			INNER JOIN edms_doc_sp as c on
+				b.u_req_doc_id = c.r_object_id
+			WHERE
+				b.u_req_id = a.r_object_id ) as sum_content_size,
+			(
+			SELECT
+				COUNT(*)
+			FROM
+				edms_req_takeout_doc_sp as b
+			INNER JOIN edms_doc_sp as c on
+				b.u_req_doc_id = c.r_object_id
+			WHERE
+				b.u_req_id = a.r_object_id ) as cnt
+		FROM
+			edms_req_takeout_sp as a
+		<where>
+           a.u_req_dept_code = #{deptCode}
+           <if test="takeout.uReqUser != null and takeout.uReqUser != ''">
+				AND a.u_req_user = #{takeout.uReqUser}
+			</if>
+           <if test="takeout.uReqStatus != null and takeout.uReqStatus != ''">
+				AND a.u_req_status = #{takeout.uReqStatus}
+			</if>
+			<if test="takeout.objectName != null and takeout.objectName != ''">
+           AND a.r_object_id IN (
+			SELECT
+				d.u_req_id
+			FROM
+				edms_req_takeout_doc_sp as d
+			LEFT JOIN edms_doc_sp as e 
+			ON
+				d.u_req_doc_id = e.r_object_id
+			WHERE
+				e.object_name LIKE CONCAT('%', #{takeout.objectName}, '%'))
+			</if>
+			<if test="takeout.reqStartDate != null and takeout.reqStartDate != '' and takeout.reqEndDate != null and takeout.reqEndDate != ''">
+				AND a.u_req_date between #{takeout.reqStartDate} and #{takeout.reqEndDate} 
+			</if>
+        </where>
+		ORDER BY
+			a.u_req_date DESC
+     </select>
+     
+     <select id="selectListByReqId" resultMap="ReqTakeoutInfoMap">
+     /* DBOX-PGM-DOC-021 | 반출 조회 | 강구현 */
+     	SELECT
+     		b.r_object_id,
+			b.object_name,
+			c.r_version_label,
+			b.r_content_size,
+			(
+			SELECT
+				display_name
+			FROM
+				edms_v_user_info
+			WHERE
+				user_id = b.u_reg_user) as display_name
+		FROM
+			edms_req_takeout_doc_sp as a
+		INNER JOIN edms_doc_sp as b ON
+			a.u_req_doc_id = b.r_object_id
+		INNER JOIN edms_doc_rp as c ON
+			c.r_object_id = b.r_object_id
+     	<where>
+	        a.u_req_id = #{uReqId}
+			AND c.r_version_label != 'CURRENT'
+        </where>
+     </select>
+     
+     <select id="checkTakeoutDoc" resultType="boolean">
+        SELECT
+            COUNT(*) > 0
+        FROM
+            edms_req_takeout_doc_s  a INNER JOIN
+            edms_req_takeout_s      b ON a.u_req_id = b.r_object_id 
+        WHERE
+            u_req_doc_id = #{docId}
+        AND a.u_req_id = #{approveId}
+        AND u_limit_date > now()
+        AND u_action_date <![CDATA[<]]> now()
+     </select>
+     
+     <select id="selectTakeoutDocIdByDocKey" resultType="String">
+        SELECT
+            u_req_doc_id
+        FROM
+            edms_req_takeout_doc_s  a INNER JOIN
+            edms_req_takeout_s      b ON a.u_req_id = b.r_object_id 
+        WHERE
+            u_req_doc_key = #{docKey}
+        AND u_limit_date > now()
+        AND u_action_date <![CDATA[<]]> now()
+     </select>
+</mapper>

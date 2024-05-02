@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+  namespace="com.dongkuksystems.dbox.daos.table.kakao.KakaoMapper">
+ 
+ <resultMap id="KakaoMap" 
+    type="com.dongkuksystems.dbox.models.dto.type.kakao.KakaoDetail">
+    
+    <id property="seqno" column="SEQNO"/>
+    <result property="usercode" column="USERCODE"/>
+    <result property="intime" column="INTIME"/>
+    <result property="deptcode" column="DEPTCODE"/>
+    <result property="biztype" column="BIZTYPE"/>
+    <result property="yellowidKey" column="YELLOWID_KEY"/>
+    <result property="reqphone" column="REQPHONE"/>
+    <result property="callname" column="CALLNAME"/>
+    <result property="callphone" column="CALLPHONE"/>
+    <result property="msg" column="MSG"/>
+    <result property="result" column="RESULT"/>
+    <result property="reqtime" column="REQTIME"/>
+    <result property="errcode" column="ERRCODE"/>
+    <result property="kind" column="KIND"/>
+    <result property="batchflag" column="BATCHFLAG"/>
+    <result property="retry" column="RETRY"/>
+    <result property="reqname" column="REQNAME"/>
+    <result property="resend" column="RESEND"/>
+    <result property="templatecode" column="TEMPLATECODE"/>
+
+  </resultMap>
+ 
+  <insert id="insertKakao" parameterType= "com.dongkuksystems.dbox.models.dto.type.kakao.KakaoDetail">
+  /* DBOX-PGM-DOC-023 | 알림 관리 | 강구현 */
+    INSERT INTO suredata
+    (SEQNO, USERCODE, INTIME, DEPTCODE, BIZTYPE, YELLOWID_KEY, REQNAME, REQPHONE, CALLNAME, CALLPHONE, MSG, REQTIME, RESULT, KIND,
+    RESEND,TEMPLATECODE)
+    VALUES
+    (
+	    nextval('SUREDATA_seqno')
+	    , #{kakaoData.usercode}       
+	    , #{kakaoData.intime} 
+	    , #{kakaoData.deptcode}
+	    , #{kakaoData.biztype}
+	    , #{kakaoData.yellowidKey}
+	    , #{kakaoData.reqname}
+	    , #{kakaoData.reqphone}
+	    , #{kakaoData.callname}
+	    , #{kakaoData.callphone}
+	    , #{kakaoData.msg}
+	    , #{kakaoData.reqtime}
+	    , #{kakaoData.result}
+	    , #{kakaoData.kind}
+	    , #{kakaoData.resend}
+	    , #{kakaoData.templatecode}
+  )
+  </insert>
+</mapper>

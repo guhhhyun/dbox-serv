@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.agree.AgreeMapper">
+	<resultMap id="AgreeMap"
+		type="com.dongkuksystems.dbox.models.type.agree.Agree">
+		<id property="uUserId" column="U_USER_ID" />
+		<result property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uAgreeType" column="U_AGREE_TYPE" />
+		<result property="uComeCode" column="U_COME_CODE" />
+		<result property="uDeptCode" column="U_DEPT_CODE" />
+		<result property="uAgreeName" column="U_AGREE_NAME" />
+		<result property="uRegDate" column="U_REG_DATE" />
+		<result property="uReason" column="U_REASON" />
+		<result property="uSignDate" column="U_SIGN_DATE" />
+		<result property="uAgreeYn" column="U_AGREE_YN" />
+	</resultMap>
+	
+	<select id="selectList" resultMap="AgreeMap">
+		SELECT
+			*
+		FROM
+			edms_agree_sv
+		<where>
+			<if test="filter != null">
+				<if test="filter.uUserId != null">
+					AND U_USER_ID = #{filter.uUserId}
+				</if>
+				<if test="filter.uAgreeType != null">
+					AND U_AGREE_TYPE = #{filter.uAgreeType}
+				</if>
+				<if test="filter.uComeCode != null">
+					AND U_COME_CODE = #{filter.uComeCode}
+				</if>
+				<if test="filter.uDeptCode != null">
+					AND U_DEPT_CODE = #{filter.uDeptCode}
+				</if>
+				<if test="filter.uAgreeName != null">
+					AND U_AGREE_NAME = #{filter.uAgreeName}
+				</if>
+				<if test="filter.uAgreeYn != null">
+					AND U_AGREE_YN = #{filter.uAgreeYn}
+				</if>
+			</if>
+		</where>
+		ORDER BY u_reg_date	 
+	</select>
+	
+	<select id="agreementByUserId" resultMap="AgreeMap">
+		
+		SELECT
+			*
+		FROM
+			edms_agree_sv
+		<where>
+			u_user_id = #{uUserId}
+		</where>
+		ORDER BY u_reg_date	 
+	</select>
+	
+	<select id="selectListByUserId" resultMap="AgreeMap">
+		
+		SELECT
+			*
+		FROM
+			edms_agree_sv
+		<where>
+			u_user_id = #{uUserId} 
+			and u_agree_yn is not null
+			and u_sign_date + 365 > SYSDATE 
+		</where>
+		ORDER BY u_reg_date	 
+	</select>
+	
+	<select id="selectListByOrgId" resultMap="AgreeMap">
+		
+		SELECT
+			*
+		FROM
+			edms_agree_sv
+		<where>
+			u_dept_code = #{orgId}
+		</where>
+		ORDER BY u_reg_date	 
+	</select>
+	
+	 <select id="selectListUserId" resultMap="AgreeMap">
+    
+    SELECT
+      *
+    FROM
+      edms_agree_sv
+    <where>
+      u_user_id = #{userId} 
+      and u_agree_yn is not null
+    </where>
+    ORDER BY u_reg_date  
+  </select>
+	
+	
+	
+	</mapper>

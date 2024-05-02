@@ -1,0 +1,1600 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.history.HistoryMapper">
+	
+	<resultMap id="HistoryDeleteMap"
+		type="com.dongkuksystems.dbox.models.type.request.ReqDelete">
+		
+		<id property="uReqDocId" 			column="R_OBJECT_ID" 	/>
+		<result property="uReqDocKey" 		column="R_OBJECT_ID" 	/>
+		<result property="uReqDeptCode" 	column="U_CABINET_CODE" />
+		<result property="uReqType" 		column="U_REQ_TYPE" 	/>
+		<result property="uReqStatus" 		column="U_REQ_STATUS" 	/>
+		<result property="uReqUser" 		column="U_REQ_USER" 	/>
+		<result property="uReqDate" 		column="U_REQ_DATE" 	/>
+		<result property="uReqReason" 		column="U_REQ_REASON" 	/>
+		<result property="uApprover" 		column="U_APPROVER" 	/>
+		<result property="uApproveDate"		column="U_APPROVE_DATE" />
+		<result property="uDeleteDate" 		column="U_DELETE_DATE" 	/>
+		<result property="uFolderPath" 		column="U_FOLDER_PATH" 	/>
+		<result property="uDocName" 		column="U_DOC_NAME" 	/>
+		<result property="uSecLevel" 		column="U_SEC_LEVEL" 	/>
+		<result property="uCreateYear" 		column="U_CREATE_YEAR" 	/>
+		<result property="uExpiredDate"		column="U_EXPIRED_DATE"	/>
+		<result property="reqTypeName"		column="REQ_TYPE_NAME"	/>
+		<result property="cabinetCodeName"	column="CABINET_CODE_NAME"	/>
+		<result property="secLevelName"		column="SEC_LEVEL_NAME"	/>
+		<result property="reqUserName"		column="REQ_USER_NAME"	/>
+		<result property="approverName"		column="APPROVER_NAME"	/>		
+	</resultMap>
+	
+	<resultMap id="HistoryLogDocMap" type="com.dongkuksystems.dbox.models.type.history.HistoryAttach">
+		
+		<id property="uJobCode" 					column="U_JOB_CODE" 			/>
+		<result property="uDocId" 					column="U_DOC_ID" 				/>
+		<result property="uDocKey" 					column="U_DOC_KEY" 				/>
+		<result property="uDocName" 				column="U_DOC_NAME" 			/>
+		<result property="uDocVersion" 				column="U_DOC_VERSION" 			/>
+		<result property="uOwnDeptcode"				column="U_OWN_DEPT_CODE"		/>
+		<result property="uActDeptCode"				column="U_ACT_DEPT_CODE"		/>
+		<result property="uJobUser"					column="U_JOB_USER" 			/>
+		<result property="uJobUserType"				column="U_JOB_USER_TYPE"		/>
+		<result property="uJobDate" 				column="U_JOB_DATE" 			/>
+		<result property="uDocStatus" 				column="U_DOC_STATUS" 			/>
+		<result property="uSecLevel" 				column="U_SEC_LEVEL" 			/>
+		<result property="uCabinetCode"				column="U_CABINET_CODE" 		/>
+		<result property="uJobGubun" 				column="U_JOB_GUBUN" 			/>
+		<result property="uBeforeChangeVal"			column="U_BEFORE_CHANGE_VAL"	/>
+		<result property="uAfterChangeVal"			column="U_AFTER_CHANGE_VAL" 	/>
+		<result property="uAttachSystem"			column="U_ATTACH_SYSTEM" 		/>
+		<result property="uSystemName" 				column="U_SYSTEM_NAME" 			/>
+		<result property="displayName" 				column="DISPLAY_NAME" 			/>
+		<result property="rContentSize" 			column="R_CONTENT_SIZE" 		/>
+		<result property="rFullContentSize"			column="R_FULL_CONTENT_SIZE"	/>
+		<result property="contentsize" 				column="CONTENTSIZE" 			/>
+		<result property="companyName" 				column="COMPANY_NAME" 			/>
+		<result property="deptName" 				column="DEPT_NAME" 				/>
+		<result property="logJobCodeName"			column="LOG_JOB_CODE_NAME"		/>
+		<result property="logOwnDeptName"			column="LOG_OWN_DEPT_NAME"		/>
+		<result property="logActDeptName"			column="LOG_ACT_DEPT_NAME"		/>
+		<result property="logDocStatusName"			column="LOG_DOC_STATUS_NAME"	/>
+		<result property="logSecLevelName" 			column="LOG_SEC_LEVEL_NAME"		/>
+		<result property="logBeforeChangeName"		column="LOG_BEFORE_CHANGE_NAME"	/>
+		<result property="logAfterChangeName"		column="LOG_AFTER_CHANGE_NAME"	/>
+		<result property="logFileSizeName"			column="LOG_FILE_SIZE_NAME"		/>
+
+		<result property="attachListName"			column="ATTACH_LIST_NAME"		/>
+		<result property="attachJobDateFormat"		column="ATTACH_JOB_DATE_FORMAT"	/>
+		<result property="attachReqUserName"		column="ATTACH_REQ_USER_NAME"	/>
+		<result property="attachCabinetCodeName"	column="ATTACH_CABINET_CODE_NAME"	/>
+		<result property="attachComCodeName"		column="ATTACH_COM_CODE_NAME"	/>
+		
+	</resultMap>
+	
+	
+	
+	<resultMap id="HistoryDocLifeCycleMap" type="com.dongkuksystems.dbox.models.type.history.HistoryDocLifeCycle">
+		<id property="uDocKey" 				column="U_DOC_KEY"		/>
+		<result property="uDocName" 		column="U_DOC_NAME"		/>
+		<result property="uCabinetCode" 	column="U_CABINET_CODE"	/>
+		<result property="cntRe" 			column="CNT_RE"			/>
+		<result property="cntDp" 			column="CNT_DP"			/>
+		<result property="cntVed" 			column="CNT_VE_D"		/>
+		<result property="cntVeM" 			column="CNT_VE_M"		/>
+		<result property="cntEdW" 			column="CNT_ED_W"		/>
+		<result property="cntEdV" 			column="CNT_ED_V"		/>
+		<result property="cntAp" 			column="CNT_AP"			/>
+		<result property="cntDl" 			column="CNT_DL"			/>
+		<result property="cntDm" 			column="CNT_DM"			/>
+		<result property="cntTr" 			column="CNT_TR"			/>
+		<result property="cntCc" 			column="CNT_CC"			/>
+		<result property="cntCj" 			column="CNT_CJ"			/>
+		<result property="cntCl" 			column="CNT_CL"			/>
+		<result property="cntRc" 			column="CNT_RC"			/>
+		<result property="cntLd" 			column="CNT_LD"			/>
+		<result property="cntLa" 			column="CNT_LA"			/>
+		<result property="cntLp" 			column="CNT_LP"			/>
+		<result property="cntDr" 			column="CNT_DR"			/>
+		<result property="cntDa" 			column="CNT_DA"			/>
+		
+		<!-- 조직별 정보 추가 -->
+		<result property="uJobUser" 		column="U_JOB_USER"		/>
+		<result property="jobUserName" 		column="JOB_USER_NAME"	/>
+		
+		<!-- 특이사용자 이력 -->
+		<result property="rObjectId" 		column="R_OBJECT_ID"	/>
+		<result property="rownum" 			column="ROWNUM"			/>
+		<result property="uUserId" 			column="U_USER_ID"		/>
+		<result property="displayName" 		column="DISPLAY_NAME"	/>
+		<result property="deptName" 		column="DEPT_NAME"		/>
+		<result property="logDate" 			column="LOG_DATE"		/>
+		<result property="logStartDate" 	column="LOG_START_DATE"	/>
+		<result property="logEndDate" 		column="LOG_END_DATE"	/>
+		<result property="uLockStatus" 		column="U_LOCK_STATUS"	/>
+		<result property="lockStatusName" 	column="LOCK_STATUS_NANE"/>
+		<result property="cntDt" 			column="CNT_DT"			/>
+		<result property="cntPr" 			column="CNT_PR"			/>
+		<result property="cntPt" 			column="CNT_PT"			/>
+		
+	</resultMap>
+	
+	<resultMap id="HistoryDocDistribution" type="com.dongkuksystems.dbox.models.type.history.HistoryDocDistribution">
+		<id property="uDocKey" 				column="U_DOC_KEY"			/>
+		<result property="uDocName" 		column="U_DOC_NAME"			/>
+		<result property="uCabinetCode" 	column="U_CABINET_CODE"		/>
+		
+		<result property="cntPermitReq" 	column="CNT_PERMIT_REQ"		/>
+		<result property="cntPermitApprove"	column="CNT_PERMIT_APPROVE"	/>
+		<result property="cntSecChange"		column="CNT_SEC_CHANGE"		/>
+		<result property="cntSecChangeUp"	column="CNT_SEC_CHANGE_UP"	/>
+		<result property="cntSecChangeDown"	column="CNT_SEC_CHANGE_DOWN"/>
+		<result property="cntTakeReq"		column="CNT_TAKE_REQ"		/>
+		<result property="cntTakeApprove"	column="CNT_TAKE_APPROVE"	/>
+		<result property="cntAttach"		column="CNT_ATTACH"			/>
+		<result property="cntPrint" 		column="CNT_PRINT"			/>
+		
+		<!-- 조직별 정보 추가 -->
+		<result property="uJobUser" 		column="U_JOB_USER"			/>
+		<result property="jobUserName" 		column="JOB_USER_NAME"		/>
+	</resultMap>
+	
+	<resultMap id="HistoryLogUsbMap" type="com.dongkuksystems.dbox.models.type.history.HistoryUsb">
+		
+		<id property="rObjectId" 			column="R_OBJECT_ID" 		/>
+		<result property="uReqUserId" 		column="U_REQ_USER_ID" 		/>
+		<result property="uFileCount" 		column="U_FILE_COUNT" 		/>
+		<result property="uFileName" 		column="U_FILE_NAME" 		/>
+	    <result property="uRegistUser" 		column="U_REGIST_USER" 		/>
+	    <result property="UReqDeptCode" 	column="U_REQ_DEPT_CODE"	/>
+	    <result property="uReqDate" 		column="U_REQ_DATE" 		/>
+	    <result property="uReq_Status" 		column="U_REQ_STATUS" 		/>
+	    <result property="uAllowUsb" 		column="U_ALLOW_USB" 		/>
+	    <result property="uAllowCd" 		column="U_ALLOW_CD" 		/>
+	    <result property="uUseTime" 		column="U_USE_TIME" 		/>
+	    <result property="uReqReason" 		column="U_REQ_REASON" 		/>
+	    <result property="uExpiredDate" 	column="U_EXPIRED_DATE" 	/>
+	    <result property="uApprover" 		column="U_APPROVER" 		/>
+	    <result property="uApproveDate" 	column="U_APPROVE_DATE" 	/>
+	    <result property="uRejectReason" 	column="U_REJECT_REASON" 	/>
+	    <result property="reqUserName" 		column="REQ_USER_NAME" 		/>
+	    <result property="registUserName" 	column="REGIST_USER_NAME"	/>
+		<result property="logComName" 		column="LOG_COM_NAME" 		/>
+		<result property="logDeptName" 		column="LOG_DEPT_NAME" 		/>
+		<result property="logUseTimeName" 	column="LOG_USE_TIME_NAME"	/>
+		<result property="listName" 		column="LIST_NAME"			/>
+	</resultMap>
+
+	<!-- 운영현황 - 사용 현황 -->
+	<select id="selectHistoryTotal" resultType="hashMap">
+		SELECT 
+			DATEGUBUN
+			, NVL(COUNT(DISTINCT(U_USER_ID)) FILTER (WHERE U_USE_DBOX = 1), 0) AS USE_DBOX
+            <!-- , NVL(AVG(U_DOWN_TIME  ), 0)::NUMERIC(5,2) AS DOWN_TIME -->
+            , NVL(AVG(U_DOWN_TIME  )  FILTER (WHERE U_DOWN_TIME > 0) , 0)::NUMERIC(5,2)  AS DOWN_TIME
+			FROM 
+			(
+				SELECT 
+					 CASE 
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal01}, 'YYYY-MM-DD') > U_LOG_DATE THEN '1'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal02}, 'YYYY-MM-DD') > U_LOG_DATE THEN '2'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal03}, 'YYYY-MM-DD') > U_LOG_DATE THEN '3'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal04}, 'YYYY-MM-DD') > U_LOG_DATE THEN '4'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal05}, 'YYYY-MM-DD') > U_LOG_DATE THEN '5'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal06}, 'YYYY-MM-DD') > U_LOG_DATE THEN '6'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal07}, 'YYYY-MM-DD') > U_LOG_DATE THEN '7'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal08}, 'YYYY-MM-DD') > U_LOG_DATE THEN '8'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal09}, 'YYYY-MM-DD') > U_LOG_DATE THEN '9'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal10}, 'YYYY-MM-DD') > U_LOG_DATE THEN '10'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal11}, 'YYYY-MM-DD') > U_LOG_DATE THEN '11'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal12}, 'YYYY-MM-DD') > U_LOG_DATE THEN '12'
+						ELSE '13'
+				  	  END AS DATEGUBUN	
+					,	ESDU.*
+				FROM EDMS_STAT_DOC_USE ESDU 
+				<!-- 시작일조건추가 -->
+				<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' and historyDeleteDto.endDate != null and historyDeleteDto.endDate != ''">
+				WHERE U_LOG_DATE between #{historyDeleteDto.startDate} and to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1
+				</if>
+				
+				<if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+			   		<!--  AND U_DEPT_CODE = #{historyDeleteDto.dept}  -->
+			   		AND U_DEPT_CODE IN 
+								    	(
+								    		WITH RECURSIVE VIEWNAME AS (
+												SELECT
+													A.ORG_ID,
+													A.UP_ORG_ID
+												FROM EDMS_V_DEPT_INFO A			
+												WHERE A.ORG_ID 		= #{historyDeleteDto.dept}
+												AND USAGE_STATE 	= 'A'
+												AND UNIT_TYPE_CD	= 'EMP'
+												AND ORG_TYPE 		!= 'P'
+												UNION ALL
+												SELECT
+													C.ORG_ID,
+													C.UP_ORG_ID
+												FROM
+													VIEWNAME B,
+													EDMS_V_DEPT_INFO C
+												WHERE B.ORG_ID 		= C.UP_ORG_ID
+												AND C.USAGE_STATE 	= 'A'
+												AND C.UNIT_TYPE_CD 	= 'EMP'
+												AND C.ORG_TYPE 		!= 'P'
+											)
+											SELECT
+												A.ORG_ID
+											FROM VIEWNAME A
+								    	) 
+				</if>
+				
+				<!-- 일반과 , 기타 같이 조회 -->
+				<if test='historyDeleteDto.gradeSearch != null and historyDeleteDto.gradeSearch == "Y" and historyDeleteDto.gradeSearchEtc != null and historyDeleteDto.gradeSearchEtc == "Y" '>
+					AND (
+						U_TITLE_NAME not in  ('임원', '부장', '차장', '과장', '대리', '사원' )
+						
+						<foreach collection="liGradeList" item="grade" open=" OR u_title_name IN (" separator="," close=")">
+		                    #{grade}
+		                </foreach>
+						
+					)
+				</if>
+				
+				<!-- 일반만 조회 -->
+				<if test='historyDeleteDto.gradeSearch != null and historyDeleteDto.gradeSearch == "Y" and historyDeleteDto.gradeSearchEtc != null and historyDeleteDto.gradeSearchEtc != "Y" '>
+					AND U_TITLE_NAME IN
+						<foreach collection="liGradeList" item="grade" open="(" separator="," close=")">
+		                    #{grade}
+		                </foreach>
+				</if>
+				
+				<!-- 기타만 조회 -->
+				<if test='historyDeleteDto.gradeSearch != null and historyDeleteDto.gradeSearch != "Y" and historyDeleteDto.gradeSearchEtc != null and historyDeleteDto.gradeSearchEtc == "Y" '>
+					AND U_TITLE_NAME not in  ('임원', '부장', '차장', '과장', '대리', '사원' )
+				</if>
+				
+			)
+		GROUP BY DATEGUBUN
+		
+	</select>
+	
+	<!-- 운영현황 - 항목별 사용 현황 -->
+	<select id="selectHistoryTotalItem" resultType="hashMap">
+		SELECT 
+			DATEGUBUN
+			, SUM(U_CNT_DX_REG) 	AS CNT_DX_REG
+			, SUM(U_CNT_PC_REG) 	AS CNT_PC_REG
+			, SUM(U_CNT_EDIT) 		AS CNT_EDIT
+			, SUM(U_CNT_VIEW) 		AS CNT_VIEW
+			, SUM(U_CNT_DOWN) 		AS CNT_DOWN
+			, SUM(U_CNT_SELFOUT) 	AS CNT_SELFOUT
+			, SUM(U_CNT_TAKEOUT) 	AS CNT_TAKEOUT
+			, SUM(U_CNT_PRINT) 		AS CNT_PRINT
+			, SUM(U_CNT_DELETE) 	AS CNT_DELETE
+			<!-- , AVG(U_EDIT_TIME) 		AS AVG_EDIT_TIME -->
+			, NVL(AVG(U_EDIT_TIME) 	 FILTER (WHERE U_EDIT_TIME > 0), 0)::NUMERIC(5,2)	AS AVG_EDIT_TIME
+			FROM 
+			(
+				SELECT 
+					 CASE 
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal01}, 'YYYY-MM-DD') > U_LOG_DATE THEN '1'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal02}, 'YYYY-MM-DD') > U_LOG_DATE THEN '2'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal03}, 'YYYY-MM-DD') > U_LOG_DATE THEN '3'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal04}, 'YYYY-MM-DD') > U_LOG_DATE THEN '4'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal05}, 'YYYY-MM-DD') > U_LOG_DATE THEN '5'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal06}, 'YYYY-MM-DD') > U_LOG_DATE THEN '6'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal07}, 'YYYY-MM-DD') > U_LOG_DATE THEN '7'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal08}, 'YYYY-MM-DD') > U_LOG_DATE THEN '8'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal09}, 'YYYY-MM-DD') > U_LOG_DATE THEN '9'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal10}, 'YYYY-MM-DD') > U_LOG_DATE THEN '10'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal11}, 'YYYY-MM-DD') > U_LOG_DATE THEN '11'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal12}, 'YYYY-MM-DD') > U_LOG_DATE THEN '12'
+						ELSE '13'
+				  	  END AS DATEGUBUN	
+					,	ESDU.*
+				FROM EDMS_STAT_DOC_USE ESDU 
+				<!-- 시작일조건추가 -->
+				<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' and historyDeleteDto.endDate != null and historyDeleteDto.endDate != ''">
+				WHERE U_LOG_DATE between #{historyDeleteDto.startDate} and to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1
+				</if>
+				
+				<if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+			   		<!-- AND U_DEPT_CODE = #{historyDeleteDto.dept}   -->
+			   		AND U_DEPT_CODE IN 
+								    	(
+								    		WITH RECURSIVE VIEWNAME AS (
+												SELECT
+													A.ORG_ID,
+													A.UP_ORG_ID
+												FROM EDMS_V_DEPT_INFO A			
+												WHERE A.ORG_ID 		= #{historyDeleteDto.dept}
+												AND USAGE_STATE 	= 'A'
+												AND UNIT_TYPE_CD	= 'EMP'
+												AND ORG_TYPE 		!= 'P'
+												UNION ALL
+												SELECT
+													C.ORG_ID,
+													C.UP_ORG_ID
+												FROM
+													VIEWNAME B,
+													EDMS_V_DEPT_INFO C
+												WHERE B.ORG_ID 		= C.UP_ORG_ID
+												AND C.USAGE_STATE 	= 'A'
+												AND C.UNIT_TYPE_CD 	= 'EMP'
+												AND C.ORG_TYPE 		!= 'P'
+											)
+											SELECT
+												A.ORG_ID
+											FROM VIEWNAME A
+								    	) 
+				</if>
+				
+				<!-- 일반과 , 기타 같이 조회 -->
+				<if test='historyDeleteDto.gradeSearch != null and historyDeleteDto.gradeSearch == "Y" and historyDeleteDto.gradeSearchEtc != null and historyDeleteDto.gradeSearchEtc == "Y" '>
+					AND (
+						U_TITLE_NAME not in  ('임원', '부장', '차장', '과장', '대리', '사원' )
+						
+						<foreach collection="liGradeList" item="grade" open=" OR u_title_name IN (" separator="," close=")">
+		                    #{grade}
+		                </foreach>
+						
+					)
+				</if>
+				
+				<!-- 일반만 조회 -->
+				<if test='historyDeleteDto.gradeSearch != null and historyDeleteDto.gradeSearch == "Y" and historyDeleteDto.gradeSearchEtc != null and historyDeleteDto.gradeSearchEtc != "Y" '>
+					AND U_TITLE_NAME IN
+						<foreach collection="liGradeList" item="grade" open="(" separator="," close=")">
+		                    #{grade}
+		                </foreach>
+				</if>
+				
+				<!-- 기타만 조회 -->
+				<if test='historyDeleteDto.gradeSearch != null and historyDeleteDto.gradeSearch != "Y" and historyDeleteDto.gradeSearchEtc != null and historyDeleteDto.gradeSearchEtc == "Y" '>
+					AND U_TITLE_NAME not in  ('임원', '부장', '차장', '과장', '대리', '사원' )
+				</if>
+			)
+		GROUP BY DATEGUBUN
+		
+	</select>
+	
+	<!-- 운영현황 - 자산화 현황 -->
+	<select id="selectHistoryTotalAsset" resultType="hashMap">
+		SELECT 
+			DATEGUBUN
+			, SUM(U_CNT_DX_LIVE) 	AS CNT_DX_LIVE
+			, SUM(U_CNT_DX_CLOSE_S)	AS CNT_DX_CLOSE_S
+			, SUM(U_CNT_DX_CLOSE_U)	AS CNT_DX_CLOSE_U
+			, SUM(U_CNT_PC_LIVE)	AS CNT_PC_LIVE
+			, SUM(U_CNT_PC_CLOSE_S)	AS CNT_PC_CLOSE_S
+			, SUM(U_CNT_PC_CLOSE_U)	AS CNT_PC_CLOSE_U
+			FROM 
+			(
+				SELECT 
+					 CASE 
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal01}, 'YYYY-MM-DD') > U_LOG_DATE THEN '1'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal02}, 'YYYY-MM-DD') > U_LOG_DATE THEN '2'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal03}, 'YYYY-MM-DD') > U_LOG_DATE THEN '3'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal04}, 'YYYY-MM-DD') > U_LOG_DATE THEN '4'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal05}, 'YYYY-MM-DD') > U_LOG_DATE THEN '5'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal06}, 'YYYY-MM-DD') > U_LOG_DATE THEN '6'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal07}, 'YYYY-MM-DD') > U_LOG_DATE THEN '7'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal08}, 'YYYY-MM-DD') > U_LOG_DATE THEN '8'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal09}, 'YYYY-MM-DD') > U_LOG_DATE THEN '9'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal10}, 'YYYY-MM-DD') > U_LOG_DATE THEN '10'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal11}, 'YYYY-MM-DD') > U_LOG_DATE THEN '11'
+						WHEN TO_TIMESTAMP(#{historyDeleteDto.cal12}, 'YYYY-MM-DD') > U_LOG_DATE THEN '12'
+						ELSE '13'
+				  	  END AS DATEGUBUN	
+					,	ESD.*
+				FROM EDMS_STAT_DOC ESD 
+				<!-- WHERE U_PERIOD_TYPE  = 'D' -->
+				WHERE U_PERIOD_TYPE  = #{historyDeleteDto.calendarGubun}
+				
+				<!-- 시작일조건추가 -->
+				<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' and historyDeleteDto.endDate != null and historyDeleteDto.endDate != ''">
+					AND U_LOG_DATE between #{historyDeleteDto.startDate} and to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1
+				</if>
+				
+				<if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+			   		<!-- AND U_DEPT_CODE = #{historyDeleteDto.dept} -->  
+			   		AND U_DEPT_CODE IN 
+								    	(
+								    		WITH RECURSIVE VIEWNAME AS (
+												SELECT
+													A.ORG_ID,
+													A.UP_ORG_ID
+												FROM EDMS_V_DEPT_INFO A			
+												WHERE A.ORG_ID 		= #{historyDeleteDto.dept}
+												AND USAGE_STATE 	= 'A'
+												AND UNIT_TYPE_CD	= 'EMP'
+												AND ORG_TYPE 		!= 'P'
+												UNION ALL
+												SELECT
+													C.ORG_ID,
+													C.UP_ORG_ID
+												FROM
+													VIEWNAME B,
+													EDMS_V_DEPT_INFO C
+												WHERE B.ORG_ID 		= C.UP_ORG_ID
+												AND C.USAGE_STATE 	= 'A'
+												AND C.UNIT_TYPE_CD 	= 'EMP'
+												AND C.ORG_TYPE 		!= 'P'
+											)
+											SELECT
+												A.ORG_ID
+											FROM VIEWNAME A
+								    	) 
+				</if>
+			)
+		GROUP BY DATEGUBUN
+		
+	</select>
+	
+	<!-- 자료 폐기 이력 -->
+	<!-- DBOX-PGM-HIS-010 | 자료 폐기 이력 관리 | 재성 -->
+	<select id="selectHistoryDeletes" resultMap="HistoryDeleteMap">
+		SELECT
+			R_OBJECT_ID
+			, U_CABINET_CODE
+			, U_REQ_DOC_ID
+			, U_REQ_DOC_KEY
+			, U_REQ_TYPE
+			, U_REQ_STATUS
+			, U_REQ_USER
+			, U_REQ_DATE
+			, U_REQ_REASON
+			, U_APPROVER
+			, U_APPROVE_DATE
+			, U_DELETE_DATE
+			, U_FOLDER_PATH
+    		, U_DOC_NAME
+    		, U_SEC_LEVEL
+    		, U_CREATE_YEAR
+    		, U_EXPIRED_DATE
+    		, DECODE(U_REQ_TYPE ,'E', '보존년한','D','폐기','') as REQ_TYPE_NAME
+    		, ( SELECT ORG_NM FROM EDMS_V_DEPT_INFO EVDI 		WHERE u_cabinet_code = REQ.U_CABINET_CODE ) as CABINET_CODE_NAME
+    		, DECODE(U_SEC_LEVEL ,'S', '제한','T','팀내','C','사내','G','그룹사내', '') as SEC_LEVEL_NAME
+    		, ( SELECT DISPLAY_NAME FROM EDMS_V_USER_INFO EVUI 	WHERE user_id = REQ.U_REQ_USER ) as REQ_USER_NAME
+    		, ( SELECT DISPLAY_NAME FROM EDMS_V_USER_INFO EVUI 	WHERE user_id = REQ.U_APPROVER ) as APPROVER_NAME
+    		
+		FROM EDMS_REQ_DELETE_SP REQ 
+		WHERE 1=1
+		AND U_REQ_STATUS = 'A'
+		<if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+			AND U_CABINET_CODE = ( SELECT U_CABINET_CODE FROM EDMS_V_DEPT_INFO EVDI WHERE ORG_ID = #{historyDeleteDto.dept} )  
+		</if>
+		
+		<if test="historyDeleteDto.user != null and historyDeleteDto.user != '' ">
+			AND U_REQ_USER = #{historyDeleteDto.user}
+		</if>
+		
+		<if test="historyDeleteDto.searchSelect != null and historyDeleteDto.searchSelect == 'REQ_REASON' ">
+			AND U_REQ_REASON LIKE CONCAT('%', #{historyDeleteDto.searchText}, '%') 
+		</if>
+		
+		<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' and historyDeleteDto.endDate != null and historyDeleteDto.endDate != ''">
+			AND U_APPROVE_DATE between #{historyDeleteDto.startDate} and to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1
+		</if>
+		
+	</select>
+	
+	<!-- 외부 메신저 연동 이력 사용자 -->
+	<!-- DBOX-PGM-HIS-008 | 공유/협업 이력 관리 | 재성 -->
+	<select id="selectHistoryMessengerUser" resultMap="HistoryLogDocMap">
+		SELECT
+			DISTINCT
+			ELD.U_JOB_CODE 
+			, ELD.U_OWN_DEPT_CODE 
+			, ELD.U_ACT_DEPT_CODE 
+			, ELD.U_JOB_USER 
+			, ELD.U_CABINET_CODE 
+			, ELD.U_JOB_GUBUN 
+			, ELD.U_ATTACH_SYSTEM 
+			, EAPS2.U_SYSTEM_NAME 
+			, D.DISPLAY_NAME
+			, E.U_CODE_NAME1	AS COMPANY_NAME
+	        , D.ORG_NM			AS DEPT_NAME
+		FROM EDMS_LOG_DOC ELD 
+			INNER JOIN 		EDMS_ATTACH_POLICY_SP 	AS EAPS2	ON ELD.U_ATTACH_SYSTEM 	= EAPS2.U_SYSTEM_KEY1
+			LEFT OUTER JOIN EDMS_V_USER_INFO 		AS D		ON ELD.U_JOB_USER 		= D.USER_ID
+			LEFT OUTER JOIN EDMS_CODE_SP			AS E		ON D.COM_ORG_ID			= E.U_CODE_VAL1
+		WHERE U_JOB_CODE = 'AT'
+		AND U_ATTACH_SYSTEM IN ( SELECT U_SYSTEM_KEY1 FROM EDMS_ATTACH_POLICY_SP EAPS WHERE U_MESSENGER_FLAG =1 )
+		AND E.U_CODE_TYPE = 'COM_CODE'
+		
+		<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+				AND ELD.U_JOB_DATE >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')   
+			</if>
+		   
+		    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+				AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1  > ELD.U_JOB_DATE  
+			</if>
+		   
+		    <if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+		   		AND ELD.U_CABINET_CODE = ( SELECT U_CABINET_CODE FROM EDMS_V_DEPT_INFO EVDI WHERE ORG_ID = #{historyDeleteDto.dept} )  
+			</if>
+			
+			<if test="historyDeleteDto.user != null and historyDeleteDto.user != '' "> 
+		   		AND ELD.U_JOB_USER = #{historyDeleteDto.user}  
+			</if>
+		
+	</select>
+	
+	
+	<!-- 외부 사이트 파일 반출 이력 -->
+	<!-- DBOX-PGM-HIS-008 | 공유/협업 이력 관리 | 재성 -->
+	<select id="selectHistoryExternalAttach" resultMap="HistoryLogDocMap">
+		SELECT U_JOB_USER
+			, U_CABINET_CODE
+			, U_SYSTEM_KEY1 AS U_ATTACH_SYSTEM
+			, U_SYSTEM_NAME
+			, DECODE(count(*), 0, max(U_DOC_NAME), 1, max(U_DOC_NAME), max(U_DOC_NAME) || ' 외 ' || count(*) -1 || '건' ) as ATTACH_LIST_NAME
+			, ATTACH_JOB_DATE_FORMAT
+			, ( SELECT DISPLAY_NAME FROM EDMS_V_USER_INFO EVUI 	WHERE user_id = LOG1.U_JOB_USER ) as ATTACH_REQ_USER_NAME
+			, ( SELECT ORG_NM FROM EDMS_V_DEPT_INFO EVDI 		WHERE u_cabinet_code = LOG1.U_CABINET_CODE ) as ATTACH_CABINET_CODE_NAME
+			, ( select U_CODE_NAME1 from EDMS_CODE_SP 
+					where U_CODE_TYPE = 'COM_CODE' 
+					and U_CODE_VAL1 = ( SELECT com_org_id 
+										FROM EDMS_V_DEPT_INFO EVDI 
+										WHERE u_cabinet_code = LOG1.U_CABINET_CODE limit 1 ) 
+					limit 1 ) as ATTACH_COM_CODE_NAME
+		FROM 
+		(
+			SELECT 
+				U_JOB_USER
+				, ELD.U_JOB_DATE 
+				, ELD.U_DOC_NAME
+				, ELD.U_CABINET_CODE 
+				, EAPS2.U_SYSTEM_NAME
+				, EAPS2.U_SYSTEM_KEY1
+				, to_char(ELD.U_JOB_DATE , 'YYYY-MM-DD') ATTACH_JOB_DATE_FORMAT 
+			FROM EDMS_LOG_DOC ELD 
+				INNER JOIN 		EDMS_ATTACH_POLICY_SP 	AS EAPS2 	ON ELD.U_ATTACH_SYSTEM 	= EAPS2.U_SYSTEM_KEY1
+			WHERE U_JOB_CODE = 'AT'
+			<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+				AND ELD.U_JOB_DATE >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')   
+			</if>
+		   
+		    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+				AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1  > ELD.U_JOB_DATE  
+			</if>
+		   
+		    <if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+		   		AND ELD.U_CABINET_CODE = ( SELECT U_CABINET_CODE FROM EDMS_V_DEPT_INFO EVDI WHERE ORG_ID = #{historyDeleteDto.dept} )  
+			</if>
+			
+			<if test="historyDeleteDto.user != null and historyDeleteDto.user != '' "> 
+		   		AND ELD.U_JOB_USER = #{historyDeleteDto.user}  
+			</if>
+			AND ( EAPS2.U_EXTERNAL_FLAG =1 OR EAPS2.U_MESSENGER_FLAG = 1 )
+			
+		) LOG1
+		GROUP BY U_JOB_USER, ATTACH_JOB_DATE_FORMAT, U_CABINET_CODE, U_SYSTEM_KEY1, U_SYSTEM_NAME
+	</select>
+	
+	<!-- 외부 사이트 파일 반출 이력 (상세) -->
+	<select id="selectHistoryExternalAttachDetail" resultMap="HistoryLogDocMap">
+		SELECT
+			ELD.U_JOB_CODE 
+			, ELD.U_DOC_ID 
+			, ELD.U_DOC_KEY 
+			, ELD.U_DOC_NAME
+			, ELD.U_OWN_DEPT_CODE 
+			, ELD.U_ACT_DEPT_CODE 
+			, ELD.U_JOB_USER 
+			, ELD.U_JOB_DATE 
+			, ELD.U_CABINET_CODE 
+			, ELD.U_JOB_GUBUN 
+			, ELD.U_ATTACH_SYSTEM 
+			, D.DISPLAY_NAME
+			, CASE 
+					WHEN COALESCE(ELD.u_file_size,0) = 0 THEN '0'
+					ELSE TO_CHAR(ROUND(ELD.u_file_size /POWER(1024, FLOOR(LOG(1024, ELD.u_file_size ))), 0))  ||  DECODE(FLOOR(LOG(1024, ELD.u_file_size )) ,0,'B',1,'KB',2,'MB',3,'GB')
+			  	  END as CONTENTSIZE	
+	        , D.ORG_NM			AS DEPT_NAME
+		FROM EDMS_LOG_DOC ELD 
+			LEFT OUTER JOIN EDMS_V_USER_INFO 		AS D		ON ELD.U_JOB_USER 		= D.USER_ID
+		WHERE U_JOB_CODE = 'AT'
+		AND ELD.U_ATTACH_SYSTEM = #{historyDeleteDto.uAttachSystem}
+		AND ELD.U_JOB_USER = #{historyDeleteDto.uUserId}
+		AND ELD.U_JOB_DATE >= to_timestamp(#{historyDeleteDto.uJobDate},  'YYYY-MM-DD') 
+		AND to_timestamp(#{historyDeleteDto.uJobDate}, 'YYYY-MM-DD') + interval '1 day' > U_JOB_DATE
+		
+		<if test="historyDeleteDto.uCabinetCode != null and historyDeleteDto.uCabinetCode != '' ">
+			AND ELD.U_CABINET_CODE = #{historyDeleteDto.uCabinetCode}
+		</if>
+		
+	</select>
+	
+	<!-- 조직 유통이력 - LifeCycle -->
+	<!-- DBOX-PGM-HIS-004 | 사용자별 이력 관리 | 재성 -->
+	<select id="selectHistoryDeptLifeCycle" resultMap="HistoryDocLifeCycleMap">
+		SELECT
+			U_JOB_USER
+			, ( SELECT DISPLAY_NAME FROM EDMS_V_USER_INFO EVUI 	WHERE user_id = DL.u_job_user ) as JOB_USER_NAME
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='RE') AS CNT_RE
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='DP') AS CNT_DP
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='VE' AND U_JOB_GUBUN = 'D') AS CNT_VE_D
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='VE' AND U_JOB_GUBUN = 'M') AS CNT_VE_M
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='ED' AND U_JOB_GUBUN = 'W') AS CNT_ED_W
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='ED' AND U_JOB_GUBUN = 'V') AS CNT_ED_V
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='AP') AS CNT_AP
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='DL') AS CNT_DL
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='DM') AS CNT_DM
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='TR') AS CNT_TR
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='CC') AS CNT_CC
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='CJ') AS CNT_CJ
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='CL') AS CNT_CL
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='RC') AS CNT_RC
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='LD') AS CNT_LD
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='LA') AS CNT_LA
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='LP') AS CNT_LP
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='DR') AS CNT_DR
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='DA') AS CNT_DA
+		FROM EDMS_LOG_DOC DL
+		 WHERE 1=1
+		   AND U_JOB_CODE IN ( 'RE', 'DP', 'VE', 'ED', 'AP', 'DL', 'DM', 'TR', 'CC', 'CJ', 'CL', 'RC', 'LD', 'LA', 'LP', 'DR', 'DA')
+			<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+				AND U_JOB_DATE >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')   
+			</if>
+		   
+		    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+				AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1  > U_JOB_DATE  
+			</if>
+		   
+		    <if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+		    	<!-- AND U_JOB_USER IN ( SELECT USER_ID FROM EDMS_V_USER_INFO EVUI WHERE ORG_ID = #{historyDeleteDto.dept} ) -->
+				<!-- 하위 부서리스트 -->
+		    	AND U_JOB_USER IN ( SELECT USER_ID FROM EDMS_V_USER_INFO EVUI WHERE ORG_ID IN 
+									    	(
+									    		WITH RECURSIVE VIEWNAME AS (
+													SELECT
+														A.ORG_ID,
+														A.UP_ORG_ID
+													FROM EDMS_V_DEPT_INFO A			
+													WHERE A.ORG_ID 	= #{historyDeleteDto.dept}
+													AND USAGE_STATE = 'A'
+													AND unit_type_cd = 'EMP'
+													AND ORG_TYPE 	!= 'P'
+													UNION ALL
+													SELECT
+														C.ORG_ID,
+														C.UP_ORG_ID
+													FROM
+														VIEWNAME B,
+														EDMS_V_DEPT_INFO C
+													WHERE B.ORG_ID = C.UP_ORG_ID
+													AND C.USAGE_STATE = 'A'
+													AND C.unit_type_cd = 'EMP'
+													AND C.ORG_TYPE != 'P'
+												)
+												SELECT
+													A.ORG_ID
+												FROM VIEWNAME A
+									    	) 
+									)		    	   
+			</if>
+			
+		GROUP BY U_JOB_USER
+	</select>
+
+	<!-- 조직별 - 문서유통이력 -->
+	<!-- DBOX-PGM-HIS-004 | 사용자별 이력 관리 | 재성 -->
+	<select id="selectHistoryDeptDistribution" resultMap="HistoryDocDistribution">
+		WITH PRINT  AS (
+					SELECT   U_USER_ID AS USER_ID
+							, COUNT(*) CNT_PRINT
+							FROM EDMS_LOG_DRM_PRINT ELDP
+							WHERE 1 = 1
+							<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+								AND U_JOB_DATE >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')   
+							</if>
+						   
+						    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+								AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1  > U_JOB_DATE  
+							</if>
+						   
+						    <if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' ">
+						    	<!-- AND U_USER_ID IN    ( SELECT USER_ID        FROM EDMS_V_USER_INFO EVUI WHERE ORG_ID = #{historyDeleteDto.dept} ) -->
+						    	AND U_USER_ID IN ( SELECT USER_ID FROM EDMS_V_USER_INFO EVUI WHERE ORG_ID IN 
+									    	(
+									    		WITH RECURSIVE VIEWNAME AS (
+													SELECT
+														A.ORG_ID,
+														A.UP_ORG_ID
+													FROM EDMS_V_DEPT_INFO A			
+													WHERE A.ORG_ID 	= #{historyDeleteDto.dept}
+													AND USAGE_STATE = 'A'
+													AND unit_type_cd = 'EMP'
+													AND ORG_TYPE 	!= 'P'
+													UNION ALL
+													SELECT
+														C.ORG_ID,
+														C.UP_ORG_ID
+													FROM
+														VIEWNAME B,
+														EDMS_V_DEPT_INFO C
+													WHERE B.ORG_ID 		= C.UP_ORG_ID
+													AND C.USAGE_STATE 	= 'A'
+													AND C.unit_type_cd = 'EMP'
+													AND C.ORG_TYPE != 'P'
+												)
+												SELECT
+													A.ORG_ID
+												FROM VIEWNAME A
+									    	) 
+									)      
+							</if>
+							
+							GROUP BY U_USER_ID
+				)
+		SELECT LOG_LIST.USER_ID AS U_JOB_USER
+			, ( SELECT DISPLAY_NAME FROM EDMS_V_USER_INFO EVUI 	WHERE USER_ID = LOG_LIST.USER_ID ) AS JOB_USER_NAME
+			, COALESCE(LOG_LIST.CNT_PERMIT_REQ		, 0)	CNT_PERMIT_REQ
+			, COALESCE(LOG_LIST.CNT_PERMIT_APPROVE	, 0) 	CNT_PERMIT_APPROVE
+			, COALESCE(LOG_LIST.CNT_SEC_CHANGE		, 0) 	CNT_SEC_CHANGE
+			, COALESCE(LOG_LIST.CNT_SEC_CHANGE_UP	, 0) 	CNT_SEC_CHANGE_UP
+			, COALESCE(LOG_LIST.CNT_SEC_CHANGE_DOWN	, 0) 	CNT_SEC_CHANGE_DOWN
+			, COALESCE(LOG_LIST.CNT_TAKE_REQ		, 0) 	CNT_TAKE_REQ
+			, COALESCE(LOG_LIST.CNT_TAKE_APPROVE	, 0) 	CNT_TAKE_APPROVE
+			, COALESCE(LOG_LIST.CNT_ATTACH			, 0) 	CNT_ATTACH
+			, COALESCE(PRINT.CNT_PRINT				, 0) 	CNT_PRINT
+		FROM
+			(
+			SELECT
+					U_JOB_USER AS USER_ID
+					,  COUNT(*) FILTER (WHERE U_JOB_CODE='PR') AS CNT_PERMIT_REQ
+					,  COUNT(*) FILTER (WHERE U_JOB_CODE='PA') AS CNT_PERMIT_APPROVE
+					,  COUNT(*) FILTER (WHERE U_JOB_CODE='SC') AS CNT_SEC_CHANGE
+					,  COUNT(*) FILTER (WHERE U_JOB_CODE='SC' AND U_JOB_GUBUN = 'U') AS CNT_SEC_CHANGE_UP
+					,  COUNT(*) FILTER (WHERE U_JOB_CODE='SC' AND U_JOB_GUBUN = 'D') AS CNT_SEC_CHANGE_DOWN
+					,  COUNT(*) FILTER (WHERE U_JOB_CODE='ER') AS CNT_TAKE_REQ
+					,  COUNT(*) FILTER (WHERE U_JOB_CODE='EA') AS CNT_TAKE_APPROVE
+					,  COUNT(*) FILTER (WHERE U_JOB_CODE='AT') AS CNT_ATTACH
+					,  0 AS CNT_PRINT
+				FROM EDMS_LOG_DOC DL
+				 WHERE 1=1
+				   AND U_JOB_CODE IN ( 'PR', 'PA', 'SC', 'ER', 'EA', 'AT' )
+					<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+						AND U_JOB_DATE >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')   
+					</if>
+				   
+				    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+						AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1  > U_JOB_DATE  
+					</if>
+				   
+				    <if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' ">
+				    	<!-- AND U_JOB_USER IN    ( SELECT USER_ID        FROM EDMS_V_USER_INFO EVUI WHERE ORG_ID = #{historyDeleteDto.dept} ) --> 
+				    	AND U_JOB_USER IN ( SELECT USER_ID FROM EDMS_V_USER_INFO EVUI WHERE ORG_ID IN 
+									    	(
+									    		WITH RECURSIVE VIEWNAME AS (
+													SELECT
+														A.ORG_ID,
+														A.UP_ORG_ID
+													FROM EDMS_V_DEPT_INFO A			
+													WHERE A.ORG_ID 	= #{historyDeleteDto.dept}
+													AND USAGE_STATE = 'A'
+													AND unit_type_cd = 'EMP'
+													AND ORG_TYPE != 'P'
+													UNION ALL
+													SELECT
+														C.ORG_ID,
+														C.UP_ORG_ID
+													FROM
+														VIEWNAME B,
+														EDMS_V_DEPT_INFO C
+													WHERE B.ORG_ID 		= C.UP_ORG_ID
+													AND C.USAGE_STATE 	= 'A'
+													AND C.unit_type_cd = 'EMP'
+													AND C.ORG_TYPE != 'P'
+												)
+												SELECT
+													A.ORG_ID
+												FROM VIEWNAME A
+									    	) 
+									)
+					</if>
+					
+					GROUP BY U_JOB_USER
+			) LOG_LIST FULL OUTER JOIN   PRINT ON LOG_LIST.USER_ID = PRINT.USER_ID
+	</select>
+	
+	<!-- 문서유통이력 - LifeCycle -->
+	<!-- DBOX-PGM-HIS-003 | 문서별 이력 관리 | 재성 -->
+	<select id="selectHistoryDocumentLifeCycle" resultMap="HistoryDocLifeCycleMap">
+		SELECT
+			U_DOC_KEY
+			, U_DOC_NAME
+			, U_CABINET_CODE
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='RE') AS CNT_RE
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='DP') AS CNT_DP
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='VE' AND U_JOB_GUBUN = 'D') AS CNT_VE_D
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='VE' AND U_JOB_GUBUN = 'M') AS CNT_VE_M
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='ED' AND U_JOB_GUBUN = 'W') AS CNT_ED_W
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='ED' AND U_JOB_GUBUN = 'V') AS CNT_ED_V
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='AP') AS CNT_AP
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='DL') AS CNT_DL
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='DM') AS CNT_DM
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='TR') AS CNT_TR
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='CC') AS CNT_CC
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='CJ') AS CNT_CJ
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='CL') AS CNT_CL
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='RC') AS CNT_RC
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='LD') AS CNT_LD
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='LA') AS CNT_LA
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='LP') AS CNT_LP
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='DR') AS CNT_DR
+			, COUNT(*) FILTER (WHERE U_JOB_CODE='DA') AS CNT_DA
+		FROM EDMS_LOG_DOC DL
+		 WHERE 1=1
+		   AND U_JOB_CODE IN ( 'RE', 'DP', 'VE', 'ED', 'AP', 'DL', 'DM', 'TR', 'CC', 'CJ', 'CL', 'RC', 'LD', 'LA', 'LP', 'DR', 'DA')
+			<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+				AND U_JOB_DATE >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')   
+			</if>
+		   
+		    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+				AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1  > U_JOB_DATE  
+			</if>
+		   
+		    <if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+		   		AND U_CABINET_CODE = ( SELECT U_CABINET_CODE FROM EDMS_V_DEPT_INFO EVDI WHERE ORG_ID = #{historyDeleteDto.dept} )  
+			</if>
+			
+			<if test="historyDeleteDto.user != null and historyDeleteDto.user != '' "> 
+		   		AND U_JOB_USER = #{historyDeleteDto.user}  
+			</if>
+		    
+		    <if test="historyDeleteDto.searchText != null and historyDeleteDto.searchText != '' "> 
+		   		AND U_DOC_NAME LIKE CONCAT('%', #{historyDeleteDto.searchText}, '%')
+			</if>
+			
+			<!-- 분류특성 -->
+			<if test='historyDeleteDto.state != null and historyDeleteDto.state == "RE"'>
+				AND U_JOB_CODE  IN ('RE', 'DP')
+			</if>
+		
+			<if test='historyDeleteDto.state != null and historyDeleteDto.state == "VE"'>
+				AND U_JOB_CODE  IN ('VE', 'ED', 'AP', 'DL', 'DM', 'TR', 'CC')
+			</if>
+			
+			<if test='historyDeleteDto.state != null and historyDeleteDto.state == "CJ"'>
+				AND U_JOB_CODE  IN ('CJ', 'CL', 'RC')
+			</if>
+			
+			<if test='historyDeleteDto.state != null and historyDeleteDto.state == "LD"'>
+				AND U_JOB_CODE  IN ('LD', 'LA', 'LP', 'DR', 'DA')
+			</if>			
+		GROUP BY U_DOC_KEY, U_DOC_NAME, U_CABINET_CODE
+	</select>
+
+	<!-- 문서유통이력 -->
+	<!-- DBOX-PGM-HIS-003 | 문서별 이력 관리 | 재성 -->
+	<select id="selectHistoryDocumentDistribution" resultMap="HistoryDocDistribution">
+		WITH PRINT  AS (
+				SELECT  U_DOC_KEY, U_FILE_NAME, U_DOC_CAB_CODE
+						, COUNT(*) CNT_PRINT
+						FROM EDMS_LOG_DRM_PRINT ELDP
+						WHERE 1 = 1
+							<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+								AND U_JOB_DATE >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')   
+							</if>
+						   
+						    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+								AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1  > U_JOB_DATE  
+							</if>
+						   
+						    <if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+						   		AND U_DOC_CAB_CODE = ( SELECT U_CABINET_CODE FROM EDMS_V_DEPT_INFO EVDI WHERE ORG_ID = #{historyDeleteDto.dept} )  
+							</if>
+						    
+						    <if test="historyDeleteDto.searchText != null and historyDeleteDto.searchText != '' "> 
+						   		AND U_FILE_NAME LIKE CONCAT('%', #{historyDeleteDto.searchText}, '%')
+							</if>
+						GROUP BY U_DOC_KEY, U_FILE_NAME, U_DOC_CAB_CODE
+			)
+			SELECT LOG_LIST.U_DOC_KEY
+				, LOG_LIST.U_DOC_NAME
+				, LOG_LIST.U_CABINET_CODE
+				, COALESCE(LOG_LIST.CNT_PERMIT_REQ		, 0)	CNT_PERMIT_REQ
+				, COALESCE(LOG_LIST.CNT_PERMIT_APPROVE	, 0) 	CNT_PERMIT_APPROVE
+				, COALESCE(LOG_LIST.CNT_SEC_CHANGE		, 0) 	CNT_SEC_CHANGE
+				, COALESCE(LOG_LIST.CNT_SEC_CHANGE_UP	, 0) 	CNT_SEC_CHANGE_UP
+				, COALESCE(LOG_LIST.CNT_SEC_CHANGE_DOWN	, 0) 	CNT_SEC_CHANGE_DOWN
+				, COALESCE(LOG_LIST.CNT_TAKE_REQ		, 0) 	CNT_TAKE_REQ
+				, COALESCE(LOG_LIST.CNT_TAKE_APPROVE	, 0) 	CNT_TAKE_APPROVE
+				, COALESCE(LOG_LIST.CNT_ATTACH			, 0) 	CNT_ATTACH
+				, COALESCE(PRINT.CNT_PRINT				, 0) 	CNT_PRINT
+			FROM
+			(
+				SELECT
+						U_DOC_KEY
+						, U_DOC_NAME
+						, U_CABINET_CODE
+						, COUNT(*) FILTER (WHERE U_JOB_CODE='PR') AS CNT_PERMIT_REQ
+						, COUNT(*) FILTER (WHERE U_JOB_CODE='PA') AS CNT_PERMIT_APPROVE
+						, COUNT(*) FILTER (WHERE U_JOB_CODE='SC') AS CNT_SEC_CHANGE
+						, COUNT(*) FILTER (WHERE U_JOB_CODE='SC' AND U_JOB_GUBUN = 'U') AS CNT_SEC_CHANGE_UP
+			 			, COUNT(*) FILTER (WHERE U_JOB_CODE='SC' AND U_JOB_GUBUN = 'D') AS CNT_SEC_CHANGE_DOWN
+						, COUNT(*) FILTER (WHERE U_JOB_CODE='ER') AS CNT_TAKE_REQ
+						, COUNT(*) FILTER (WHERE U_JOB_CODE='EA') AS CNT_TAKE_APPROVE
+						, COUNT(*) FILTER (WHERE U_JOB_CODE='AT') AS CNT_ATTACH
+				FROM EDMS_LOG_DOC DL
+				 WHERE 1=1
+				   AND U_JOB_CODE IN ( 'PR', 'PA', 'SC', 'ER', 'EA', 'AT' )
+					<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+						AND U_JOB_DATE >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')   
+					</if>
+				   
+				    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+						AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1  > U_JOB_DATE  
+					</if>
+				   
+				    <if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+				   		AND U_CABINET_CODE = ( SELECT U_CABINET_CODE FROM EDMS_V_DEPT_INFO EVDI WHERE ORG_ID = #{historyDeleteDto.dept} )  
+					</if>
+				    
+				    <if test="historyDeleteDto.searchText != null and historyDeleteDto.searchText != '' "> 
+				   		AND U_DOC_NAME LIKE CONCAT('%', #{historyDeleteDto.searchText}, '%')
+					</if>
+					
+					<!-- 분류특성 문서유통 PR, SC, ER, AT, PT-->
+					<if test='historyDeleteDto.state != null and historyDeleteDto.state == "PR"'>
+						AND U_JOB_CODE  IN ('PR', 'PA')
+					</if>
+				
+					<if test='historyDeleteDto.state != null and historyDeleteDto.state == "SC"'>
+						AND U_JOB_CODE  = 'SC'
+					</if>
+					
+					<if test='historyDeleteDto.state != null and historyDeleteDto.state == "ER"'>
+						AND U_JOB_CODE  IN ('ER', 'EA')
+					</if>
+					
+					<if test='historyDeleteDto.state != null and historyDeleteDto.state == "AT"'>
+						AND U_JOB_CODE  = 'AT'
+					</if>
+					
+					<if test='historyDeleteDto.state != null and historyDeleteDto.state == "PT"'>
+						AND 1 = 2
+					</if>
+					
+				GROUP BY U_DOC_KEY, U_DOC_NAME, U_CABINET_CODE
+			) LOG_LIST FULL OUTER JOIN   PRINT ON ( LOG_LIST.U_DOC_KEY = PRINT.U_DOC_KEY AND LOG_LIST.U_DOC_NAME = PRINT.U_FILE_NAME AND LOG_LIST.U_CABINET_CODE = PRINT.U_DOC_CAB_CODE )
+	</select>
+	
+	<!-- 문서유통 이력 상세 -->
+	<select id="selectHistoryLogDetail" resultMap="HistoryLogDocMap">
+		WITH eu AS (
+           select 
+           		D.USER_ID
+           		, D.DISPLAY_NAME
+           		, D.ORG_NM
+           		, E.U_CODE_NAME1
+           from EDMS_V_USER_INFO as D left outer join EDMS_CODE_SP as E on D.COM_ORG_ID = E.U_CODE_VAL1
+           AND E.U_CODE_TYPE = 'COM_CODE'
+        )
+		SELECT
+			ELD.U_JOB_CODE 
+				, ELD.U_DOC_ID 
+				, ELD.U_DOC_KEY 
+				, ELD.U_DOC_NAME
+				, ELD.U_DOC_VERSION 
+				, ELD.U_OWN_DEPT_CODE 
+				, ELD.U_ACT_DEPT_CODE 
+				, ELD.U_JOB_USER 
+				, ELD.U_JOB_DATE 
+				, ELD.U_DOC_STATUS
+				, ELD.U_SEC_LEVEL
+				, ELD.U_BEFORE_CHANGE_VAL
+				, ELD.U_AFTER_CHANGE_VAL
+				, ELD.U_CABINET_CODE 
+				, ELD.U_JOB_GUBUN 
+				, ELD.U_ATTACH_SYSTEM  
+				, eu.DISPLAY_NAME
+		        , eu.U_CODE_NAME1	AS COMPANY_NAME
+		        , eu.ORG_NM			AS DEPT_NAME
+				, ( select u_code_name1 from edms_code_sp where u_code_type = 'DOC_LOG_ITEM' and u_code_val1 = ELD.U_JOB_CODE limit 1) as LOG_JOB_CODE_NAME
+				, (SELECT org_nm FROM edms_v_dept_info WHERE org_id = ELD.U_OWN_DEPT_CODE limit 1 ) LOG_OWN_DEPT_NAME
+	            , (SELECT org_nm FROM edms_v_dept_info WHERE org_id = ELD.U_ACT_DEPT_CODE limit 1 ) LOG_ACT_DEPT_NAME
+				, DECODE(ELD.U_DOC_STATUS ,'L', 'Live','C','Closed', '') as LOG_DOC_STATUS_NAME
+				, DECODE(ELD.U_SEC_LEVEL ,'S', '제한','T','팀내','C','사내','G','그룹사내', '') as LOG_SEC_LEVEL_NAME
+				, CASE 
+						WHEN ELD.U_JOB_CODE = 'SC' then DECODE(ELD.U_BEFORE_CHANGE_VAL ,'S', '제한','T','팀내','C','사내','G','그룹사내', '')
+				   		ELSE ELD.U_BEFORE_CHANGE_VAL
+				  END AS LOG_BEFORE_CHANGE_NAME		
+				, CASE 
+						WHEN ELD.U_JOB_CODE = 'SC' then DECODE(ELD.U_AFTER_CHANGE_VAL ,'S', '제한','T','팀내','C','사내','G','그룹사내', '')
+				   		ELSE ELD.U_AFTER_CHANGE_VAL
+				  END AS LOG_AFTER_CHANGE_NAME
+				, CASE 
+					WHEN COALESCE(ELD.u_file_size,0) = 0 THEN '0'
+					ELSE TO_CHAR(ROUND(ELD.u_file_size /POWER(1024, FLOOR(LOG(1024, ELD.u_file_size ))), 0))  ||  DECODE(FLOOR(LOG(1024, ELD.u_file_size )) ,0,'B',1,'KB',2,'MB',3,'GB')
+			  	  END as LOG_FILE_SIZE_NAME	
+			<!-- , TO_CHAR(ROUND(ELD.u_file_size /POWER(1024, FLOOR(LOG(1024, ELD.u_file_size ))), 0))  ||  DECODE(FLOOR(LOG(1024, ELD.u_file_size )) ,0,'B',1,'KB',2,'MB',3,'GB') as CONTENTSIZE -->
+		FROM EDMS_LOG_DOC ELD 
+			LEFT OUTER JOIN eu 		AS eu		ON ELD.U_JOB_USER 		= eu.USER_ID
+		WHERE 1 = 1
+		
+		<if test="historyDeleteDto.uDocKey != null and historyDeleteDto.uDocKey != '' ">
+			AND ELD.U_DOC_KEY = #{historyDeleteDto.uDocKey}
+		</if>
+		
+		<!-- 문서명 버전별로 달라질수 있어서 문서면 조건도추가. -->
+		<if test="historyDeleteDto.uDocName != null and historyDeleteDto.uDocName != '' ">
+			AND ELD.U_DOC_NAME = #{historyDeleteDto.uDocName}
+		</if>
+		
+		<if test="historyDeleteDto.user != null and historyDeleteDto.user != '' "> 
+	   		AND ELD.U_JOB_USER = #{historyDeleteDto.user}  
+		</if>
+		
+		<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+				AND ELD.U_JOB_DATE >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')   
+		</if>
+		   
+	    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+			AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1  > ELD.U_JOB_DATE  
+		</if>
+		
+		<if test="historyDeleteDto.uCabinetCode != null and historyDeleteDto.uCabinetCode != '' ">
+			AND ELD.U_CABINET_CODE = #{historyDeleteDto.uCabinetCode}
+		</if>
+		
+		
+		<!-- LifeCycle ( 부서별 사용자별 ), 부서별은 사용자 조건user,  문서별은 U_DOC_KEY 조건 포함될수 있음  -->
+			<if test='historyDeleteDto.menuid != null and historyDeleteDto.menuid == "DeptLifeCycle"'>
+			 	AND U_JOB_CODE IN ( 'RE', 'DP', 'VE', 'ED', 'AP', 'DL', 'DM', 'TR', 'CC', 'CJ', 'CL', 'RC', 'LD', 'LA', 'LP', 'DR', 'DA')
+			</if>
+			
+			<!-- 문서별 이력 LifeCycle 문서 선택시 기능별 전체  -->
+			<if test='historyDeleteDto.menuid != null and historyDeleteDto.menuid == "DocLifeCycle"'>
+			 	AND U_JOB_CODE IN ( 'RE', 'DP', 'VE', 'ED', 'AP', 'DL', 'DM', 'TR', 'CC', 'CJ', 'CL', 'RC', 'LD', 'LA', 'LP', 'DR', 'DA')
+			</if>
+		
+		<!-- LifeCycle 기능별 -->
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntRe"'>
+				AND ELD.U_JOB_CODE  = 'RE'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntDp"'>
+				AND ELD.U_JOB_CODE  = 'DP'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntVed"'>
+				AND ELD.U_JOB_CODE	= 'VE'
+				AND ELD.U_JOB_GUBUN	= 'D'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntVeM"'>
+				AND ELD.U_JOB_CODE	= 'VE'
+				AND ELD.U_JOB_GUBUN	= 'M'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntEdW"'>
+				AND ELD.U_JOB_CODE	= 'ED'
+				AND ELD.U_JOB_GUBUN	= 'W'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntEdV"'>
+				AND ELD.U_JOB_CODE	= 'ED'
+				AND ELD.U_JOB_GUBUN	= 'V'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntAp"'>
+				AND ELD.U_JOB_CODE  = 'AP'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntDl"'>
+				AND ELD.U_JOB_CODE  = 'DL'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntDm"'>
+				AND ELD.U_JOB_CODE  = 'DM'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntTr"'>
+				AND ELD.U_JOB_CODE  = 'TR'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntCc"'>
+				AND ELD.U_JOB_CODE  = 'CC'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntCj"'>
+				AND ELD.U_JOB_CODE  = 'CJ'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntCl"'>
+				AND ELD.U_JOB_CODE  = 'CL'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntRc"'>
+				AND ELD.U_JOB_CODE  = 'RC'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntLd"'>
+				AND ELD.U_JOB_CODE  = 'LD'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntLa"'>
+				AND ELD.U_JOB_CODE  = 'LA'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntLp"'>
+				AND ELD.U_JOB_CODE  = 'LP'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntDr"'>
+				AND ELD.U_JOB_CODE  = 'DR'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntDa"'>
+				AND ELD.U_JOB_CODE  = 'DA'
+			</if>
+		
+		<!-- 조직별 LifeCycle 종료 -->
+		
+		<!-- 문서별 ( 부서별 사용자별 ), 부서별은 사용자 조건user,  문서별은 U_DOC_KEY 조건 포함될수 있음  -->
+			<if test='historyDeleteDto.menuid != null and historyDeleteDto.menuid == "DeptDist"'>
+			 	AND U_JOB_CODE IN ( 'PR', 'PA', 'SC', 'ER', 'EA', 'AT', 'PT' )
+			</if>
+			
+			
+			<if test='historyDeleteDto.menuid != null and historyDeleteDto.menuid == "DocDist"'>
+			 	AND U_JOB_CODE IN ( 'PR', 'PA', 'SC', 'ER', 'EA', 'AT', 'PT' )
+			</if>
+		
+		<!-- 문서별 (문서유통) 이력 문서선택시 -->
+		
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntPermitReq"'>
+				AND ELD.U_JOB_CODE  = 'PR'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntPermitApprove"'>
+				AND ELD.U_JOB_CODE  = 'PA'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntSecChange"'>
+				AND ELD.U_JOB_CODE  = 'SC'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntSecChangeUp"'>
+				AND ELD.U_JOB_CODE  = 'SC'
+				AND ELD.U_JOB_GUBUN	= 'U'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntSecChangeDown"'>
+				AND ELD.U_JOB_CODE  = 'SC'
+	 			AND ELD.U_JOB_GUBUN = 'D'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntTakeReq"'>
+				AND ELD.U_JOB_CODE  = 'ER'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntTakeApprove"'>
+				AND ELD.U_JOB_CODE  = 'EA'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntAttach"'>
+				AND ELD.U_JOB_CODE  = 'AT'
+			</if>
+			
+			<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntPrint"'>
+				AND ELD.U_JOB_CODE  = 'PT'
+			</if>
+		 
+		 
+		<!-- 문서별 이력 에서 상단 분류특성 추가로 선택 된 상태일경우 분류특성 -->
+			<if test='historyDeleteDto.state != null and historyDeleteDto.state == "RE"'>
+				AND U_JOB_CODE  IN ('RE', 'DP')
+			</if>
+		
+			<if test='historyDeleteDto.state != null and historyDeleteDto.state == "VE"'>
+				AND U_JOB_CODE  IN ('VE', 'ED', 'AP', 'DL', 'DM', 'TR', 'CC')
+			</if>
+			
+			<if test='historyDeleteDto.state != null and historyDeleteDto.state == "CJ"'>
+				AND U_JOB_CODE  IN ('CJ', 'CL', 'RC')
+			</if>
+			
+			<if test='historyDeleteDto.state != null and historyDeleteDto.state == "LD"'>
+				AND U_JOB_CODE  IN ('LD', 'LA', 'LP', 'DR', 'DA')
+			</if>
+			
+			
+		<!-- 특이사용자 로그 : cntDl(기존활용), cntDt, cntPr, cntPt(새로운쿼리에서), cntLd(기존활용) -->
+		<if test='historyDeleteDto.colField != null and historyDeleteDto.colField == "cntPr"'>
+			AND ELD.U_JOB_CODE  = 'PR'
+		</if>
+		
+		<!-- 특이사용자 -->
+		<if test="historyDeleteDto.oddRObjectId != null and historyDeleteDto.oddRObjectId != '' ">
+			AND date_trunc('day', ELD.U_JOB_DATE) in
+			(
+				select
+					 date_trunc('day', ELO.U_LOG_DATE)
+					<!-- , date_trunc('month', U_LOG_DATE)::date -->
+					from 
+					(
+						select 
+							 user_lock_SUB.r_object_id
+							, user_lock_SUB.u_user_id
+							, user_lock_SUB.u_desig_date
+							, (select  
+								<!-- 이전값 없으면 최소값 입력함 -->
+								COALESCE(max(u_desig_date), to_timestamp('2021-01-01', 'YYYY-MM-DD')) 
+								from edms_user_lock_sp 
+									where U_LOCK_TYPE 	= 'O' 
+									and u_lock_status 	in ('U') 
+									and user_lock_SUB.u_desig_date  > u_desig_date 
+								) as before_lock_date
+							from edms_user_lock_sp  user_lock_SUB where U_LOCK_TYPE = 'O' and u_lock_status in ( 'L', 'U') 
+							and u_user_id 	= #{historyDeleteDto.user}	
+							and r_object_id = #{historyDeleteDto.oddRObjectId}
+					) user_lock
+					inner join EDMS_LOG_ODD ELO on ( user_lock.U_USER_ID = ELO.U_USER_ID 
+																			and ELO.U_LOG_DATE > user_lock.before_lock_date  
+																			and trunc(user_lock.u_desig_date +1) >= ELO.U_LOG_DATE )
+					where ( ELO.u_download_over  = true  or ELO.u_authreq_over = true or ELO.u_print_over = true or  ELO.u_takeout_over = true or ELO.u_delete_over = true )
+			)
+		</if>
+		
+	</select>
+	
+	<!-- 문서유통 인쇄 이력 상세 -->
+	<select id="selectHistoryLogPrintDetail" resultMap="HistoryLogDocMap">
+		WITH EU AS (
+           SELECT 
+           		D.USER_ID
+           		, D.DISPLAY_NAME
+           		, D.ORG_NM
+           		, E.U_CODE_NAME1
+           FROM EDMS_V_USER_INFO AS D LEFT OUTER JOIN EDMS_CODE_SP AS E ON D.COM_ORG_ID = E.U_CODE_VAL1
+           AND E.U_CODE_TYPE = 'COM_CODE'
+        )
+		SELECT
+			'PT'						AS U_JOB_CODE 
+				, ELD.U_DOC_ID 
+				, ELD.U_DOC_KEY 
+				, ELD.U_FILE_NAME		AS U_DOC_NAME
+				, ELD.U_USER_ID 		AS U_JOB_USER 
+				, ELD.U_JOB_DATE 
+				, ELD.U_DOC_CAB_CODE	AS U_CABINET_CODE 
+				, EU.DISPLAY_NAME
+		        , EU.U_CODE_NAME1	AS COMPANY_NAME
+		        , EU.ORG_NM			AS DEPT_NAME
+		        , (SELECT org_nm FROM edms_v_dept_info WHERE u_cabinet_code = ELD.U_DOC_CAB_CODE limit 1 ) LOG_OWN_DEPT_NAME
+	            , (SELECT org_nm FROM edms_v_dept_info WHERE org_id = ELD.U_DEPT_CODE limit 1 ) LOG_ACT_DEPT_NAME
+		FROM EDMS_LOG_DRM_PRINT ELD  
+			LEFT OUTER JOIN EU 		AS EU		ON ELD.U_USER_ID 		= EU.USER_ID
+		WHERE 1 = 1
+		
+		<if test="historyDeleteDto.uDocKey != null and historyDeleteDto.uDocKey != '' ">
+			AND ELD.U_DOC_KEY = #{historyDeleteDto.uDocKey}
+		</if>
+		
+		<!-- 문서명 버전별로 달라질수 있어서 문서면 조건도추가. -->
+		<if test="historyDeleteDto.uDocName != null and historyDeleteDto.uDocName != '' ">
+			AND ELD.U_FILE_NAME = #{historyDeleteDto.uDocName}
+		</if>
+		
+		<if test="historyDeleteDto.user != null and historyDeleteDto.user != '' "> 
+	   		AND ELD.U_USER_ID = #{historyDeleteDto.user}  
+		</if>
+		
+		<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+				AND ELD.U_JOB_DATE >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')   
+		</if>
+		   
+	    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+			AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1  > ELD.U_JOB_DATE  
+		</if>
+		
+		<if test="historyDeleteDto.uCabinetCode != null and historyDeleteDto.uCabinetCode != '' ">
+			AND ELD.U_DOC_CAB_CODE = #{historyDeleteDto.uCabinetCode}
+		</if>
+
+		<!-- 특이사용자 조건 -->		 
+		<if test="historyDeleteDto.oddRObjectId != null and historyDeleteDto.oddRObjectId != '' ">
+			AND date_trunc('day', ELD.U_JOB_DATE) in
+			(
+				select
+					 date_trunc('day', ELO.U_LOG_DATE)
+					<!-- , date_trunc('month', U_LOG_DATE)::date -->
+					from 
+					(
+						select 
+							 user_lock_SUB.r_object_id
+							, user_lock_SUB.u_user_id
+							, user_lock_SUB.u_desig_date
+							, (select  
+								<!-- 이전값 없으면 최소값 입력함 -->
+								COALESCE(max(u_desig_date), to_timestamp('2021-01-01', 'YYYY-MM-DD'))  
+								from edms_user_lock_sp 
+									where U_LOCK_TYPE 	= 'O' 
+									and u_lock_status 	in ('U') 
+									and user_lock_SUB.u_desig_date  > u_desig_date 
+								) as before_lock_date
+							from edms_user_lock_sp  user_lock_SUB where U_LOCK_TYPE = 'O' and u_lock_status in ( 'L', 'U') 
+							and u_user_id 	= #{historyDeleteDto.user}	
+							and r_object_id = #{historyDeleteDto.oddRObjectId}
+					) user_lock
+					inner join EDMS_LOG_ODD ELO on ( user_lock.U_USER_ID = ELO.U_USER_ID 
+																			and ELO.U_LOG_DATE > user_lock.before_lock_date  
+																			and trunc(user_lock.u_desig_date +1) >= ELO.U_LOG_DATE )
+					where ( ELO.u_download_over  = true  or ELO.u_authreq_over = true or ELO.u_print_over = true or  ELO.u_takeout_over = true or ELO.u_delete_over = true )
+			)
+		</if>
+		
+	</select>
+	
+	<!-- 외부 사이트 파일 반출 이력 -->
+	<!-- DBOX-PGM-HIS-006 | 외부 저장매체 사용 이력 관리 | 재성 -->
+	<select id="selectHistoryUsb" resultMap="HistoryLogUsbMap">
+		select 
+			LOG_MAIN.R_OBJECT_ID
+				, LOG_MAIN.U_REQ_USER_ID
+				, LOG_MAIN.U_FILE_COUNT
+				, LOG_MAIN.U_FILE_NAME
+			    , LOG_COPY.U_REGIST_USER
+			    , LOG_COPY.U_REQ_DEPT_CODE
+			    , LOG_COPY.U_REQ_DATE
+			    , LOG_COPY.U_REQ_STATUS
+			    , LOG_COPY.U_ALLOW_USB
+			    , LOG_COPY.U_ALLOW_CD
+			    , LOG_COPY.U_USE_TIME
+			    , LOG_COPY.U_REQ_REASON
+			    , LOG_COPY.U_EXPIRED_DATE
+			    , LOG_COPY.U_APPROVER
+			    , LOG_COPY.U_APPROVE_DATE
+			    , LOG_COPY.U_REJECT_REASON
+			    , ( SELECT DISPLAY_NAME FROM EDMS_V_USER_INFO EVUI 	WHERE USER_ID = LOG_COPY.U_REQ_USER_ID ) AS REQ_USER_NAME
+			    , ( SELECT DISPLAY_NAME FROM EDMS_V_USER_INFO EVUI 	WHERE USER_ID = LOG_COPY.U_REGIST_USER ) AS REGIST_USER_NAME 
+			    , ( SELECT U_CODE_NAME1 FROM EDMS_CODE_SP 
+								WHERE U_CODE_TYPE = 'COM_CODE' 
+								AND U_CODE_VAL1 = ( SELECT COM_ORG_ID 
+													FROM EDMS_V_DEPT_INFO EVDI 
+													WHERE ORG_ID = LOG_COPY.U_REQ_DEPT_CODE LIMIT 1 ) 
+								LIMIT 1 ) AS LOG_COM_NAME
+				, (SELECT ORG_NM FROM EDMS_V_DEPT_INFO WHERE ORG_ID = LOG_COPY.U_REQ_DEPT_CODE LIMIT 1 ) LOG_DEPT_NAME
+				, LOG_COPY.U_USE_TIME || ' H' AS LOG_USE_TIME_NAME
+				, DECODE(LOG_MAIN.U_FILE_COUNT, 1, LOG_MAIN.U_FILE_NAME, U_FILE_NAME || ' 외 ' || LOG_MAIN.U_FILE_COUNT -1 || '건' ) AS LIST_NAME
+			FROM 
+			(
+				SELECT 
+				R_OBJECT_ID
+					, U_REQ_USER_ID
+					, COUNT(*) AS U_FILE_COUNT
+					, MAX(ELU.U_FILE_NAME) AS U_FILE_NAME
+				FROM EDMS_REQ_USE_USB_SP LOG1
+				INNER JOIN 		EDMS_LOG_USB 	AS ELU ON LOG1.U_REQ_USER_ID 	= ELU.U_JOB_USER
+				WHERE LOG1.U_REQ_STATUS = 'A'
+				and elu.u_job_date  > log1.u_approve_date 
+				and log1.u_expired_date > elu.u_job_date
+				
+				<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+					AND ELU.u_job_date >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')   
+				</if>
+			   
+			    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+					AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1  > ELU.u_job_date  
+				</if>
+			   
+			    <if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+			   		AND LOG1.u_req_dept_code = #{historyDeleteDto.dept}  
+				</if>
+				
+				<if test="historyDeleteDto.user != null and historyDeleteDto.user != '' "> 
+			   		AND LOG1.u_req_user_id = #{historyDeleteDto.user}  
+				</if>
+				
+				group by LOG1.r_object_id, log1.u_req_user_id
+			) log_main
+			INNER JOIN edms_req_use_usb_sp 	AS log_copy ON log_main.r_object_id 	= log_copy.r_object_id
+	</select>
+	
+	<!-- 외부 사이트 파일 반출 이력 (상세) -->
+	<select id="selectHistoryUsbDetail" resultMap="HistoryLogUsbMap">
+		SELECT 
+			LOG1.R_OBJECT_ID
+			, LOG1.U_REQ_USER_ID
+			, ELU.U_FILE_NAME
+			, ELU.U_JOB_DATE 
+			, ( SELECT DISPLAY_NAME FROM EDMS_V_USER_INFO EVUI 	WHERE USER_ID = LOG1.U_REQ_USER_ID ) AS REQ_USER_NAME
+			, (SELECT ORG_NM FROM EDMS_V_DEPT_INFO WHERE ORG_ID = LOG1.U_REQ_DEPT_CODE LIMIT 1 ) LOG_DEPT_NAME
+			, CASE 
+						WHEN 0 > elu.u_file_size  then '0'
+						WHEN COALESCE(elu.u_file_size,0) = 0 THEN '0'
+						ELSE TO_CHAR(ROUND(elu.u_file_size /POWER(1024, FLOOR(LOG(1024, elu.u_file_size ))), 0))  ||  DECODE(FLOOR(LOG(1024, elu.u_file_size )) ,0,'B',1,'KB',2,'MB',3,'GB')
+				  	  END as CONTENTSIZE	
+		FROM EDMS_REQ_USE_USB_SP LOG1
+		INNER JOIN 		EDMS_LOG_USB 	AS ELU ON LOG1.U_REQ_USER_ID 	= ELU.U_JOB_USER
+		WHERE LOG1.U_REQ_STATUS = 'A'
+		AND ELU.U_JOB_DATE > LOG1.U_APPROVE_DATE 
+		AND LOG1.U_EXPIRED_DATE > ELU.U_JOB_DATE
+		AND LOG1.R_OBJECT_ID  = #{historyDeleteDto.rObjectId}
+		
+		<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+			AND ELU.u_job_date >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')   
+		</if>
+	   
+	    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+			AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1 > ELU.u_job_date  
+		</if>
+				
+	</select>
+
+
+	<!-- 기타이력 - 특이사용자 이력 -->
+	<select id="selectHistoryOdd" resultMap="HistoryDocLifeCycleMap">
+		<!-- 1. 쿼리 사용자 조회. -->
+		WITH oddCNT AS ( 
+			SELECT 
+				user_lock.r_object_id
+				, user_lock.u_user_id
+				, sum(ELO.u_download_over)  u_download_over
+				, sum(ELO.u_authreq_over)   u_authreq_over
+				, sum(ELO.u_print_over)     u_print_over
+				, sum(ELO.u_takeout_over)   u_takeout_over
+				, sum(ELO.u_delete_over)    u_delete_over
+			FROM 
+			(
+				SELECT 
+					 user_lock_SUB.r_object_id
+					, user_lock_SUB.u_user_id
+					, user_lock_SUB.u_desig_date
+					, (SELECT  
+							<!-- 이전값 없으면 최소값 입력함 -->
+							COALESCE(max(u_desig_date), to_timestamp('2021-01-01', 'YYYY-MM-DD'))  
+							from edms_user_lock_sp 
+							where U_LOCK_TYPE = 'O' 
+							and u_lock_status in ('U') 
+							and user_lock_SUB.u_desig_date > u_desig_date ) as before_lock_date
+					FROM edms_user_lock_sp  user_lock_SUB where U_LOCK_TYPE = 'O' and u_lock_status in ( 'L', 'U')
+					
+					<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+						AND u_desig_date >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')
+					</if>
+				   
+				    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+						AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1  > u_desig_date  
+					</if>
+					
+					<if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+				    	AND u_user_id   IN ( SELECT USER_ID FROM EDMS_V_USER_INFO EVUI WHERE ORG_ID = #{historyDeleteDto.dept} )   
+					</if>	
+			) user_lock
+			inner join EDMS_LOG_ODD ELO on ( user_lock.U_USER_ID = ELO.U_USER_ID and ELO.U_LOG_DATE > user_lock.before_lock_date  and trunc(user_lock.u_desig_date + 1) >= ELO.U_LOG_DATE )
+			WHERE ( ELO.u_download_over  = true  or ELO.u_authreq_over = true or ELO.u_print_over = true or  ELO.u_takeout_over = true or ELO.u_delete_over = true )
+			GROUP BY user_lock.r_object_id , user_lock.u_user_id
+		)
+		SELECT 
+		(ROW_NUMBER() OVER()) AS ROWNUM
+					, oddCNT.R_OBJECT_ID
+					, (select  
+							<!-- 이전값 없으면 최소값 입력함 -->
+							COALESCE(max(u_desig_date), to_timestamp('2021-01-01', 'YYYY-MM-DD'))  
+							from edms_user_lock_sp where U_LOCK_TYPE = 'O' and u_lock_status in ('U') and eul.u_desig_date > u_desig_date) as LOG_START_DATE
+					, eul.u_desig_date as LOG_DATE
+					, eul.u_desig_date as  LOG_END_DATE
+					, EUL.U_USER_ID
+					, EUL.U_LOCK_STATUS
+					, decode(EUL.U_LOCK_STATUS, 'L' , '잠금', 'U', '해제', '') AS LOCK_STATUS_NANE
+					, decode(oddCNT.u_download_over	, 0 , '', 'O') AS CNT_DL
+					, decode(oddCNT.u_takeout_over 	, 0 , '', 'O') AS CNT_DT
+					, decode(oddCNT.u_authreq_over 	, 0 , '', 'O') AS CNT_PR
+					, decode(oddCNT.u_print_over 	, 0 , '', 'O') AS CNT_PT
+					, decode(oddCNT.u_delete_over 	, 0 , '', 'O') AS CNT_LD
+					, D.display_name 
+					, D.org_nm			AS DEPT_NAME
+		FROM oddCNT 
+		inner join edms_user_lock_sp eul  	on oddCNT.R_OBJECT_ID 	= eul.R_OBJECT_ID
+		INNER JOIN EDMS_V_USER_INFO AS D 	ON oddCNT.U_USER_ID 	= D.USER_ID
+	</select>
+
+	<!-- 기타이력 - 특이사용자 이력 -->
+	<select id="selectHistoryOdd_Old" resultMap="HistoryDocLifeCycleMap">
+		<!-- 1. 쿼리 사용자 조회. -->
+		WITH ELO AS (
+			SELECT TRUNC(U_LOG_DATE) LOG_DATE
+			, U_USER_ID
+			, U_DOWNLOAD_OVER 
+			, U_TAKEOUT_OVER 
+			, U_AUTHREQ_OVER 
+			, U_PRINT_OVER
+			, U_DELETE_OVER 
+			FROM EDMS_LOG_ODD ELO
+			<!-- 기간 조건 추가 해야함 -->
+		), EUL AS (
+		    SELECT TRUNC(U_DESIG_DATE) LOG_DATE
+		    , trunc(U_DESIG_DATE -1) 	AS LOG_START_DATE
+		    , trunc(U_DESIG_DATE +1)	AS LOG_END_DATE
+		    , U_USER_ID 
+		   	, U_LOCK_STATUS
+		    FROM EDMS_USER_LOCK_SP A
+		    <!-- 기간 조건 추가 해야함 -->
+		)
+		SELECT 
+			(ROW_NUMBER() OVER()) AS ROWNUM
+			, EUL.LOG_DATE
+			, EUL.LOG_START_DATE
+			, EUL.LOG_END_DATE
+			, EUL.U_USER_ID
+			, EUL.U_LOCK_STATUS
+			, decode(EUL.U_LOCK_STATUS, 'L' , '잠금', 'U', '해제', '') AS LOCK_STATUS_NANE
+			<!-- LOG_START_DATE 보다 크고, LOG_END_DATE 보다 작은  (  실행일 하루전과 실행일 로그 조회. ) -->
+			, decode(ELO.u_download_over 	, true , 'O', '') AS CNT_DL
+			, decode(ELO.u_takeout_over 	, true , 'O', '') as CNT_DT
+			, decode(ELO.u_authreq_over 	, true , 'O', '') as CNT_PR
+			, decode(ELO.u_print_over 		, true , 'O', '') as CNT_PT
+			, decode(ELO.u_delete_over 		, true , 'O', '') as CNT_LD
+			, D.display_name 
+			, D.org_nm			AS DEPT_NAME
+		FROM EUL 
+		INNER JOIN ELO ON ( EUL.U_USER_ID = ELO.U_USER_ID AND EUL.LOG_DATE = ELO.LOG_DATE )
+		INNER JOIN EDMS_V_USER_INFO AS D ON EUL.U_USER_ID 		= D.USER_ID
+		
+			<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' ">
+				AND EUL.LOG_START_DATE >= to_timestamp(#{historyDeleteDto.startDate},  'YYYY-MM-DD')
+			</if>
+		   
+		    <if test="historyDeleteDto.endDate != null and historyDeleteDto.endDate != '' "> 
+				AND to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD')  > EUL.LOG_END_DATE  
+			</if>
+		   
+		    <if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+		   		AND D.ORD_ID IN = #{historyDeleteDto.dept}  
+			</if>
+	</select>
+
+	<!-- 기타이력 - 자료이관 이력 -->
+	<select id="selectHistoryTrans" resultMap="HistoryLogDocMap">
+		SELECT
+			ELD.U_JOB_CODE
+			, ELD.U_DOC_ID
+			, ELD.U_DOC_KEY
+			, ELD.U_DOC_NAME
+			, ELD.U_DOC_VERSION
+			, ELD.U_FILE_SIZE
+			, ELD.U_OWN_DEPT_CODE
+			, ELD.U_ACT_DEPT_CODE
+			, ELD.U_JOB_USER
+			, ELD.U_JOB_USER_TYPE
+			, ELD.U_JOB_DATE
+			, ELD.U_DOC_STATUS
+			, ELD.U_SEC_LEVEL
+			, ELD.U_CABINET_CODE
+			, ELD.U_JOB_GUBUN
+			, ELD.U_BEFORE_CHANGE_VAL
+			, ELD.U_AFTER_CHANGE_VAL
+			, ELD.U_USER_IP
+			, ELD.U_FILE_DOWN_TIME
+			, ELD.U_ATTACH_SYSTEM
+			, ELD.U_USER_TITLE_NAME
+			, ELD.U_USER_EMP_TYPE
+			, D.DISPLAY_NAME		
+		FROM EDMS_LOG_DOC ELD
+		LEFT OUTER JOIN EDMS_V_USER_INFO 		AS D		ON ELD.U_JOB_USER 		= D.USER_ID
+		WHERE 1=1
+		AND U_JOB_CODE = 'TR'
+		
+		<if test="historyDeleteDto.dept != null and historyDeleteDto.dept != '' "> 
+			AND U_CABINET_CODE = ( SELECT U_CABINET_CODE FROM EDMS_V_DEPT_INFO EVDI WHERE ORG_ID = #{historyDeleteDto.dept} )  
+		</if>
+		
+		<if test="historyDeleteDto.user != null and historyDeleteDto.user != '' ">
+			AND ELD.U_JOB_USER = #{historyDeleteDto.user}
+		</if>
+		
+		<if test="historyDeleteDto.startDate != null and historyDeleteDto.startDate != '' and historyDeleteDto.endDate != null and historyDeleteDto.endDate != ''">
+			AND ELD.U_JOB_DATE between #{historyDeleteDto.startDate} and to_timestamp(#{historyDeleteDto.endDate},  'YYYY-MM-DD') + 1
+		</if>
+		
+	</select>
+
+</mapper>
+
+

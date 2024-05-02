@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.limit.LimitMapper">
+	<resultMap id="LimitMap"
+		type="com.dongkuksystems.dbox.models.type.manager.limit.Limit">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uCodeVal" column="U_CODE_VAL" />
+		<result property="uCodeVal1" column="U_CODE_VAL1" />
+		<result property="uCodeName" column="U_CODE_NAME" />
+		<result property="uComCode" column="U_COM_CODE" />
+	</resultMap>
+		
+	<select id="selectLimitValue" resultMap="LimitMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 기능별 최대 처리량 사별 조회 | 이성현  */
+		SELECT
+			L.U_CODE_VAL1 as U_CODE_VAL1,
+			L.U_CODE_NAME1 as U_CODE_NAME,
+			NVL(C.R_OBJECT_ID, '') R_OBJECT_ID,
+			C.U_CODE_VAL1 as U_COM_CODE,
+			case when C.U_CODE_VAL3 is null then TRIM(L.U_CODE_VAL2)
+			else TRIM(C.U_CODE_VAL3) end as U_CODE_VAL
+		FROM
+			(
+			select
+				*
+			from
+				EDMS_CODE_S
+			where
+				U_CODE_TYPE = 'DOC_HANDLE_LIST') L,
+			(
+			select
+				*
+			from
+				EDMS_CODE_S
+			where
+				U_CODE_TYPE = 'CONFIG_DOC_HANDLE_LIMIT'
+				and U_CODE_VAL1 = #{uComCode}) C
+
+			<where>
+				L.U_CODE_VAL1 = C.U_CODE_VAL2(+)
+			</where>
+				ORDER BY L.U_SORT_ORDER
+	</select>
+
+</mapper>
+

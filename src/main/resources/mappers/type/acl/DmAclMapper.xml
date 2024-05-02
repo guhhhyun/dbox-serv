@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.acl.DmAclMapper">
+	<resultMap id="DmAclMap" type="com.dongkuksystems.dbox.models.type.acl.DmAcl">
+		<id property="rObjectId" column="r_object_id" />
+		<result property="objectName" column="object_name" />
+		<result property="ownerName" column="owner_name" />
+	</resultMap>
+	
+	<resultMap id="DmAclRepeatingMap" type="com.dongkuksystems.dbox.models.type.acl.DmAclRepeating">
+		<id property="rObjectId" column="r_object_id" />
+		<result property="rAccessorName" column="r_accessor_name" />
+		<result property="rAccessorPermit" column="r_accessor_permit" />
+	</resultMap>
+	
+	<select id="selectList" resultMap="DmAclMap">
+		SELECT
+			r_object_id
+		,	object_name
+		,	owner_name
+		FROM
+			dm_acl_s
+		<where>
+			<if test="dmAcl.objectName != null">
+			AND	object_name = #{dmAcl.objectName}
+			</if>
+			<if test="dmAcl.ownerName != null">
+			AND	owner_name = #{dmAcl.ownerName}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectRepeatingList" resultMap="DmAclRepeatingMap">
+		SELECT
+			r_object_id
+		,	r_accessor_name
+		,	r_accessor_permit
+		FROM
+			dm_acl_r
+		<where>
+			r_object_id IN (
+				SELECT
+					r_object_id
+				FROM
+					dm_acl_s
+				<where>
+					<if test="dmAcl.objectName != null">
+					AND	object_name = #{dmAcl.objectName}
+					</if>
+					<if test="dmAcl.ownerName != null">
+					AND	owner_name = #{dmAcl.ownerName}
+					</if>
+				</where>
+			)
+		</where>
+	</select>
+</mapper>

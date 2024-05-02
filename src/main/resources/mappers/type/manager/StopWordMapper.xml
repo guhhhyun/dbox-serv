@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.stopword.StopWordMapper">
+	<resultMap id="StopWordMap"
+		type="com.dongkuksystems.dbox.models.type.manager.stopword.StopWord">
+		<id property="stopword" column="STOPWORD" />
+		<result property="companyCode" column="COMPANY_CODE" />
+		<result property="companyName" column="COMPANY_NAME" />
+		<result property="createUserId" column="CREATE_USER_ID" />
+	 	<result property="deleteUserId" column="DELETE_USER_ID" /> 
+		<result property="createTimestamp" column="CREATE_TIMESTAMP" />
+		<result property="deleteTimestamp" column="DELETE_TIMESTAMP" />
+
+		<result property="createUserNm" column="CREATE_USER_NM" />
+		<result property="deleteUserNm" column="DELETE_USER_NM" /> 
+					
+	</resultMap>
+	
+	<resultMap id="BlindDeptMap"
+		type="com.dongkuksystems.dbox.models.type.manager.stopword.StopWord">
+		<id property="blindDeptNm" column="BLIND_DEPT_NM" />
+		 <result property="companyName" column="COMPANY_NAME" />
+		<result property="createUserNm" column="CREATE_USER_NM" />
+	 	 <result property="createTimestamp" column="CREATE_TIMESTAMP" />
+		<result property="deleteTimestamp" column="DELETE_TIMESTAMP" /> 
+					
+	</resultMap>
+
+	<!--   | 공유  - 그룹사 불용어 리스트  조회 | 임혜정 -->
+	<select id="selectStopWord" resultMap="StopWordMap">
+	select 		a.stopword,				
+				a.company_code,			
+				a.company_name,			
+				a.create_user_id,		
+			  	a.delete_user_id,		 
+				to_char ( a.create_timestamp, 'YYYY-MM-DD' ) as create_timestamp,		
+			    to_char ( a.delete_timestamp, 'YYYY-MM-DD' ) as delete_timestamp,		  
+				a.create_user_nm,		
+				a.delete_user_nm				 
+		from 	edms_dsearch_stopword a 
+		
+		<where>
+			a.company_code = #{companyCode}
+		 
+		</where>
+			order by a.stopword
+
+	</select>
+
+
+	<!--   | 공유 - 그룹 공통 불용어 리스트   조회 | 임혜정 -->
+	<select id="selectStopWordGroup" resultMap="StopWordMap">
+	select 
+			ARRAY_TO_STRING(ARRAY_AGG(distinct b.stopword),',　 ') as stopword
+	from edms_dsearch_stopword b 
+		<where>
+		b.company_code = #{companyCode}
+		</where>
+		 
+	</select>
+	
+	<!--   | 공유 - 검색제외 부서  리스트   조회 | 임혜정 -->
+	<select id="selectBlindDept" resultMap="BlindDeptMap">
+	select 
+			c.company_name,
+   			c.blind_dept_nm,
+   			c.create_user_nm,
+   			to_char (c.create_timestamp, 'YYYY-MM-DD' )as create_timestamp,
+   			to_char (c.update_timestamp, 'YYYY-MM-DD' )as delete_timestamp
+	from edms_dsearch_blind c 
+		<where>
+		c.company_code = #{companyCode}
+		</where>
+		 
+	</select>
+
+	 
+
+</mapper>
+
+

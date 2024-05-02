@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.manager.deptmanager.DeptManagerMapper">
+
+    <select id="selectDeptManagers" resultType="hashMap">
+        SELECT  mgr.r_object_id
+             ,  mgr.u_com_code
+             ,  mgr.u_dept_code
+             ,	mgr.u_dept_name
+             ,  dept.org_id
+             ,  dept.org_nm
+             ,  user.com_org_id
+             ,  user.user_id
+             ,  user.display_name
+             ,  user.pstn_name
+            FROM
+                (
+                    SELECT mgr.*, dept.org_nm u_dept_name FROM edms_dept_mgr_sp mgr, edms_gw_dept dept
+                        WHERE mgr.u_dept_code = dept.org_id
+                ) mgr
+                , edms_v_user_info user
+                , edms_v_dept_info dept
+        WHERE mgr.u_user_id  = user.user_id
+            AND mgr.u_dept_code = dept.org_id
+            <if test="comCode != null and comCode != ''">
+                AND mgr.u_com_code = #{comCode}
+            </if>
+            <if test="deptCode != null and deptCode != ''">
+                AND mgr.u_dept_code = #{deptCode}
+            </if>
+            <if test="pstnName != null and pstnName != ''">
+                AND user.pstn_name = #{pstnName}
+            </if>
+            <if test="userId != null and userId != ''">
+                AND user.user_id = #{userId}
+            </if>
+						<if test="deptCodeList != null and !deptCodeList.isEmpty()">
+								AND mgr.u_dept_code IN
+							  <foreach collection="deptCodeList" item="deptCode" open="(" separator="," close=")">
+									#{deptCode}
+								</foreach>
+						</if>                  
+    </select>
+
+    <select id="selectPositions" resultType="hashMap">
+        SELECT pstn_name , max(pstn_code) pstn_code FROM edms_v_user_info
+            GROUP BY pstn_name ORDER BY pstn_code
+    </select>
+
+</mapper>

@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.user.preset.UserPresetMapper">
+	
+	<resultMap id="UserPresetMap" type="com.dongkuksystems.dbox.models.type.user.UserPreset">
+		<id property="rObjectId" 			column="R_OBJECT_ID" />
+		<result property="uUserId" 	column="U_USER_ID" />
+	    <result property="uRegBaseFlag" 	column="U_REG_BASE_FLAG" />
+	    <result property="uSecBaseFlag" 	column="U_SEC_BASE_FLAG" />
+	    <result property="uConfigName" 		column="U_CONFIG_NAME" />
+	    <result property="uConfigDesc" 		column="U_CONFIG_DESC" />
+	    <result property="uOpenFlag" 		column="U_OPEN_FLAG" />
+	    <result property="uPreserveFlag" 	column="U_PRESERVE_FLAG" />
+	    <result property="uSecLevel" 		column="U_SEC_LEVEL" />
+	    <result property="uPcRegFlag" 		column="U_PC_REG_FLAG" />
+	    <result property="uCopyFlag" 		column="U_COPY_FLAG" />
+	    <result property="uEditSaveFlag" 	column="U_EDIT_SAVE_FLAG" />
+	    <result property="uMailPermitFlag" 	column="U_MAIL_PERMIT_FLAG" />
+	    <result property="uCreateUser" 		column="U_CREATE_USER" />
+	    <result property="uCreateDate" 		column="U_CREATE_DATE" />
+	    <result property="uModifyUser" 		column="U_MODIFY_USER" />
+	    <result property="uModifyDate" 		column="U_MODIFY_DATE" />
+	    <result property="uLiveReadAuthor" 	column="U_LIVE_READ_AUTHOR" />
+	    <result property="uLiveDeleteAuthor" 	column="U_LIVE_DELETE_AUTHOR" />
+	    <result property="uClosedReadAuthor" 	column="U_CLOSED_READ_AUTHOR" />
+	    <result property="uConfigType" 		column="U_CONFIG_TYPE" />
+		    
+        <collection property="uLiveReadAuthorStrList" column="{rObjectId=r_object_id}" select="selectLiveReadAuthor"/>
+        <collection property="uLiveDeleteAuthorStrList" column="{rObjectId=r_object_id}" select="selectLiveDeleteAuthor"/>
+        <collection property="uClosedReadAuthorStrList" column="{rObjectId=r_object_id}" select="selectClosedReadAuthor"/>
+        
+	</resultMap>
+	
+	<resultMap id="UserPresetDMap" type="com.dongkuksystems.dbox.models.type.user.UserPresetDetail">
+		<id property="rObjectId" 			column="R_OBJECT_ID" />
+		<result property="uUserId" 	column="U_USER_ID" />
+	    <result property="uRegBaseFlag" 	column="U_REG_BASE_FLAG" />
+	    <result property="uSecBaseFlag" 	column="U_SEC_BASE_FLAG" />
+	    <result property="uConfigName" 		column="U_CONFIG_NAME" />
+	    <result property="uConfigDesc" 		column="U_CONFIG_DESC" />
+	    <result property="uOpenFlag" 		column="U_OPEN_FLAG" />
+	    <result property="uPreserveFlag" 	column="U_PRESERVE_FLAG" />
+	    <result property="uSecLevel" 		column="U_SEC_LEVEL" />
+	    <result property="uPcRegFlag" 		column="U_PC_REG_FLAG" />
+	    <result property="uCopyFlag" 		column="U_COPY_FLAG" />
+	    <result property="uEditSaveFlag" 	column="U_EDIT_SAVE_FLAG" />
+	    <result property="uMailPermitFlag" 	column="U_MAIL_PERMIT_FLAG" />
+	    <result property="uCreateUser" 		column="U_CREATE_USER" />
+	    <result property="uCreateDate" 		column="U_CREATE_DATE" />
+	    <result property="uModifyUser" 		column="U_MODIFY_USER" />
+	    <result property="uModifyDate" 		column="U_MODIFY_DATE" />
+	    <result property="uLiveReadAuthor" 	column="U_LIVE_READ_AUTHOR" />
+	    <result property="uLiveDeleteAuthor" 	column="U_LIVE_DELETE_AUTHOR" />
+	    <result property="uClosedReadAuthor" 	column="U_CLOSED_READ_AUTHOR" />
+	    <result property="uConfigType" 		column="U_CONFIG_TYPE" />
+		    
+        <collection property="uLiveReadAuthorStrList" column="{rObjectId=r_object_id}" select="selectLiveReadAuthorDto"/>
+        <collection property="uLiveDeleteAuthorStrList" column="{rObjectId=r_object_id}" select="selectLiveDeleteAuthorDto"/>
+        <collection property="uClosedReadAuthorStrList" column="{rObjectId=r_object_id}" select="selectClosedReadAuthorDto"/>
+        
+	</resultMap>
+	
+	<resultMap id="UserPresetRMap" type="com.dongkuksystems.dbox.models.type.user.UserPresetRDto">
+			<id property="rObjectId" 			column="R_OBJECT_ID" />
+		    <result property="author" 	column="author" />
+		    <result property="authorCabinetCode" 	column="author_cabinet_code" />
+	</resultMap>
+	
+	<resultMap id="UserPresetDetailMap" type="com.dongkuksystems.dbox.models.type.user.UserPresetRepeating">
+			<id property="rObjectId" 			column="R_OBJECT_ID" />
+		    <result property="uLiveReadAuthor" 	column="U_LIVE_READ_AUTHOR" />
+		    <result property="uLiveDeleteAuthor" 	column="U_LIVE_DELETE_AUTHOR" />
+		    <result property="uClosedReadAuthor" 	column="U_CLOSED_READ_AUTHOR" />
+			<result property="uLiveReadAuthorName" 	column="U_LIVE_READ_AUTHOR_NAME" />
+		    <result property="uLiveDeleteAuthorName" 	column="U_LIVE_DELETE_AUTHOR_NAME" />
+		    <result property="uClosedReadAuthorName" 	column="U_CLOSED_READ_AUTHOR_NAME" />
+	</resultMap>
+	
+	<resultMap id="UserPresetRepeatingMap" type="com.dongkuksystems.dbox.models.type.user.UserPresetRepeating">
+			<id property="rObjectId" 			column="R_OBJECT_ID" />
+		    <result property="uLiveReadAuthor" 	column="U_LIVE_READ_AUTHOR" />
+		    <result property="uLiveDeleteAuthor" 	column="U_LIVE_DELETE_AUTHOR" />
+		    <result property="uClosedReadAuthor" 	column="U_CLOSED_READ_AUTHOR" />
+	</resultMap>
+	
+	<resultMap id="UserPresetRepeatingDetailMap" type="com.dongkuksystems.dbox.models.type.user.UserPresetRepeating">
+		<id property="rObjectId" 			column="R_OBJECT_ID" />
+	    <result property="uLiveReadAuthor" 	column="U_LIVE_READ_AUTHOR" />
+	    <result property="uLiveDeleteAuthor" 	column="U_LIVE_DELETE_AUTHOR" />
+	    <result property="uClosedReadAuthor" 	column="U_CLOSED_READ_AUTHOR" />
+		
+		<association property="liveReadUserDetail" javaType="VUser">
+			<id property="userId" column="B_USER_ID" />
+			<result property="displayName" column="B_DISPLAY_NAME" />
+			<result property="comOrgId" column="B_COM_ORG_ID" />
+			<result property="orgId" column="B_ORG_ID" />
+			<result property="orgNm" column="B_ORG_NM" />
+			<result property="pstnCode" column="B_PSTN_CODE" />
+			<result property="pstnName" column="B_PSTN_NAME" />
+			<result property="levelCode" column="B_LEVEL_CODE" />
+			<result property="levelName" column="B_LEVEL_NAME" />
+			<result property="titleCode" column="B_TITLE_CODE" />
+			<result property="titleName" column="B_TITLE_NAME" />
+		</association>
+		<association property="liveReadDeptDetail" javaType="VDept">
+			<id property="orgId" column="C_ORG_ID" />
+			<result property="orgNm" column="C_ORG_NM" />
+			<result property="comOrgId" column="C_COM_ORG_ID" />
+			<result property="uCabinetCode" column="C_U_CABINET_CODE" />
+		</association>
+		<association property="liveDeleteUserDetail" javaType="VUser">
+			<id property="userId" column="D_USER_ID" />
+			<result property="displayName" column="D_DISPLAY_NAME" />
+			<result property="comOrgId" column="D_COM_ORG_ID" />
+			<result property="orgId" column="D_ORG_ID" />
+			<result property="orgNm" column="D_ORG_NM" />
+			<result property="pstnCode" column="D_PSTN_CODE" />
+			<result property="pstnName" column="D_PSTN_NAME" />
+			<result property="levelCode" column="D_LEVEL_CODE" />
+			<result property="levelName" column="D_LEVEL_NAME" />
+			<result property="titleCode" column="D_TITLE_CODE" />
+			<result property="titleName" column="D_TITLE_NAME" />
+		</association>
+		<association property="liveDeleteDeptDetail" javaType="VDept">
+			<id property="orgId" column="E_ORG_ID" />
+			<result property="orgNm" column="E_ORG_NM" />
+			<result property="comOrgId" column="E_COM_ORG_ID" />
+			<result property="uCabinetCode" column="E_U_CABINET_CODE" />
+		</association>
+		<association property="closedReadUserDetail" javaType="VUser">
+			<id property="userId" column="F_USER_ID" />
+			<result property="displayName" column="F_DISPLAY_NAME" />
+			<result property="comOrgId" column="F_COM_ORG_ID" />
+			<result property="orgId" column="F_ORG_ID" />
+			<result property="orgNm" column="F_ORG_NM" />
+			<result property="pstnCode" column="F_PSTN_CODE" />
+			<result property="pstnName" column="F_PSTN_NAME" />
+			<result property="levelCode" column="F_LEVEL_CODE" />
+			<result property="levelName" column="F_LEVEL_NAME" />
+			<result property="titleCode" column="F_TITLE_CODE" />
+			<result property="titleName" column="F_TITLE_NAME" />
+		</association>
+		<association property="closedReadDeptDetail" javaType="VDept">
+			<id property="orgId" column="G_ORG_ID" />
+			<result property="orgNm" column="G_ORG_NM" />
+			<result property="comOrgId" column="G_COM_ORG_ID" />
+			<result property="uCabinetCode" column="G_U_CABINET_CODE" />
+		</association>
+	</resultMap>
+
+	<select id="selectOneByUserId" resultMap="UserPresetMap">
+		SELECT  * 
+		FROM   EDMS_USER_PRESET_SP a 
+		<where>
+		       a.u_user_id = #{uUserId} 
+		       LIMIT 1
+		</where>
+	</select>
+	
+	<select id="selectOneByFilter" resultMap="UserPresetMap">
+		SELECT  * 
+		FROM   EDMS_USER_PRESET_SP a 
+		<where>
+			<if test="userPreset.uUserId != null">
+				AND u_user_id = #{userPreset.uUserId} 
+			</if>
+			<if test="userPreset.uSecLevel != null">
+				AND u_sec_level = #{userPreset.uSecLevel} 
+			</if>
+			<if test="userPreset.uRegBaseFlag!= null">
+				AND u_reg_base_flag = CAST(#{userPreset.uRegBaseFlag} AS SMALLINT) 
+			</if>
+			<if test="userPreset.uSecBaseFlag!= null">
+				AND u_sec_base_flag = CAST(#{userPreset.uSecBaseFlag} AS SMALLINT) 
+			</if>
+			<if test="userPreset.rObjectId != null">
+				AND r_object_id = #{userPreset.rObjectId} 
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectDetailedOneByFilter" resultMap="UserPresetDMap">
+		SELECT  * 
+		FROM   EDMS_USER_PRESET_SP a 
+		<where>
+			<if test="userPreset.uUserId != null">
+				AND u_user_id = #{userPreset.uUserId} 
+			</if>
+			<if test="userPreset.uSecLevel != null">
+				AND u_sec_level = #{userPreset.uSecLevel} 
+			</if>
+			<if test="userPreset.uRegBaseFlag!= null">
+				AND u_reg_base_flag = CAST(#{userPreset.uRegBaseFlag} AS SMALLINT) 
+			</if>
+			<if test="userPreset.uSecBaseFlag!= null">
+				AND u_sec_base_flag = CAST(#{userPreset.uSecBaseFlag} AS SMALLINT) 
+			</if>
+			<if test="userPreset.rObjectId != null">
+				AND r_object_id = #{userPreset.rObjectId} 
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectList" resultMap="UserPresetMap">
+	/* DBOX-PGM-MNG-019 | PRESET 조회 | 김수연 */
+		SELECT  
+			* 
+		FROM   EDMS_USER_PRESET_SP 
+		<where>
+			1=1
+			<if test="userPreset.uUserId != null">
+				AND u_user_id = #{userPreset.uUserId} 
+			</if>
+			<if test="userPreset.uSecLevel != null">
+				AND u_sec_level = #{userPreset.uSecLevel} 
+			</if>
+			<if test="userPreset.uRegBaseFlag!= null">
+				AND u_reg_base_flag = CAST(#{userPreset.uRegBaseFlag} AS SMALLINT) 
+			</if>
+			<if test="userPreset.uSecBaseFlag!= null">
+				AND u_sec_base_flag = CAST(#{userPreset.uSecBaseFlag} AS SMALLINT) 
+			</if>
+			<if test="userPreset.rObjectId != null">
+				AND r_object_id = #{userPreset.rObjectId} 
+			</if>
+			<if test="userPreset.uSecLevel != null">
+				AND U_SEC_LEVEL = #{userPreset.uSecLevel} 
+			</if>
+			
+		</where>
+		 ORDER BY
+		  CASE
+		    WHEN u_sec_level='S' THEN 0
+		    WHEN u_sec_level='T' THEN 1
+		    WHEN u_sec_level='G' THEN 2
+		    WHEN u_sec_level='C' THEN 3
+		  END,u_sec_level DESC, u_config_type DESC, u_create_date ASC
+	</select>
+	<select id="selectDetail" resultMap="UserPresetDetailMap">
+	/* DBOX-PGM-MNG-019 | PRESET Detail 데이터 조회 | 김수연 */
+		SELECT  
+			r_object_id,
+			u_live_read_author,
+			u_live_delete_author,
+			u_closed_read_author,
+			(
+			select
+				org_nm
+			from
+				edms_v_dept_info
+			where
+				u_cabinet_code = substring(u_live_read_author, 3) 
+			union all
+			select
+				display_name
+			from
+				edms_gw_user
+			where
+				social_per_id = u_live_read_author 
+			union all
+			select
+				u_code_name1
+			from
+				edms_code_sp
+			where
+				u_code_type = 'COM_CODE'
+				and u_code_val1 = upper(substring(u_live_read_author, 3)) 	
+			) as u_live_read_author_name,
+			(
+			select
+				org_nm
+			from
+				edms_v_dept_info
+			where
+				u_cabinet_code = substring(u_live_delete_author, 3) 
+			union all
+			select
+				display_name
+			from
+				edms_gw_user
+			where
+				social_per_id = u_live_delete_author 	
+			union all
+			select
+				u_code_name1
+			from
+				edms_code_sp
+			where
+				u_code_type = 'COM_CODE'
+				and u_code_val1 = upper(substring(u_live_delete_author, 3)) 	
+			) as u_live_delete_author_name,
+			(
+			select
+				org_nm
+			from
+				edms_v_dept_info
+			where
+				u_cabinet_code = substring(u_closed_read_author, 3) 
+			union all
+			select
+				display_name
+			from
+				edms_gw_user
+			where
+				social_per_id = u_closed_read_author 
+			union all
+			select
+				u_code_name1
+			from
+				edms_code_sp
+			where
+				u_code_type = 'COM_CODE'
+				and u_code_val1 = upper(substring(u_closed_read_author, 3)) 	
+			) as u_closed_read_author_name 
+		FROM  EDMS_USER_PRESET_R
+		<where>
+		     r_object_id = #{rObjectId} 
+		</where>
+		ORDER BY i_position DESC
+	</select>
+	<select id="selectUserPresetCount" resultType="int">
+	/* DBOX-PGM-MNG-019 | PRESET REPEATING 중복 조회 | 김수연 */
+		select
+			COUNT(*) as cnt
+		from EDMS_USER_PRESET_R
+		<where>
+			r_object_id = #{rObjectId} 
+			<if test="userPresetRepeating.uLiveReadAuthor != null">
+				AND u_live_read_author = 
+				(
+					select
+						code
+					from
+						(
+						select
+							1 as AAA,
+							concat('g_', lower(u_code_val1)) as code
+						from
+							edms_code_sp
+						where
+							u_code_type = 'COM_CODE'
+							and u_code_val1 = #{userPresetRepeating.uLiveReadAuthor} 
+					union all
+						select
+							2 as AAA,
+							concat('g_', u_cabinet_code) as code
+						from
+							edms_v_dept_info
+						where
+							org_id = #{userPresetRepeating.uLiveReadAuthor} 
+					union all
+						select
+							3 as AAA,
+							#{userPresetRepeating.uLiveReadAuthor}  as code
+						order by
+							AAA ) A
+					where
+						ROWNUM = 1)
+			</if>
+			<if test="userPresetRepeating.uLiveDeleteAuthor != null">
+				AND u_live_delete_author = 
+				(
+					select
+						code
+					from
+						(
+						select
+							1 as AAA,
+							concat('g_', lower(u_code_val1)) as code
+						from
+							edms_code_sp
+						where
+							u_code_type = 'COM_CODE'
+							and u_code_val1 = #{userPresetRepeating.uLiveDeleteAuthor} 
+					union all
+						select
+							2 as AAA,
+							concat('g_', u_cabinet_code) as code
+						from
+							edms_v_dept_info
+						where
+							org_id = #{userPresetRepeating.uLiveDeleteAuthor} 
+					union all
+						select
+							3 as AAA,
+							#{userPresetRepeating.uLiveDeleteAuthor} as code
+						order by
+							AAA ) A
+					where
+						ROWNUM = 1)
+			</if>
+			<if test="userPresetRepeating.uClosedReadAuthor != null">
+				AND u_closed_read_author = 
+				(
+					select
+						code
+					from
+						(
+						select
+							1 as AAA,
+							concat('g_', lower(u_code_val1)) as code
+						from
+							edms_code_sp
+						where
+							u_code_type = 'COM_CODE'
+							and u_code_val1 = #{userPresetRepeating.uClosedReadAuthor} 
+					union all
+						select
+							2 as AAA,
+							concat('g_', u_cabinet_code) as code
+						from
+							edms_v_dept_info
+						where
+							org_id = #{userPresetRepeating.uClosedReadAuthor} 
+					union all
+						select
+							3 as AAA,
+							#{userPresetRepeating.uClosedReadAuthor}  as code
+						order by
+							AAA ) A
+					where
+						ROWNUM = 1)
+			</if>
+		</where>
+	</select>
+	<!-- 
+	<resultMap id="selectLiveReadRepeatingMap"
+		type="com.dongkuksystems.dbox.models.type.doc.DocRepeating">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uEditor" column="U_EDITOR" />
+		<result property="rVersionLabel" column="R_VERSION_LABEL" />
+		<result property="uWfKey" column="U_WF_KEY" />
+		<result property="uWfSystem" column="U_WF_SYSTEM" />
+		<result property="uWfForm" column="U_WF_FORM" />
+		<result property="uWfTitle" column="U_WF_TITLE" />
+		<result property="uWfApprover" column="U_WF_APPROVER" />
+		<result property="uWfApprovalDate" column="U_WF_APPROVAL_DATE" />
+	</resultMap> -->
+			
+			
+	<select id="selectRepeatingList" resultMap="UserPresetRepeatingMap">
+		SELECT
+			r_object_id
+		,   u_live_read_author
+		,	u_live_delete_author
+		,	u_closed_read_author
+		FROM
+			edms_user_preset_rp
+		<where>
+			r_object_id IN (
+				SELECT
+					r_object_id
+				FROM
+					edms_user_preset_sp
+				<where>
+					<if test="userPreset.uUserId != null">
+						AND u_user_id = #{userPreset.uUserId} 
+					</if>
+					<if test="userPreset.uSecLevel != null">
+						AND u_sec_level = #{userPreset.uSecLevel} 
+					</if>
+					<if test="userPreset.uRegBaseFlag!= null">
+						AND u_reg_base_flag = CAST(#{userPreset.uRegBaseFlag} AS SMALLINT) 
+					</if>
+					<if test="userPreset.uSecBaseFlag!= null">
+						AND u_sec_base_flag = CAST(#{userPreset.uSecBaseFlag} AS SMALLINT) 
+					</if>
+					<if test="userPreset.rObjectId != null">
+						AND r_object_id = #{userPreset.rObjectId} 
+					</if>
+				</where>
+			)
+		</where>
+	</select>
+	
+	<select id="selectRepeatingDetailList" resultMap="UserPresetRepeatingDetailMap">
+		WITH com_code AS (
+			SELECT
+				u_code_val1
+			FROM
+				edms_code_s
+			WHERE
+				u_code_type = 'COM_CODE'
+		), dept AS (
+			SELECT
+				CONCAT('g_', b.u_cabinet_code)	AS author_id
+			,	a.org_id
+			,	a.org_nm
+			,	a.com_org_id
+			,	b.u_cabinet_code
+			FROM
+				edms_gw_dept	a
+			,	edms_dept_s		b
+			WHERE
+				a.org_id = b.u_dept_code
+			
+			UNION
+			
+			SELECT
+				CONCAT('g_', LOWER(a.org_id))	AS author_id
+			,	a.org_id
+			,	a.org_nm
+			,	a.com_org_id
+			,	NULL							AS u_cabinet_code
+			FROM
+				edms_gw_dept a
+			WHERE
+				a.org_id  IN (SELECT u_code_val1 FROM com_code)
+		)
+		SELECT
+			a.r_object_id
+		,   a.u_live_read_author
+		,	a.u_live_delete_author
+		,	a.u_closed_read_author
+		,   b.user_id			AS b_user_id
+		,   b.display_name		AS b_display_name
+		,   b.com_org_id		AS b_com_org_id
+		,   b.org_id			AS b_org_id
+		,   b.org_nm			AS b_org_nm
+		,   b.pstn_code			AS b_pstn_code
+		,   b.pstn_name			AS b_pstn_name
+		,   b.level_code		AS b_level_code
+		,   b.level_name		AS b_level_name
+		,   b.title_code		AS b_title_code
+		,   b.title_name		AS b_title_name
+		,	c.org_id			AS c_org_id
+		,	c.org_nm			AS c_org_nm
+		,	c.com_org_id		AS c_com_org_id
+		,	c.u_cabinet_code	AS c_u_cabinet_code
+		,   d.user_id			AS d_user_id
+		,   d.display_name		AS d_display_name
+		,   d.com_org_id		AS d_com_org_id
+		,   d.org_id			AS d_org_id
+		,   d.org_nm			AS d_org_nm
+		,   d.pstn_code			AS d_pstn_code
+		,   d.pstn_name			AS d_pstn_name
+		,   d.level_code		AS d_level_code
+		,   d.level_name		AS d_level_name
+		,   d.title_code		AS d_title_code
+		,   d.title_name		AS d_title_name
+		,	e.org_id			AS e_org_id
+		,	e.org_nm			AS e_org_nm
+		,	e.com_org_id		AS e_com_org_id
+		,	e.u_cabinet_code	AS e_u_cabinet_code
+		,   f.user_id			AS f_user_id
+		,   f.display_name		AS f_display_name
+		,   f.com_org_id		AS f_com_org_id
+		,   f.org_id			AS f_org_id
+		,   f.org_nm			AS f_org_nm
+		,   f.pstn_code			AS f_pstn_code
+		,   f.pstn_name			AS f_pstn_name
+		,   f.level_code		AS f_level_code
+		,   f.level_name		AS f_level_name
+		,   f.title_code		AS f_title_code
+		,   f.title_name		AS f_title_name
+		,	g.org_id			AS g_org_id
+		,	g.org_nm			AS g_org_nm
+		,	g.com_org_id		AS g_com_org_id
+		,	g.u_cabinet_code	AS g_u_cabinet_code
+		FROM
+							edms_user_preset_rp	a
+			LEFT OUTER JOIN edms_v_user_info	b ON a.u_live_read_author = b.user_id
+			LEFT OUTER JOIN dept				c ON a.u_live_read_author = c.author_id
+			LEFT OUTER JOIN edms_v_user_info	d ON a.u_live_delete_author = d.user_id
+			LEFT OUTER JOIN	dept				e ON a.u_live_delete_author = e.author_id
+			LEFT OUTER JOIN edms_v_user_info	f ON a.u_closed_read_author = f.user_id
+			LEFT OUTER JOIN	dept				g ON a.u_closed_read_author = g.author_id
+		<where>
+			a.r_object_id IN (
+				SELECT
+					r_object_id
+				FROM
+					edms_user_preset_sp
+				<where>
+					<if test="userPreset.uUserId != null">
+						AND u_user_id = #{userPreset.uUserId} 
+					</if>
+					<if test="userPreset.uSecLevel != null">
+						AND u_sec_level = #{userPreset.uSecLevel} 
+					</if>
+					<if test="userPreset.uRegBaseFlag!= null">
+						AND u_reg_base_flag = CAST(#{userPreset.uRegBaseFlag} AS SMALLINT) 
+					</if>
+					<if test="userPreset.uSecBaseFlag!= null">
+						AND u_sec_base_flag = CAST(#{userPreset.uSecBaseFlag} AS SMALLINT) 
+					</if>
+					<if test="userPreset.rObjectId != null">
+						AND r_object_id = #{userPreset.rObjectId} 
+					</if>
+				</where>
+			)
+		</where>
+	</select>
+	
+	<select id="selectLiveReadAuthor" resultType="string">
+		SELECT
+		   u_live_read_author
+		FROM
+			edms_user_preset_rp
+		<where>
+			r_object_id  = #{rObjectId}
+			and u_live_read_author is not null 
+			and u_live_read_author != ' '
+		</where>
+	</select>
+	<select id="selectLiveDeleteAuthor" resultType="string">
+		SELECT
+			u_live_delete_author
+		FROM
+			edms_user_preset_rp
+		<where>
+			r_object_id  = #{rObjectId}
+			and u_live_delete_author is not null 
+			and u_live_delete_author != ' '
+		</where>
+	</select>
+	<select id="selectClosedReadAuthor" resultType="string">
+		SELECT
+			u_closed_read_author
+		FROM
+			edms_user_preset_rp
+		<where>
+			r_object_id  = #{rObjectId}
+			and u_closed_read_author is not null 
+			and u_closed_read_author != ' '
+		</where>
+	</select>
+	
+	<select id="selectLiveReadAuthorDto" resultMap="UserPresetRMap">
+		SELECT
+			a.r_object_id,
+		   a.u_live_read_author AS author,  
+		   CASE WHEN b.USER_ID IS NOT NULL 
+		   	THEN c.U_CABINET_CODE 
+		   	ELSE replace(a.u_live_read_author, 'g_', '')
+	   		END AS author_cabinet_code
+		FROM
+			edms_user_preset_rp a
+	    LEFT OUTER JOIN EDMS_V_USER_INFO b ON a.u_live_read_author = b.USER_ID 
+	    LEFT OUTER JOIN EDMS_V_DEPT_INFO c ON b.ORG_ID = c.ORG_ID 
+		<where>
+			a.r_object_id  = #{rObjectId}
+			and a.u_live_read_author is not null 
+			and a.u_live_read_author != ' '
+		</where>
+	</select>
+	<select id="selectLiveDeleteAuthorDto" resultMap="UserPresetRMap">
+		SELECT
+			a.r_object_id,
+		   a.u_live_delete_author AS author, 
+		   CASE WHEN b.USER_ID IS NOT NULL 
+		   	THEN c.U_CABINET_CODE 
+		   	ELSE replace(a.u_live_delete_author, 'g_', '')
+	   		END AS author_cabinet_code
+		FROM
+			edms_user_preset_rp a
+	    LEFT OUTER JOIN EDMS_V_USER_INFO b ON a.u_live_delete_author = b.USER_ID 
+	    LEFT OUTER JOIN EDMS_V_DEPT_INFO c ON b.ORG_ID = c.ORG_ID 
+		<where>
+			a.r_object_id  = #{rObjectId}
+			and a.u_live_delete_author is not null 
+			and a.u_live_delete_author != ' '
+		</where>
+	</select>
+	<select id="selectClosedReadAuthorDto" resultMap="UserPresetRMap">
+		SELECT
+			a.r_object_id,
+		   a.u_closed_read_author AS author, 
+		   CASE WHEN b.USER_ID IS NOT NULL 
+		   	THEN c.U_CABINET_CODE 
+		   	ELSE replace(a.u_closed_read_author, 'g_', '')
+	   		END AS author_cabinet_code
+		FROM
+			edms_user_preset_rp a
+	    LEFT OUTER JOIN EDMS_V_USER_INFO b ON a.u_live_delete_author = b.USER_ID 
+	    LEFT OUTER JOIN EDMS_V_DEPT_INFO c ON b.ORG_ID = c.ORG_ID 
+		<where>
+			a.r_object_id  = #{rObjectId}
+			and a.u_closed_read_author is not null 
+			and a.u_closed_read_author != ' '
+		</where>
+	</select>
+</mapper>

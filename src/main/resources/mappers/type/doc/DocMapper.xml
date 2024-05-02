@@ -1,0 +1,2860 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+    namespace="com.dongkuksystems.dbox.daos.type.doc.DocMapper">
+    <resultMap id="DocMap"
+        type="com.dongkuksystems.dbox.models.type.doc.Doc">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+		    <result property="title" column="TITLE" />
+        <result property="objectName" column="OBJECT_NAME" />
+        <result property="rLockOwner" column="R_LOCK_OWNER" />
+        <result property="rContentSize" column="R_CONTENT_SIZE" />
+        <result property="uCabinetCode" column="U_CABINET_CODE" />
+        <result property="uPrCode" column="U_PR_CODE" />
+        <result property="uPrType" column="U_PR_TYPE" />
+        <result property="uDocKey" column="U_DOC_KEY" />
+        <result property="uFolId" column="U_FOL_ID" />
+        <result property="uSecLevel" column="U_SEC_LEVEL" />
+        <result property="uDocStatus" column="U_DOC_STATUS" />
+        <result property="uDocFlag" column="U_DOC_FLAG" />
+        <result property="uDeleteStatus" column="U_DELETE_STATUS" />
+        <result property="uWfDocYn" column="U_WF_DOC_YN" />
+        <result property="uClosedDate" column="U_CLOSED_DATE" />
+        <result property="uCloser" column="U_CLOSER" />
+        <result property="uPrivacyFlag" column="U_PRIVACY_FLAG" />
+        <result property="uPreserverFlag" column="U_PRESERVE_FLAG" />
+        <result property="uExpiredDate" column="U_EXPIRED_DATE" />
+        <result property="uCopyOrgId" column="U_COPY_ORG_ID" />
+        <result property="uFileExt" column="U_FILE_EXT" />
+        <result property="uDocTag" column="U_DOC_TAG" />
+        <result property="uDocClass" column="U_DOC_CLASS" />
+        <result property="uRegSource" column="U_REG_SOURCE" />
+        <result property="uRegUser" column="U_REG_USER" />
+        <result property="uRegDate" column="U_REG_DATE" />
+        <result property="uAutoAuthMailFlag" column="U_AUTO_AUTH_MAIL_FLAG" />
+        <result property="uEditorNames" column="U_EDITOR_NAMES" />
+        <result property="uFolderPath" column="U_FOLDER_PATH" />
+        <result property="uUpdateDate" column="U_UPDATE_DATE" />
+        <result property="uTakeoutFlag" column="U_TAKEOUT_FLAG" />
+        <result property="uVerKeepFlag" column="U_VER_KEEP_FLAG" />
+        <result property="uLastEditor" column="U_LAST_EDITOR" />
+        
+        <result property="uDeptCode" column="ORG_ID" />
+        <result property="uComCode" column="COM_ORG_ID" />
+        
+        <association property="regUserDetail" column="{userId=u_reg_user}" javaType="VUser"
+            select="com.dongkuksystems.dbox.daos.table.etc.gwuser.GwUserMapper.selectOneByUserId" />
+
+        <collection property="docRepeatings"
+            column="{objectId=r_object_id}" ofType="DocRepeating"
+            select="selectRepeatingListInternal" />
+        <collection property="authBases"
+            column="{objectId=r_object_id}" ofType="AuthBase"
+            select="com.dongkuksystems.dbox.daos.type.auth.base.AuthBaseMapper.selectList" />
+    </resultMap>
+
+    <resultMap id="DocPathMap"
+        type="com.dongkuksystems.dbox.models.dto.type.doc.DocPathDto">
+        <result property="folPath" column="FOL_PATH" />
+        <result property="objectName" column="OBJECT_NAME" />
+        <result property="fullPath" column="FULL_PATH" />
+    </resultMap>
+
+    <resultMap id="DocDetailMap"
+        type="com.dongkuksystems.dbox.models.type.doc.Doc">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="objectName" column="OBJECT_NAME" />
+		    <result property="title" column="TITLE" />
+		    <result property="rLockOwner" column="R_LOCK_OWNER" />
+        <result property="rContentSize" column="R_CONTENT_SIZE" />
+        <result property="uCabinetCode" column="U_CABINET_CODE" />
+        <result property="uPrCode" column="U_PR_CODE" />
+        <result property="uPrType" column="U_PR_TYPE" />
+        <result property="uDocKey" column="U_DOC_KEY" />
+        <result property="uFolId" column="U_FOL_ID" />
+        <result property="uSecLevel" column="U_SEC_LEVEL" />
+        <result property="uDocStatus" column="U_DOC_STATUS" />
+        <result property="uDocFlag" column="U_DOC_FLAG" />
+        <result property="uDeleteStatus" column="U_DELETE_STATUS" />
+        <result property="uWfDocYn" column="U_WF_DOC_YN" />
+        <result property="uClosedDate" column="U_CLOSED_DATE" />
+        <result property="uCloser" column="U_CLOSER" />
+        <result property="uPrivacyFlag" column="U_PRIVACY_FLAG" />
+        <result property="uPreserverFlag" column="U_PRESERVE_FLAG" />
+        <result property="uExpiredDate" column="U_EXPIRED_DATE" />
+        <result property="uCopyOrgId" column="U_COPY_ORG_ID" />
+        <result property="uFileExt" column="U_FILE_EXT" />
+        <result property="uDocTag" column="U_DOC_TAG" />
+        <result property="uDocClass" column="U_DOC_CLASS" />
+        <result property="uRegSource" column="U_REG_SOURCE" />
+        <result property="uRegUser" column="U_REG_USER" />
+        <result property="uRegDate" column="U_REG_DATE" />
+        <result property="uAutoAuthMailFlag" column="U_AUTO_AUTH_MAIL_FLAG" />
+        <result property="uEditorNames" column="U_EDITOR_NAMES" />
+        <result property="uFolderPath" column="U_FOLDER_PATH" />
+        <result property="uUpdateDate" column="U_UPDATE_DATE" />
+        <result property="uLastEditor" column="u_last_editor" />
+        
+        
+        <result property="maxLevel" column="C_MAX_LEVEL" />
+        <result property="feedbackCount" column="G_FEEDBACK_COUNT" />
+
+        <association property="regUserDetail" javaType="VUser">
+            <id property="userId" column="B_USER_ID" />
+            <result property="displayName" column="B_DISPLAY_NAME" />
+            <result property="comOrgId" column="B_COM_ORG_ID" />
+            <result property="orgId" column="B_ORG_ID" />
+            <result property="orgNm" column="B_ORG_NM" />
+            <result property="pstnCode" column="B_PSTN_CODE" />
+            <result property="pstnName" column="B_PSTN_NAME" />
+            <result property="levelCode" column="B_LEVEL_CODE" />
+            <result property="levelName" column="B_LEVEL_NAME" />
+            <result property="titleCode" column="B_TITLE_CODE" />
+            <result property="titleName" column="B_TITLE_NAME" />
+        </association>
+        <association property="docLink" javaType="DocLink">
+            <id property="rObjectId" column="D_R_OBJECT_ID" />
+            <result property="uCabinetCode" column="D_U_CABINET_CODE" />
+            <result property="uDocId" column="D_U_DOC_ID" />
+            <result property="uDocKey" column="D_U_DOC_KEY" />
+            <result property="uFolId" column="D_U_FOL_ID" />
+            <result property="uLinkType" column="D_U_LINK_TYPE" />
+            <result property="uCreateUser" column="D_U_CREATE_USER" />
+            <result property="uCreateDate" column="D_U_CREATE_DATE" />
+        </association>
+        <association property="copyOrgDetail" javaType="Doc">
+            <id property="rObjectId" column="E_R_OBJECT_ID" />
+            <result property="uDocKey" column="E_U_DOC_KEY" />
+            <result property="uCabinetCode" column="E_U_CABINET_CODE" />
+            <result property="objectName" column="E_OBJECT_NAME" />
+            <result property="uFolId" column="E_U_FOL_ID" />
+            <result property="uFolderPath" column="E_U_FOLDER_PATH" />
+        </association>
+        <association property="ownDeptDetail" javaType="VDept">
+            <result property="orgId" column="F_ORG_ID" />
+            <result property="orgNm" column="F_ORG_NM" />
+            <result property="comOrgId" column="F_COM_ORG_ID" />
+        </association>
+        <association property="closerDetail" javaType="VUser">
+            <id property="userId" column="H_USER_ID" />
+            <result property="displayName" column="H_DISPLAY_NAME" />
+            <result property="comOrgId" column="H_COM_ORG_ID" />
+            <result property="orgId" column="H_ORG_ID" />
+            <result property="orgNm" column="H_ORG_NM" />
+            <result property="pstnCode" column="H_PSTN_CODE" />
+            <result property="pstnName" column="H_PSTN_NAME" />
+            <result property="levelCode" column="H_LEVEL_CODE" />
+            <result property="levelName" column="H_LEVEL_NAME" />
+            <result property="titleCode" column="H_TITLE_CODE" />
+            <result property="titleName" column="H_TITLE_NAME" />
+        </association>
+        <association property="lockOwnerDetail" javaType="VUser">
+            <id property="userId" column="I_USER_ID" />
+            <result property="displayName" column="I_DISPLAY_NAME" />
+            <result property="comOrgId" column="I_COM_ORG_ID" />
+            <result property="orgId" column="I_ORG_ID" />
+            <result property="orgNm" column="I_ORG_NM" />
+            <result property="pstnCode" column="I_PSTN_CODE" />
+            <result property="pstnName" column="I_PSTN_NAME" />
+            <result property="levelCode" column="I_LEVEL_CODE" />
+            <result property="levelName" column="I_LEVEL_NAME" />
+            <result property="titleCode" column="I_TITLE_CODE" />
+            <result property="titleName" column="I_TITLE_NAME" />
+        </association>
+    </resultMap>
+    
+    
+    <resultMap id="DocDetailSearchMap"
+        type="com.dongkuksystems.dbox.models.type.doc.Doc">
+        <id property="searchRowNum" column="rowNum" />
+        <result property="rObjectId" column="R_OBJECT_ID" />
+        <result property="objectName" column="OBJECT_NAME" />
+        <result property="title" column="TITLE" />
+        <result property="rLockOwner" column="R_LOCK_OWNER" />
+        <result property="rContentSize" column="R_CONTENT_SIZE" />
+        <result property="uCabinetCode" column="U_CABINET_CODE" />
+        <result property="uPrCode" column="U_PR_CODE" />
+        <result property="uPrType" column="U_PR_TYPE" />
+        <result property="uDocKey" column="U_DOC_KEY" />
+        <result property="uFolId" column="U_FOL_ID" />
+        <result property="uSecLevel" column="U_SEC_LEVEL" />
+        <result property="uDocStatus" column="U_DOC_STATUS" />
+        <result property="uDocFlag" column="U_DOC_FLAG" />
+        <result property="uDeleteStatus" column="U_DELETE_STATUS" />
+        <result property="uWfDocYn" column="U_WF_DOC_YN" />
+        <result property="uClosedDate" column="U_CLOSED_DATE" />
+        <result property="uCloser" column="U_CLOSER" />
+        <result property="uPrivacyFlag" column="U_PRIVACY_FLAG" />
+        <result property="uPreserverFlag" column="U_PRESERVE_FLAG" />
+        <result property="uExpiredDate" column="U_EXPIRED_DATE" />
+        <result property="uCopyOrgId" column="U_COPY_ORG_ID" />
+        <result property="uFileExt" column="U_FILE_EXT" />
+        <result property="uDocTag" column="U_DOC_TAG" />
+        <result property="uDocClass" column="U_DOC_CLASS" />
+        <result property="uRegSource" column="U_REG_SOURCE" />
+        <result property="uRegUser" column="U_REG_USER" />
+        <result property="uRegDate" column="U_REG_DATE" />
+        <result property="uAutoAuthMailFlag" column="U_AUTO_AUTH_MAIL_FLAG" />
+        <result property="uEditorNames" column="U_EDITOR_NAMES" />
+        <result property="uFolderPath" column="U_FOLDER_PATH" />
+        <result property="uUpdateDate" column="U_UPDATE_DATE" />
+        <result property="uLastEditor" column="u_last_editor" />
+        
+        
+        <result property="maxLevel" column="C_MAX_LEVEL" />
+        <result property="feedbackCount" column="G_FEEDBACK_COUNT" />
+
+        <association property="regUserDetail" javaType="VUser">
+            <id property="userId" column="B_USER_ID" />
+            <result property="displayName" column="B_DISPLAY_NAME" />
+            <result property="comOrgId" column="B_COM_ORG_ID" />
+            <result property="orgId" column="B_ORG_ID" />
+            <result property="orgNm" column="B_ORG_NM" />
+            <result property="pstnCode" column="B_PSTN_CODE" />
+            <result property="pstnName" column="B_PSTN_NAME" />
+            <result property="levelCode" column="B_LEVEL_CODE" />
+            <result property="levelName" column="B_LEVEL_NAME" />
+            <result property="titleCode" column="B_TITLE_CODE" />
+            <result property="titleName" column="B_TITLE_NAME" />
+        </association>
+        <association property="docLink" javaType="DocLink">
+            <id property="rObjectId" column="D_R_OBJECT_ID" />
+            <result property="uCabinetCode" column="D_U_CABINET_CODE" />
+            <result property="uDocId" column="D_U_DOC_ID" />
+            <result property="uDocKey" column="D_U_DOC_KEY" />
+            <result property="uFolId" column="D_U_FOL_ID" />
+            <result property="uLinkType" column="D_U_LINK_TYPE" />
+            <result property="uCreateUser" column="D_U_CREATE_USER" />
+            <result property="uCreateDate" column="D_U_CREATE_DATE" />
+        </association>
+        <association property="copyOrgDetail" javaType="Doc">
+            <id property="rObjectId" column="E_R_OBJECT_ID" />
+            <result property="uDocKey" column="E_U_DOC_KEY" />
+            <result property="uCabinetCode" column="E_U_CABINET_CODE" />
+            <result property="objectName" column="E_OBJECT_NAME" />
+            <result property="uFolId" column="E_U_FOL_ID" />
+            <result property="uFolderPath" column="E_U_FOLDER_PATH" />
+        </association>
+        <association property="ownDeptDetail" javaType="VDept">
+            <result property="orgId" column="F_ORG_ID" />
+            <result property="orgNm" column="F_ORG_NM" />
+            <result property="comOrgId" column="F_COM_ORG_ID" />
+        </association>
+        <association property="closerDetail" javaType="VUser">
+            <id property="userId" column="H_USER_ID" />
+            <result property="displayName" column="H_DISPLAY_NAME" />
+            <result property="comOrgId" column="H_COM_ORG_ID" />
+            <result property="orgId" column="H_ORG_ID" />
+            <result property="orgNm" column="H_ORG_NM" />
+            <result property="pstnCode" column="H_PSTN_CODE" />
+            <result property="pstnName" column="H_PSTN_NAME" />
+            <result property="levelCode" column="H_LEVEL_CODE" />
+            <result property="levelName" column="H_LEVEL_NAME" />
+            <result property="titleCode" column="H_TITLE_CODE" />
+            <result property="titleName" column="H_TITLE_NAME" />
+        </association>
+        <association property="lockOwnerDetail" javaType="VUser">
+            <id property="userId" column="I_USER_ID" />
+            <result property="displayName" column="I_DISPLAY_NAME" />
+            <result property="comOrgId" column="I_COM_ORG_ID" />
+            <result property="orgId" column="I_ORG_ID" />
+            <result property="orgNm" column="I_ORG_NM" />
+            <result property="pstnCode" column="I_PSTN_CODE" />
+            <result property="pstnName" column="I_PSTN_NAME" />
+            <result property="levelCode" column="I_LEVEL_CODE" />
+            <result property="levelName" column="I_LEVEL_NAME" />
+            <result property="titleCode" column="I_TITLE_CODE" />
+            <result property="titleName" column="I_TITLE_NAME" />
+        </association>
+    </resultMap>
+
+    <resultMap id="DocRepeatingMap"
+        type="com.dongkuksystems.dbox.models.type.doc.DocRepeating">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="uEditor" column="U_EDITOR" />
+        <result property="rVersionLabel" column="R_VERSION_LABEL" />
+        <result property="uWfKey" column="U_WF_KEY" />
+        <result property="uWfSystem" column="U_WF_SYSTEM" />
+        <result property="uWfForm" column="U_WF_FORM" />
+        <result property="uWfTitle" column="U_WF_TITLE" />
+        <result property="uWfApprover" column="U_WF_APPROVER" />
+        <result property="uWfApprovalDate" column="U_WF_APPROVAL_DATE" />
+
+        <!-- // 성능 이슈가 있다면 association 제거하고 JOIN 쿼리로 대체. -->
+        <association property="approverDetail" column="{userId=u_wf_approver}" javaType="VUser"
+                     select="com.dongkuksystems.dbox.daos.table.etc.gwuser.GwUserMapper.selectOneByUserId" />
+    </resultMap>
+
+    <resultMap id="DocCreatorsMap" type="com.dongkuksystems.dbox.models.dto.type.data.DataCreatorDto">
+        <id property="rObjectId" column="r_object_id" />
+        <result property="displayName" column="display_name" />
+        <result property="comOrgId" column="com_org_id" />
+        <result property="orgNm" column="org_nm" />
+        <result property="pstnName" column="pstn_name" />
+        <result property="titleName" column="title_name" />
+        <result property="uUpdateDate" column="u_update_date" />
+    </resultMap>
+
+    <resultMap id="DocVersionListMap"
+        type="com.dongkuksystems.dbox.models.dto.type.doc.DocVersionListDto">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="objectName" column="OBJECT_NAME" />
+        <result property="contentSize" column="CONTENT_SIZE" />
+        <result property="uEditorNames" column="U_EDITOR_NAMES" />
+        <result property="approver" column="APPROVER" />
+        <result property="modifier" column="MODIFIER" />
+        <result property="modifyDate" column="MODIFY_DATE" />
+        <result property="uTakeoutFlag" column="U_TAKEOUT_FLAG" />
+        <result property="uVerKeepFlag" column="U_VER_KEEP_FLAG" />
+        <result property="rVersionLabel" column="R_VERSION_LABEL" />
+    </resultMap>
+
+        <resultMap id="DocLinkListMap"
+        type="com.dongkuksystems.dbox.models.dto.type.doc.DocLinkListDto">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="rObjectName" column="R_OBJECT_NAME" />
+        <result property="uCreateuser" column="U_CREATE_USER" />
+        <result property="uCreateTitleName" column="U_CREATE_TITLE_NAME" />
+        <result property="uCreateOrgNm" column="U_CREATE_ORG_NM" />
+        <result property="uWfSystem" column="U_WF_SYSTEM" />
+        <result property="uWfForm" column="U_Wf_FORM" />
+        <result property="uWfTitle" column="U_Wf_TITLE" />
+        <result property="uWfApprover" column="U_Wf_APPROVER" />
+        <result property="uWfApproverDate" column="U_WF_APPROVAL_DATE" />
+        <result property="uWfLink" column="U_WF_LINK" />
+
+
+    </resultMap>
+    
+        <resultMap id="DocLinkMap"
+        type="com.dongkuksystems.dbox.models.dto.type.doc.DocLinkDto">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="uCabinetCode" column="U_CABINET_CODE" />
+        <result property="uDocId" column="U_DOC_ID" />
+        <result property="uDocKey" column="U_DOC_KEY" />
+        <result property="uFolId" column="U_FOL_ID" />
+        <result property="uLinkType" column="U_LINK_TYPE" />
+        <result property="uCreateUser" column="U_CREATE_USER" />
+        <result property="uCreateDate" column="U_CREATE_DATE" />
+    </resultMap>
+
+    <resultMap id="DocImpDetailMap"
+        type="com.dongkuksystems.dbox.models.type.doc.Doc">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+        <result property="objectName" column="OBJECT_NAME" />
+        <result property="rLockOwner" column="R_LOCK_OWNER" />
+        <result property="rContentSize" column="R_CONTENT_SIZE" />
+        <result property="uCabinetCode" column="U_CABINET_CODE" />
+        <result property="uPrCode" column="U_PR_CODE" />
+        <result property="uPrType" column="U_PR_TYPE" />
+        <result property="uDocKey" column="U_DOC_KEY" />
+        <result property="uFolId" column="U_FOL_ID" />
+        <result property="uSecLevel" column="U_SEC_LEVEL" />
+        <result property="uDocStatus" column="U_DOC_STATUS" />
+        <result property="uDocFlag" column="U_DOC_FLAG" />
+        <result property="uDeleteStatus" column="U_DELETE_STATUS" />
+        <result property="uWfDocYn" column="U_WF_DOC_YN" />
+        <result property="uClosedDate" column="U_CLOSED_DATE" />
+        <result property="uCloser" column="U_CLOSER" />
+        <result property="uPrivacyFlag" column="U_PRIVACY_FLAG" />
+        <result property="uPreserverFlag" column="U_PRESERVE_FLAG" />
+        <result property="uExpiredDate" column="U_EXPIRED_DATE" />
+        <result property="uCopyOrgId" column="U_COPY_ORG_ID" />
+        <result property="uFileExt" column="U_FILE_EXT" />
+        <result property="uDocTag" column="U_DOC_TAG" />
+        <result property="uDocClass" column="U_DOC_CLASS" />
+        <result property="uRegSource" column="U_REG_SOURCE" />
+        <result property="uRegUser" column="U_REG_USER" />
+        <result property="uRegDate" column="U_REG_DATE" />
+        <result property="uAutoAuthMailFlag" column="U_AUTO_AUTH_MAIL_FLAG" />
+        <result property="uEditorNames" column="U_EDITOR_NAMES" />
+        <result property="uFolderPath" column="U_FOLDER_PATH" />
+        <result property="uUpdateDate" column="U_UPDATE_DATE" />
+
+        <result property="maxLevel" column="C_MAX_LEVEL" />
+
+        <association property="regUserDetail" javaType="VUser">
+            <id property="userId" column="B_USER_ID" />
+            <result property="displayName" column="B_DISPLAY_NAME" />
+            <result property="comOrgId" column="B_COM_ORG_ID" />
+            <result property="orgId" column="B_ORG_ID" />
+            <result property="orgNm" column="B_ORG_NM" />
+            <result property="pstnCode" column="B_PSTN_CODE" />
+            <result property="pstnName" column="B_PSTN_NAME" />
+            <result property="levelCode" column="B_LEVEL_CODE" />
+            <result property="levelName" column="B_LEVEL_NAME" />
+            <result property="titleCode" column="B_TITLE_CODE" />
+            <result property="titleName" column="B_TITLE_NAME" />
+        </association>
+        <association property="docLink" javaType="DocLink"> 
+            <id property="rObjectId" column="D_R_OBJECT_ID" />
+            <result property="uCabinetCode" column="D_U_CABINET_CODE" />
+            <result property="uDocId" column="D_U_DOC_ID" />
+            <result property="uDocKey" column="D_U_DOC_KEY" />
+            <result property="uFolId" column="D_U_FOL_ID" />
+            <result property="uLinkType" column="D_U_LINK_TYPE" />
+            <result property="uCreateUser" column="D_U_CREATE_USER" />
+            <result property="uCreateDate" column="D_U_CREATE_DATE" />
+        </association>
+        <association property="copyOrgDetail" javaType="Doc">
+            <id property="rObjectId" column="E_R_OBJECT_ID" />
+            <result property="uDocKey" column="E_U_DOC_KEY" />
+            <result property="uCabinetCode" column="E_U_CABINET_CODE" />
+            <result property="objectName" column="E_OBJECT_NAME" />
+            <result property="uFolderPath" column="E_U_FOLDER_PATH" />
+        </association>
+        <association property="ownDeptDetail" javaType="VDept">
+            <result property="orgId" column="F_ORG_ID" />
+            <result property="orgNm" column="F_ORG_NM" />
+            <result property="comOrgId" column="F_COM_ORG_ID" />
+        </association>
+    </resultMap>
+
+
+    <select id="selectOne" resultMap="DocMap">
+        SELECT
+            a.r_object_id,
+            a.object_name,
+	        a.title,
+	        a.r_lock_owner,
+            a.r_content_size,
+            a.u_cabinet_code,
+            a.u_pr_code,
+            a.u_pr_type,
+            a.u_doc_key,
+            a.u_fol_id,
+            a.u_sec_level,
+            a.u_doc_status,
+            a.u_doc_flag,
+            a.u_delete_status,
+            a.u_wf_doc_yn,
+            a.u_closed_date,
+            a.u_closer,
+            a.u_open_flag,
+            a.u_privacy_flag,
+            a.u_preserve_flag,
+            a.u_expired_date,
+            a.u_copy_org_id,
+            a.u_file_ext,
+            a.u_doc_tag,
+            a.u_doc_class,
+            a.u_reg_source,
+            a.u_reg_user,
+            a.u_reg_date,
+            a.u_auto_auth_mail_flag,
+            a.u_editor_names,
+            a.u_folder_path,
+            a.u_update_date,
+            a.u_takeout_flag,
+            a.u_ver_keep_flag,
+            b.org_id,
+            b.COM_ORG_ID 
+        FROM edms_doc_sp a
+        inner join edms_v_dept_info b on a.u_cabinet_code = b.u_cabinet_code
+        <where>
+            <if test="isUDocKey">
+                a.u_doc_key = #{rObjectId}
+                AND a.i_has_folder = 1
+            </if>
+            <if test="!isUDocKey">
+                a.r_object_id = #{rObjectId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectDetailOne" resultMap="DocDetailMap">
+        /* DBOX-PGM-DOC-006 | 지정한 문서 상세정보 조회 | 차소익 */
+        /* DBOX-PGM-DOC-007 */
+        WITH ug AS (
+            SELECT DISTINCT gs.group_name
+              FROM dm_group_sp gs,
+                   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+                           gr2.i_supergroups_names AS group_name
+                      FROM dm_group_r gr1,
+                           dm_group_r gr2
+                     WHERE 1=1
+                       AND gr1.r_object_id = gr2.r_object_id
+                       AND gr1.users_names IS NOT NULL
+                   ) gr3
+             WHERE 1=1
+               AND gr3.group_name = gs.group_name
+               AND gr3.i_all_users_names = #{userId}
+        )
+        , acl AS (
+            SELECT
+                acs.owner_name
+            ,   acs.object_name
+            ,   MAX(acr.r_accessor_permit) as max_level
+            FROM
+                dm_acl_s acs
+            ,   dm_acl_r acr
+            ,   (
+                    SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp a
+                    WHERE
+		            <if test="isUDocKey">
+		                a.u_doc_key = #{rObjectId}
+		                AND a.i_has_folder = 1
+		            </if>
+		            <if test="!isUDocKey">
+		                a.r_object_id = #{rObjectId}
+		            </if>
+                ) a    
+             WHERE 1 = 1
+             AND acs.r_object_id = acr.r_object_id
+             AND a.acl_domain = acs.owner_name AND a.acl_name = acs.object_name
+             AND (acr.r_accessor_name = #{userId} OR acr.r_accessor_name IN (SELECT group_name FROM ug))
+             GROUP BY acs.owner_name, acs.object_name
+        )
+        SELECT
+            a.r_object_id
+        ,	a.object_name
+		,   a.title
+		,	a.r_lock_owner
+        ,	a.r_content_size
+        ,	a.u_cabinet_code
+        ,   a.u_pr_code
+        ,   a.u_pr_type
+        ,	a.u_doc_key
+        ,	a.u_fol_id
+        ,	a.u_sec_level
+        ,	a.u_doc_status
+        ,	a.u_doc_flag
+        ,	a.u_delete_status
+        ,	a.u_wf_doc_yn
+        ,	a.u_closed_date
+        ,	a.u_closer
+        ,	a.u_open_flag
+        ,	a.u_privacy_flag
+        ,	a.u_preserve_flag
+        ,	a.u_expired_date
+        ,	a.u_copy_org_id
+        ,	a.u_file_ext
+        ,	a.u_doc_tag
+        ,	a.u_doc_class
+        ,	a.u_reg_source
+        ,	a.u_reg_user
+        ,	a.u_reg_date
+        ,	a.u_auto_auth_mail_flag
+        ,	a.u_editor_names
+        ,	a.u_folder_path
+        ,	a.u_update_date
+        ,   a.u_last_editor
+        ,   b.user_id					AS b_user_id
+        ,   b.display_name				AS b_display_name
+        ,   b.com_org_id				AS b_com_org_id
+        ,   b.org_id					AS b_org_id
+        ,   b.org_nm					AS b_org_nm
+        ,   b.pstn_code					AS b_pstn_code
+        ,   b.pstn_name					AS b_pstn_name
+        ,   b.level_code				AS b_level_code
+        ,   b.level_name				AS b_level_name
+        ,   b.title_code				AS b_title_code
+        ,   b.title_name				AS b_title_name
+        ,   CASE
+                WHEN (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) THEN GREATEST(c.max_level, a.owner_permit)
+                ELSE c.max_level
+            END							AS c_max_level
+        ,	d.r_object_id				AS d_r_object_id
+        ,	d.u_cabinet_code			AS d_u_cabinet_code
+        ,	d.u_doc_id					AS d_u_doc_id
+        ,	d.u_doc_key					AS d_u_doc_key
+        ,	d.u_fol_id					AS d_u_fol_id
+        ,	d.u_link_type				AS d_u_link_type
+        ,	d.u_create_user				AS d_u_create_user
+        ,	d.u_create_date				AS d_u_create_date
+        ,	e.r_object_id				AS e_r_object_id
+        ,	e.u_doc_key					AS e_u_doc_key
+        ,	e.u_cabinet_code			AS e_u_cabinet_code
+        ,	e.object_name				AS e_object_name
+        ,	e.u_fol_id                  AS e_u_fol_id
+        ,	e.u_folder_path				AS e_u_folder_path
+        ,   f.org_id                    AS f_org_id
+        ,   f.org_nm                    AS f_org_nm
+        ,   f.com_org_id                AS f_com_org_id
+        ,   h.user_id                   AS h_user_id
+        ,   h.display_name              AS h_display_name
+        ,   h.com_org_id                AS h_com_org_id
+        ,   h.org_id                    AS h_org_id
+        ,   h.org_nm                    AS h_org_nm
+        ,   h.pstn_code                 AS h_pstn_code
+        ,   h.pstn_name                 AS h_pstn_name
+        ,   h.level_code                AS h_level_code
+        ,   h.level_name                AS h_level_name
+        ,   h.title_code                AS h_title_code
+        ,   h.title_name                AS h_title_name
+        ,   i.user_id                   AS i_user_id
+        ,   i.display_name              AS i_display_name
+        ,   i.com_org_id                AS i_com_org_id
+        ,   i.org_id                    AS i_org_id
+        ,   i.org_nm                    AS i_org_nm
+        ,   i.pstn_code                 AS i_pstn_code
+        ,   i.pstn_name                 AS i_pstn_name
+        ,   i.level_code                AS i_level_code
+        ,   i.level_name                AS i_level_name
+        ,   i.title_code                AS i_title_code
+        ,   i.title_name                AS i_title_name
+        FROM
+                        edms_doc_sp         a
+        LEFT OUTER JOIN edms_v_user_info    b ON a.u_reg_user = b.user_id
+		LEFT OUTER JOIN acl                 c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+		LEFT OUTER JOIN edms_doc_link_s     d ON d.u_doc_key = a.u_doc_key
+		LEFT OUTER JOIN edms_doc_sp         e ON a.u_copy_org_id = e.r_object_id
+		LEFT OUTER JOIN edms_v_dept_info    f ON a.u_cabinet_code = f.u_cabinet_code
+		LEFT OUTER JOIN edms_v_user_info    h ON a.u_closer = h.user_id
+		LEFT OUTER JOIN edms_v_user_info    i ON a.r_lock_owner = i.user_id
+        <where>
+            <if test="isUDocKey">
+                a.u_doc_key = #{rObjectId}
+        		AND a.i_has_folder = 1
+            </if>
+            <if test="!isUDocKey">
+                a.r_object_id = #{rObjectId}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="selectRepeatingOne" resultMap="DocRepeatingMap">
+        SELECT
+            b.r_object_id,
+            COALESCE(b.u_editor, a.r_creator_name) u_editor,
+            b.r_version_label,
+            b.u_wf_key,
+            b.u_wf_system,
+            b.u_wf_form,
+            b.u_wf_title,
+            b.u_wf_approval_date,
+            b.u_wf_approver
+        FROM
+            edms_doc_sp  a INNER JOIN
+            edms_doc_rp b ON a.r_object_id = b.r_object_id 
+        WHERE
+            <if test="isUDocKey">
+                a.u_doc_key = #{rObjectId}
+            </if>
+            <if test="!isUDocKey">
+                a.r_object_id = #{rObjectId}
+            </if>
+    </select>
+    
+    <select id="selRepeatingOne" resultMap="DocRepeatingMap">
+        SELECT
+            b.r_object_id,
+            b.u_editor,
+            b.r_version_label,
+            b.u_wf_key,
+            b.u_wf_system,
+            b.u_wf_form,
+            b.u_wf_title,
+            b.u_wf_approval_date,
+            b.u_wf_approver,
+            b.i_position
+        FROM
+            edms_doc_s  a INNER JOIN
+            edms_doc_rp b ON a.r_object_id = b.r_object_id 
+        WHERE
+            a.r_object_id = #{rObjectId} AND
+            b.i_position = -1
+           
+    </select>
+    
+    <select id="repeatingOneNotCurrent" resultMap="DocRepeatingMap">
+        SELECT
+            r_object_id,
+            u_editor,
+            r_version_label,
+            u_wf_key,
+            u_wf_system,
+            u_wf_form,
+            u_wf_title,
+            u_wf_approval_date,
+            u_wf_approver
+        FROM
+            edms_doc_rp
+        WHERE
+            r_object_id = #{rObjectId} AND
+            r_version_label NOT IN ('CURRENT')
+            
+    </select>
+
+    <select id="selectRepeatingListInternal"
+        resultMap="DocRepeatingMap">
+        SELECT
+        u_editor,
+        r_version_label,
+        u_wf_key,
+        u_wf_system,
+        u_wf_form,
+        u_wf_title,
+        u_wf_approval_date,
+        u_wf_approver
+        FROM
+        edms_doc_rp
+        <where>
+            r_object_id = #{objectId}
+        </where>
+    </select>
+
+    <select id="selectRepeatingList" resultMap="DocRepeatingMap">
+        SELECT
+            r_object_id,
+            u_editor,
+            r_version_label,
+            u_wf_key,
+            u_wf_system,
+            u_wf_form,
+            u_wf_title,
+            u_wf_approval_date,
+            u_wf_approver
+        FROM
+            edms_doc_rp
+        WHERE
+            r_object_id IN (
+                SELECT
+                    r_object_id
+                FROM
+                    edms_doc_s
+                <where>
+                    u_delete_status = ' '
+                    <if test="doc.uCabinetCode != null">
+                        AND u_cabinet_code = #{doc.uCabinetCode}
+                    </if>
+                    <if test="doc.uFolId != null">
+                        AND u_fol_id = #{doc.uFolId}
+                    </if>
+                    <if test="doc.hamId != null">
+                        AND u_pr_code = #{doc.hamId}
+                    </if>
+                    <if test="doc.objectName != null">
+                        AND object_name = #{doc.objectName}
+                    </if>
+                </where>
+            )
+    </select>
+
+    <select id="selectAuthorizedRepeatingList" resultMap="DocRepeatingMap">
+        WITH ug AS (
+            SELECT DISTINCT gs.group_name
+              FROM dm_group_sp gs,
+                   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+                           gr2.i_supergroups_names AS group_name
+                      FROM dm_group_r gr1,
+                           dm_group_r gr2
+                     WHERE 1=1
+                       AND gr1.r_object_id = gr2.r_object_id
+                       AND gr1.users_names IS NOT NULL
+                   ) gr3
+             WHERE 1=1
+               AND gr3.group_name = gs.group_name
+               AND gr3.i_all_users_names = #{userId}
+        )
+        , acl AS (
+            SELECT
+                acs.owner_name
+            ,   acs.object_name
+            ,   MAX(acr.r_accessor_permit) as max_level
+            FROM
+                dm_acl_s acs
+            ,   dm_acl_r acr
+            ,   (
+                    SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp a
+                    WHERE
+                        a.i_has_folder = 1
+                    AND a.u_delete_status = ' '
+                    <if test="doc.uCabinetCode != null">
+                        AND a.u_cabinet_code = #{doc.uCabinetCode}
+                    </if>
+                    <if test="doc.uFolId != null">
+                        AND a.u_fol_id = #{doc.uFolId}
+                    </if>
+                    <if test="doc.uPrCode != null">
+                        AND a.u_pr_code = #{doc.uPrCode}
+                    </if>
+                    <if test="doc.uPrType != null">
+                        AND a.u_pr_type = #{doc.uPrType}
+                    </if>
+                    
+                    UNION ALL
+                    
+                    SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp         a
+                    ,   edms_doc_link_sp    d
+                    WHERE             
+                        a.u_doc_key = d.u_doc_key
+                    AND a.i_has_folder = 1
+                    AND a.u_delete_status = ' '
+                    <if test="doc.uCabinetCode != null">
+                        AND d.u_cabinet_code = #{doc.uCabinetCode}
+                    </if>
+                    <if test="doc.uFolId != null">
+                        AND d.u_fol_id = #{doc.uFolId}
+                    </if>
+                    <if test="doc.uPrCode != null">
+                        AND a.u_pr_code = #{doc.uPrCode}
+                    </if>
+                    <if test="doc.uPrType != null">
+                        AND a.u_pr_type = #{doc.uPrType}
+                    </if>
+                ) a    
+             WHERE 1 = 1
+             AND acs.r_object_id = acr.r_object_id
+             AND a.acl_domain = acs.owner_name AND a.acl_name = acs.object_name
+             AND (acr.r_accessor_name = #{userId} OR acr.r_accessor_name IN (SELECT group_name FROM ug))
+             GROUP BY acs.owner_name, acs.object_name
+        )
+        SELECT
+            r_object_id,
+            u_editor,
+            r_version_label,
+            u_wf_key,
+            u_wf_system,
+            u_wf_form,
+            u_wf_title,
+            u_wf_approval_date,
+            u_wf_approver
+        FROM
+            edms_doc_rp
+        WHERE
+            r_object_id IN (
+                SELECT
+                    a.r_object_id
+                FROM
+                    edms_doc_sp	a LEFT OUTER JOIN
+                    acl			c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+                <where>
+                    a.i_has_folder = 1
+                AND	a.u_delete_status = ' '
+                AND	(
+                        (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 2)
+                    OR	c.max_level >= COALESCE(#{level}, 2)
+                    )
+                    <if test="doc.uCabinetCode != null">
+                        AND a.u_cabinet_code = #{doc.uCabinetCode}
+                    </if>
+                    <if test="doc.uFolId != null">
+                        AND a.u_fol_id = #{doc.uFolId}
+                    </if>
+                    <if test="doc.uPrCode != null">
+                        AND a.u_pr_code = #{doc.uPrCode}
+                    </if>
+                    <if test="doc.uPrType != null">
+                        AND a.u_pr_type = #{doc.uPrType}
+                    </if>
+                </where>
+
+                UNION ALL
+
+                SELECT
+                    a.r_object_id
+                FROM
+                    edms_doc_link_s		d INNER JOIN
+                    edms_doc_sp			a ON d.u_doc_key = a.u_doc_key  LEFT OUTER JOIN
+                    acl					c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+                <where>
+                    a.i_has_folder = 1
+                AND	a.u_delete_status = ' '
+                AND	(
+                        (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 2)
+                    OR	c.max_level >= COALESCE(#{level}, 2)
+                    )
+                    <if test="doc.uCabinetCode != null">
+                        AND d.u_cabinet_code = #{doc.uCabinetCode}
+                    </if>
+                    <if test="doc.uFolId != null">
+                        AND d.u_fol_id = #{doc.uFolId}
+                    </if>
+                    <if test="doc.uPrCode != null">
+                        AND a.u_pr_code = #{doc.uPrCode}
+                    </if>
+                    <if test="doc.uPrType != null">
+                        AND a.u_pr_type = #{doc.uPrType}
+                    </if>
+                </where>
+            )
+    </select>
+
+    <select id="selectListByPrCode" resultMap="DocMap">
+        SELECT
+            a.*,
+            b.org_id
+        FROM edms_doc_sp a
+        inner join edms_v_dept_info b on a.u_cabinet_code = b.u_cabinet_code
+        <where>
+            a.u_pr_code = #{uPrCode} and
+            a.u_delete_status NOT IN ('D')
+        </where>
+    </select>
+
+    <select id="selectList" resultMap="DocMap">
+        select
+            r_object_id,
+            object_name,
+			title,
+			r_lock_owner,
+            r_content_size,
+            u_cabinet_code,
+            u_pr_code,
+            u_pr_type,
+            u_doc_key,
+            u_fol_id,
+            u_sec_level,
+            u_doc_status,
+            u_doc_flag,
+            u_delete_status,
+            u_wf_doc_yn,
+            u_closed_date,
+            u_closer,
+            u_open_flag,
+            u_privacy_flag,
+            u_preserve_flag,
+            u_expired_date,
+            u_copy_org_id,
+            u_file_ext,
+            u_doc_tag,
+            u_doc_class,
+            u_reg_source,
+            u_reg_user,
+            u_reg_date,
+            u_auto_auth_mail_flag,
+            u_editor_names,
+            u_folder_path,
+            u_update_date
+        from edms_doc_sp
+        <where>
+            1=1 
+            <if test="doc.uCabinetCode != null">
+                AND U_CABINET_CODE = #{doc.uCabinetCode}
+            </if>
+            <if test="doc.uFolId != null">
+                AND U_FOL_ID = #{doc.uFolId}
+            </if>
+            <if test="doc.hamId != null">
+                AND u_pr_code = #{doc.hamId}
+            </if>
+            <if test="doc.objectName != null">
+                AND object_name = #{doc.objectName}
+            </if>
+            <if test="doc.uFileExt != null">
+                AND u_file_ext = #{doc.uFileExt}
+            </if>
+            <if test="doc.iHasFolder != null">
+                AND i_has_folder = #{doc.iHasFolder}
+            </if>
+            <if test="doc.uPrCode != null">
+                AND u_pr_code = #{doc.uPrCode}
+            </if>
+            <if test="doc.uDocKey != null">
+                AND u_doc_key = #{doc.uDocKey}
+            </if>
+            <choose>
+            	<when test="doc.uDeleteStatus = null or doc.uDeleteStatus = ' '">
+	                AND U_DELETE_STATUS = ' '
+            	</when>
+            	<otherwise>
+                	AND U_DELETE_STATUS = #{doc.uDeleteStatus}
+            	</otherwise>
+            </choose> 
+        </where>
+    </select>
+
+    <select id="selectAuthorizedDetailList" resultMap="DocDetailMap">
+        /* DBOX-PGM-DOC-002 | 지정한 폴더 하위의 권한있는 문서(링크문서 포함) 리스트 조회 | 차소익 */
+        WITH ug AS (
+            SELECT DISTINCT gs.group_name
+              FROM dm_group_sp gs,
+                   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+                           gr2.i_supergroups_names AS group_name
+                      FROM dm_group_r gr1,
+                           dm_group_r gr2
+                     WHERE 1=1
+                       AND gr1.r_object_id = gr2.r_object_id
+                       AND gr1.users_names IS NOT NULL
+                   ) gr3
+             WHERE 1=1
+               AND gr3.group_name = gs.group_name
+               AND gr3.i_all_users_names = #{userId}
+        )
+        , acl AS (
+            SELECT
+                acs.owner_name
+            ,   acs.object_name
+            ,   MAX(acr.r_accessor_permit) as max_level
+            FROM
+                dm_acl_s acs
+            ,   dm_acl_r acr
+            ,   (
+                    SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp a
+                    WHERE
+                        a.i_has_folder = 1
+                    AND a.u_delete_status = ' '
+		            <if test="doc.uCabinetCode != null">
+		                AND a.u_cabinet_code = #{doc.uCabinetCode}
+		            </if>
+		            <if test="doc.uFolId != null">
+		                AND a.u_fol_id = #{doc.uFolId}
+		            </if>
+		            <if test="doc.uPrCode != null">
+		                AND a.u_pr_code = #{doc.uPrCode}
+		            </if>
+		            <if test="doc.uPrType != null">
+		                AND a.u_pr_type = #{doc.uPrType}
+		            </if>
+		            
+		            UNION ALL
+		            
+                    SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp         a
+                    ,   edms_doc_link_sp    d
+                    WHERE             
+                        a.u_doc_key = d.u_doc_key
+                    AND a.i_has_folder = 1
+                    AND a.u_delete_status = ' '
+                    <if test="doc.uCabinetCode != null">
+                        AND d.u_cabinet_code = #{doc.uCabinetCode}
+                    </if>
+                    <if test="doc.uFolId != null">
+                        AND d.u_fol_id = #{doc.uFolId}
+                    </if>
+                    <if test="doc.uPrCode != null">
+                        AND a.u_pr_code = #{doc.uPrCode}
+                    </if>
+                    <if test="doc.uPrType != null">
+                        AND a.u_pr_type = #{doc.uPrType}
+                    </if>
+                ) a    
+             WHERE 1 = 1
+             AND acs.r_object_id = acr.r_object_id
+             AND a.acl_domain = acs.owner_name AND a.acl_name = acs.object_name
+             AND (acr.r_accessor_name = #{userId} OR acr.r_accessor_name IN (SELECT group_name FROM ug))
+             GROUP BY acs.owner_name, acs.object_name
+        )
+        SELECT
+            *
+        FROM (
+	        SELECT
+	            a.r_object_id
+	        ,   a.object_name
+	        ,   a.title
+	        ,   a.r_lock_owner
+	        ,   a.r_content_size
+	        ,   a.u_cabinet_code
+	        ,   a.u_pr_code
+	        ,   a.u_pr_type
+	        ,   a.u_doc_key
+	        ,   a.u_fol_id
+	        ,   a.u_sec_level
+	        ,   a.u_doc_status
+	        ,   a.u_doc_flag
+	        ,   a.u_delete_status
+	        ,   a.u_wf_doc_yn
+	        ,   a.u_closed_date
+	        ,   a.u_closer
+	        ,   a.u_open_flag
+	        ,   a.u_privacy_flag
+	        ,   a.u_preserve_flag
+	        ,   a.u_expired_date
+	        ,   a.u_copy_org_id
+	        ,   a.u_file_ext
+	        ,   a.u_doc_tag
+	        ,   a.u_doc_class
+	        ,   a.u_reg_source
+	        ,   a.u_reg_user
+	        ,   a.u_reg_date
+	        ,   a.u_auto_auth_mail_flag
+	        ,   a.u_editor_names
+	        ,   a.u_folder_path
+	        ,   a.u_update_date
+	        ,   b.user_id                       AS b_user_id
+	        ,   b.display_name                  AS b_display_name
+	        ,   b.com_org_id                    AS b_com_org_id
+	        ,   b.org_id                        AS b_org_id
+	        ,   b.org_nm                        AS b_org_nm
+	        ,   b.pstn_code                     AS b_pstn_code
+	        ,   b.pstn_name                     AS b_pstn_name
+	        ,   b.level_code                    AS b_level_code
+	        ,   b.level_name                    AS b_level_name
+	        ,   b.title_code                    AS b_title_code
+	        ,   b.title_name                    AS b_title_name
+	        ,   CASE
+	                WHEN (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) THEN GREATEST(c.max_level, a.owner_permit)
+	                ELSE c.max_level
+	            END                             AS c_max_level
+	        ,   NULL                            AS d_r_object_id
+	        ,   NULL                            AS d_u_cabinet_code
+	        ,   NULL                            AS d_u_doc_id
+	        ,   NULL                            AS d_u_doc_key
+	        ,   NULL                            AS d_u_fol_id
+	        ,   NULL                            AS d_u_link_type
+	        ,   NULL                            AS d_u_create_user
+	        ,   NULL                            AS d_u_create_date
+	        ,   f.org_id                        AS f_org_id
+	        ,   f.org_nm                        AS f_org_nm
+	        ,   f.com_org_id                    AS f_com_org_id
+	        ,   COALESCE(g.feedback_count, 0)   AS g_feedback_count
+	        ,   h.user_id                       AS h_user_id
+	        ,   h.display_name                  AS h_display_name
+	        ,   h.com_org_id                    AS h_com_org_id
+	        ,   h.org_id                        AS h_org_id
+	        ,   h.org_nm                        AS h_org_nm
+	        ,   h.pstn_code                     AS h_pstn_code
+	        ,   h.pstn_name                     AS h_pstn_name
+	        ,   h.level_code                    AS h_level_code
+	        ,   h.level_name                    AS h_level_name
+	        ,   h.title_code                    AS h_title_code
+	        ,   h.title_name                    AS h_title_name
+	        ,   i.user_id                       AS i_user_id
+	        ,   i.display_name                  AS i_display_name
+	        ,   i.com_org_id                    AS i_com_org_id
+	        ,   i.org_id                        AS i_org_id
+	        ,   i.org_nm                        AS i_org_nm
+	        ,   i.pstn_code                     AS i_pstn_code
+	        ,   i.pstn_name                     AS i_pstn_name
+	        ,   i.level_code                    AS i_level_code
+	        ,   i.level_name                    AS i_level_name
+	        ,   i.title_code                    AS i_title_code
+	        ,   i.title_name                    AS i_title_name
+	        FROM
+	                            edms_doc_sp         a
+	            LEFT OUTER JOIN edms_v_user_info    b ON a.u_last_editor = b.user_id <!-- 최신작성자 표시를 위해 u_reg_user 대신 r_creator_name으로 조인 -->
+	            LEFT OUTER JOIN edms_v_dept_info    f ON a.u_cabinet_code = f.u_cabinet_code
+	            LEFT OUTER JOIN (
+	                SELECT
+	                    ga.u_doc_key
+	                ,   COUNT(*)        AS feedback_count
+	                FROM
+	                                    edms_feedback_s gb
+	                    LEFT OUTER JOIN edms_doc_sp     ga ON ga.u_doc_key = gb.u_doc_key
+	                WHERE
+	                    gb.u_level = 0
+	                AND ga.i_has_folder = 1
+	                AND ga.u_delete_status = ' '
+	                    <if test="doc.uCabinetCode != null">
+	                    AND ga.u_cabinet_code = #{doc.uCabinetCode}
+	                    </if>
+	                    <if test="doc.uFolId != null">
+	                    AND ga.u_fol_id = #{doc.uFolId}
+	                    </if>
+	                    <if test="doc.uPrCode != null">
+	                    AND ga.u_pr_code = #{doc.uPrCode}
+	                    </if>
+	                    <if test="doc.uPrType != null">
+	                    AND ga.u_pr_type = #{doc.uPrType}
+	                    </if>
+	                GROUP BY ga.u_doc_key
+	            )                                   g ON a.u_doc_key = g.u_doc_key
+	            LEFT OUTER JOIN edms_v_user_info    h ON a.u_closer = h.user_id
+	            LEFT OUTER JOIN edms_v_user_info    i ON a.r_lock_owner = i.user_id
+	            LEFT OUTER JOIN acl                 c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+	        <where>
+	            a.i_has_folder = 1
+	        AND a.u_delete_status = ' '
+	        AND (
+	                (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 2)
+	            OR  c.max_level >= COALESCE(#{level}, 2)
+	            )
+	            <if test="doc.uCabinetCode != null">
+	                AND a.u_cabinet_code = #{doc.uCabinetCode}
+	            </if>
+	            <if test="doc.uFolId != null">
+	                AND a.u_fol_id = #{doc.uFolId}
+	            </if>
+	            <if test="doc.uPrCode != null">
+	                AND a.u_pr_code = #{doc.uPrCode}
+	            </if>
+	            <if test="doc.uPrType != null">
+	                AND a.u_pr_type = #{doc.uPrType}
+	            </if>
+	        </where>
+	
+	        <!-- 링크파일 조회 -->
+	        UNION ALL
+	
+	        SELECT
+	            a.r_object_id
+	        ,   a.object_name
+	        ,   a.title
+	        ,   a.r_lock_owner
+	        ,   a.r_content_size
+	        ,   a.u_cabinet_code
+	        ,   a.u_pr_code
+	        ,   a.u_pr_type
+	        ,   a.u_doc_key
+	        ,   a.u_fol_id
+	        ,   a.u_sec_level
+	        ,   a.u_doc_status
+	        ,   a.u_doc_flag
+	        ,   a.u_delete_status
+	        ,   a.u_wf_doc_yn
+	        ,   a.u_closed_date
+	        ,   a.u_closer
+	        ,   a.u_open_flag
+	        ,   a.u_privacy_flag
+	        ,   a.u_preserve_flag
+	        ,   a.u_expired_date
+	        ,   a.u_copy_org_id
+	        ,   a.u_file_ext
+	        ,   a.u_doc_tag
+	        ,   a.u_doc_class
+	        ,   a.u_reg_source
+	        ,   a.u_reg_user
+	        ,   a.u_reg_date
+	        ,   a.u_auto_auth_mail_flag
+	        ,   a.u_editor_names
+	        ,   a.u_folder_path
+	        ,   a.u_update_date
+	        ,   b.user_id                   AS b_user_id
+	        ,   b.display_name              AS b_display_name
+	        ,   b.com_org_id                AS b_com_org_id
+	        ,   b.org_id                    AS b_org_id
+	        ,   b.org_nm                    AS b_org_nm
+	        ,   b.pstn_code                 AS b_pstn_code
+	        ,   b.pstn_name                 AS b_pstn_name
+	        ,   b.level_code                AS b_level_code
+	        ,   b.level_name                AS b_level_name
+	        ,   b.title_code                AS b_title_code
+	        ,   b.title_name                AS b_title_name
+	        ,   CASE
+	                WHEN (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) THEN GREATEST(c.max_level, a.owner_permit)
+	                ELSE c.max_level
+	            END                         AS c_max_level
+	        ,   d.r_object_id               AS d_r_object_id
+	        ,   d.u_cabinet_code            AS d_u_cabinet_code
+	        ,   d.u_doc_id                  AS d_u_doc_id
+	        ,   d.u_doc_key                 AS d_u_doc_key
+	        ,   d.u_fol_id                  AS d_u_fol_id
+	        ,   d.u_link_type               AS d_u_link_type
+	        ,   d.u_create_user             AS d_u_create_user
+	        ,   d.u_create_date             AS d_u_create_date
+	        ,   f.org_id                    AS f_org_id
+	        ,   f.org_nm                    AS f_org_nm
+	        ,   f.com_org_id                AS f_com_org_id
+	        ,   g.feedback_count            AS g_feedback_count
+	        ,   h.user_id                   AS h_user_id
+	        ,   h.display_name              AS h_display_name
+	        ,   h.com_org_id                AS h_com_org_id
+	        ,   h.org_id                    AS h_org_id
+	        ,   h.org_nm                    AS h_org_nm
+	        ,   h.pstn_code                 AS h_pstn_code
+	        ,   h.pstn_name                 AS h_pstn_name
+	        ,   h.level_code                AS h_level_code
+	        ,   h.level_name                AS h_level_name
+	        ,   h.title_code                AS h_title_code
+	        ,   h.title_name                AS h_title_name
+	        ,   i.user_id                   AS i_user_id
+	        ,   i.display_name              AS i_display_name
+	        ,   i.com_org_id                AS i_com_org_id
+	        ,   i.org_id                    AS i_org_id
+	        ,   i.org_nm                    AS i_org_nm
+	        ,   i.pstn_code                 AS i_pstn_code
+	        ,   i.pstn_name                 AS i_pstn_name
+	        ,   i.level_code                AS i_level_code
+	        ,   i.level_name                AS i_level_name
+	        ,   i.title_code                AS i_title_code
+	        ,   i.title_name                AS i_title_name
+	        FROM
+	                            edms_doc_link_s     d
+	            INNER JOIN      edms_doc_sp         a ON d.u_doc_key = a.u_doc_key
+	            LEFT OUTER JOIN edms_v_user_info    b ON a.r_creator_name = b.user_id
+	            LEFT OUTER JOIN edms_v_dept_info    f ON a.u_cabinet_code = f.u_cabinet_code
+	            LEFT OUTER JOIN (
+	                SELECT
+	                    ga.u_doc_key
+	                ,   COUNT(*)        AS feedback_count
+	                FROM
+	                                    edms_feedback_s gb
+	                    LEFT OUTER JOIN edms_doc_sp     ga ON ga.u_doc_key = gb.u_doc_key
+	                    INNER JOIN      edms_doc_link_s gd ON ga.u_doc_key = gd.u_doc_key
+	                WHERE
+	                    gb.u_level = 0
+	                AND ga.i_has_folder = 1
+	                AND ga.u_delete_status = ' '
+	                    <if test="doc.uCabinetCode != null">
+	                    AND gd.u_cabinet_code = #{doc.uCabinetCode}
+	                    </if>
+	                    <if test="doc.uFolId != null">
+	                    AND gd.u_fol_id = #{doc.uFolId}
+	                    </if>
+	                    <if test="doc.uPrCode != null">
+	                    AND ga.u_pr_code = #{doc.uPrCode}
+	                    </if>
+	                    <if test="doc.uPrType != null">
+	                    AND ga.u_pr_type = #{doc.uPrType}
+	                    </if>
+	                GROUP BY ga.u_doc_key
+	            )                                   g ON a.u_doc_key = g.u_doc_key
+	            LEFT OUTER JOIN edms_v_user_info    h ON a.u_closer = h.user_id
+	            LEFT OUTER JOIN edms_v_user_info    i ON a.r_lock_owner = i.user_id
+	            LEFT OUTER JOIN acl                 c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+	        <where>
+	            a.i_has_folder = 1
+	        AND a.u_delete_status = ' '
+	        AND (
+	                (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 2)
+	            OR  c.max_level >= COALESCE(#{level}, 2)
+	            )
+	            <if test="doc.uCabinetCode != null">
+	                AND d.u_cabinet_code = #{doc.uCabinetCode}
+	            </if>
+	            <if test="doc.uFolId != null">
+	                AND d.u_fol_id = #{doc.uFolId}
+	            </if>
+	            <if test="doc.uPrCode != null">
+	                AND a.u_pr_code = #{doc.uPrCode}
+	            </if>
+	            <if test="doc.uPrType != null">
+	                AND a.u_pr_type = #{doc.uPrType}
+	            </if>
+	        </where>
+        )
+		ORDER BY (
+		    CASE
+		        WHEN ASCII(SUBSTRING(object_name, 1, 1)) >= 48 AND ASCII(SUBSTRING(object_name, 1, 1)) <![CDATA[<=]]> 57  THEN 1 /* 숫자 */
+		        WHEN ASCII(SUBSTRING(object_name, 1, 1)) >= 65 AND ASCII(SUBSTRING(object_name, 1, 1)) <![CDATA[<=]]> 119 THEN 2 /* 영어 */
+		        WHEN ASCII(SUBSTRING(object_name, 1, 1)) >= 128                                                           THEN 3 /* 한글 */
+		        ELSE 0 /* 기타(특수문자) */
+		    END
+		), object_name
+    </select>
+
+    <select id="selectDocPathList" resultMap="DocPathMap">
+        with recursive VIEWNAME as(
+        select
+        a.u_fol_name,
+        cast(concat('/',
+        a.u_fol_name) as character varying(1000) ) as fol_path,
+        a.r_object_id,
+        a.u_up_fol_id,
+        a.u_fol_status,
+        a.u_fol_type
+        from
+        edms_folder_sp a
+        <where>
+            <if test="doc.uCabinetCode != null">
+                AND a.u_cabinet_code = #{doc.uCabinetCode}
+            </if>
+            <if test="doc.uFolId != null">
+                AND a.u_up_fol_id = #{doc.uFolId}
+            </if>
+            <if test="doc.hamId != null">
+                AND a.u_pr_code = #{doc.hamId}
+            </if>
+            <if test="doc.objectName != null">
+                AND a.object_name = #{doc.objectName}
+            </if>
+            <if test="doc.iHasFolder != null">
+                AND a.i_has_folder = #{doc.iHasFolder}
+            </if>
+        </where>
+        union all
+        select
+        c.u_fol_name,
+        cast(concat(b.fol_path, '/', c.u_fol_name)
+        as character varying(1000) ) as fol_path,
+        c.r_object_id,
+        c.u_up_fol_id,
+        c.u_fol_status,
+        c.u_fol_type
+        from
+        VIEWNAME b,
+        edms_folder_sp c
+        where
+        b.r_object_id = c.u_up_fol_id )
+        select
+        a.fol_path, b.object_name,
+        cast(concat(a.fol_path, '/', b.object_name) as
+        character varying(1000)
+        ) as full_path
+        from
+        VIEWNAME a
+        inner join edms_doc_sp b on a.r_object_id
+        = b.u_fol_id
+        <where>
+            b.u_delete_status = ' '
+        </where>
+        <if test="doc.uFolId != null">
+            <if test="doc.uCabinetCode != null and doc.uFolId == ' '">
+                union all
+                select '' as fol_path, c.object_name, cast(concat('/',
+                c.object_name) as character varying(1000) ) as full_path
+                from
+                edms_doc_sp c
+                <where>
+                    a.u_cabinet_code = #{doc.uCabinetCode}
+                    AND a.u_fol_id = #{doc.uFolId}
+                    AND a.u_pr_code = #{doc.hamId}
+                    AND a.object_name = #{doc.objectName}
+                </where>
+            </if>
+        </if>
+    </select>
+
+
+    <select id="selectDocDuple" resultType="boolean">
+        with recursive VIEWNAME as(
+        select
+        a.u_fol_name,
+        cast(concat('/',
+        a.u_fol_name) as character varying(1000) ) as fol_path,
+        a.r_object_id,
+        a.u_up_fol_id,
+        a.u_fol_status,
+        a.u_fol_type
+        from
+        edms_folder_sp a
+        <where>
+            <if test="doc.uCabinetCode != null">
+                AND a.u_cabinet_code = #{doc.uCabinetCode}
+            </if>
+            <if test="doc.uFolId != null">
+                AND a.u_up_fol_id = #{doc.uFolId}
+            </if>
+            <if test="doc.hamId != null">
+                AND a.u_pr_code = #{doc.hamId}
+            </if>
+            <if test="doc.objectName != null">
+                AND a.object_name = #{doc.objectName}
+            </if>
+            <if test="doc.iHasFolder != null">
+                AND a.i_has_folder = #{doc.iHasFolder}
+            </if>
+        </where>
+        union all
+        select
+        c.u_fol_name,
+        cast(concat(b.fol_path, '/', c.u_fol_name)
+        as character varying(1000) ) as fol_path,
+        c.r_object_id,
+        c.u_up_fol_id,
+        c.u_fol_status,
+        c.u_fol_type
+        from
+        VIEWNAME b,
+        edms_folder_sp c
+        where
+        b.r_object_id = c.u_up_fol_id )
+        select case when count(tba.*) > 0 then
+        1 else 0 end
+        as isDuple
+        from (
+        select
+        a.fol_path, b.object_name,
+        cast(concat(a.fol_path, '/', b.object_name) as
+        character varying(1000)
+        ) as full_path
+        from
+        VIEWNAME a
+        inner join edms_doc_sp b on a.r_object_id
+        = b.u_fol_id
+        <where>
+            b.u_delete_status = ' '
+        </where>
+        <if test="doc.uFolId != null">
+            <if test="doc.uCabinetCode != null and doc.uFolId == ' '">
+                union all
+                select '' as fol_path, c.object_name, cast(concat('/',
+                c.object_name) as
+                character varying(1000) ) as full_path
+                from
+                edms_doc_sp c
+                <where>
+                    a.u_cabinet_code = #{doc.uCabinetCode}
+                    AND a.u_fol_id =#{doc.uFolId}
+                    AND a.u_pr_code = #{doc.hamId}
+                    AND a.object_name = #{doc.objectName}
+                </where>
+            </if>
+        </if>
+        ) tba
+        <where>
+            tba.full_path in
+            <foreach collection="docPaths" item="path" open="("
+                separator="," close=")">
+                #{path}
+            </foreach>
+        </where>
+    </select>
+
+
+    <select id="selectListForFolderId" resultMap="DocMap">
+        with recursive get_folder_path as (
+            select
+                    1 as level,
+                    a.*
+            from
+                    edms_folder_s a
+            <where>
+                    a.r_object_id = #{folderId} <!-- '000004d2800037c4' -->
+            </where>
+            union all
+            select
+                    a.level + 1 as level,
+                    b.*
+            from
+                    get_folder_path a
+            inner join
+                    edms_folder_s b on
+                a.u_up_fol_id = b.r_object_id
+            )
+            select
+                *
+            from
+                edms_doc_sp
+            where
+            u_doc_status = 'L' 
+            AND
+                u_fol_id in
+            (
+                select
+                    r_object_id
+                from
+                    get_folder_path
+                order by
+                    level desc
+            )
+    </select>
+    
+    <select id="recycleListForFolderId" resultMap="DocMap">
+        with recursive get_folder_path as (
+            select
+                    1 as level,
+                    a.*
+            from
+                    edms_folder_s a
+            <where>
+                    a.r_object_id = #{folderId} <!-- '000004d2800037c4' -->
+            </where>
+            union all
+            select
+                    a.level + 1 as level,
+                    b.*
+            from
+                    get_folder_path a
+            inner join
+                    edms_folder_s b on
+                a.u_up_fol_id = b.r_object_id
+            )
+            select
+                *
+            from
+                edms_doc_sp
+            where
+            u_doc_status = 'L' and
+            u_delete_status NOT IN ('D')
+            AND
+                u_fol_id in
+            (
+                select
+                    r_object_id
+                from
+                    get_folder_path
+                order by
+                    level desc
+            )
+    </select>
+
+    <select id="selectOwnDeptCount" resultType="int">
+        /* DBOX-PGM-DOC-007 | 지정한 프로젝트/투자, 연구과제의 주관부서 여부 조회 | 차소익 */
+        select
+            case when #{uPjtType} = 'P' then
+              (
+                select count(*) from edms_project_sp
+                <where> u_pjt_code = #{uPjtCode}
+                   and u_own_dept in
+                <foreach collection="deptCodes" item="deptCode" open="(" separator="," close=")">
+                    #{deptCode}
+                </foreach>
+                </where>
+              )
+            when #{uPjtType} = 'R' then
+              (
+                select count(*) from edms_research_sp
+                <where> u_rsch_code = #{uPjtCode}
+                   and u_own_dept in
+                <foreach collection="deptCodes" item="deptCode" open="(" separator="," close=")">
+                    #{deptCode}
+                </foreach>
+                </where>
+              )
+            else
+                0
+            end
+    </select>
+
+    <select id="selectJoinDeptCount" resultType="int"><!-- TODO u_join_dept_code 컬럼  u_join_dept_read, u_join_dept_del 로 나뉨 관련 수정 필요-->
+        /* DBOX-PGM-DOC-007 | 지정한 프로젝트/투자, 연구과제의 참여부서 여부 조회 | 차소익 */
+        select
+            case when #{uPjtType} = 'P' then
+              (
+                select count(*) from edms_project_sp eps
+                     inner join edms_project_r epr on eps.r_object_id = epr.r_object_id
+                <where> eps.u_pjt_code = #{uPjtCode}
+                       and
+                       (
+                           epr.u_join_dept_read in
+                        <foreach collection="deptCodes" item="deptCode" open="(" separator="," close=")">
+                            #{deptCode}
+                        </foreach>
+                           or epr.u_join_dept_del in
+                        <foreach collection="deptCodes" item="deptCode" open="(" separator="," close=")">
+                            #{deptCode}
+                        </foreach>
+                        )
+                </where>
+              )
+            when #{uPjtType} = 'R' then
+              (
+                select count(*) from edms_research_sp ers
+                     inner join edms_research_r epr on ers.r_object_id = epr.r_object_id
+                <where> ers.u_rsch_code = #{uPjtCode}
+                       and
+                       (
+                           epr.u_join_dept_read in
+                        <foreach collection="deptCodes" item="deptCode" open="(" separator="," close=")">
+                            #{deptCode}
+                        </foreach>
+                           or epr.u_join_dept_del in
+                        <foreach collection="deptCodes" item="deptCode" open="(" separator="," close=")">
+                            #{deptCode}
+                        </foreach>
+                        )
+                </where>
+              )
+            else
+                0
+            end
+    </select>
+
+    <select id="selectDepthCodeForBelowOrgBox" resultType="String">
+        select
+            eds.u_dept_code
+        from
+            edms_dept_sp eds
+        inner join edms_code_sp ecs
+           on eds.u_dept_code = ecs.u_code_val2
+          and ecs.u_code_type = 'COMMON_CABINET_DEPT'
+        where
+            1 = 1
+            and eds.u_cabinet_code = #{uCabinetCode}
+    </select>
+
+    <select id="selectOrgIdByUserId" resultType="String">
+        /* DBOX-PGM-DOC-007 | 사용자들이 소속된 부서 리스트 조회 | 차소익 */
+        select org_id from edms_gw_user
+        <where>
+            social_per_id in
+        </where>
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <select id="selectAuthorizedListByFolIds" resultMap="DocMap">
+        WITH ug AS (
+            SELECT DISTINCT gs.group_name
+              FROM dm_group_sp gs,
+                   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+                           gr2.i_supergroups_names AS group_name
+                      FROM dm_group_r gr1,
+                           dm_group_r gr2
+                     WHERE 1=1
+                       AND gr1.r_object_id = gr2.r_object_id
+                       AND gr1.users_names IS NOT NULL
+                   ) gr3
+             WHERE 1=1
+               AND gr3.group_name = gs.group_name
+               AND gr3.i_all_users_names = #{userId}
+        )
+        , acl AS (
+            SELECT
+                acs.owner_name
+            ,   acs.object_name
+            ,   MAX(acr.r_accessor_permit) AS max_level
+            FROM
+                dm_acl_s acs
+            ,   dm_acl_r acr
+            ,   (
+                    SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp a
+                    WHERE
+                        a.i_has_folder = 1
+                    AND a.u_delete_status = ' '
+			        AND a.u_fol_id IN
+			            <foreach collection="folIds" item="folId" open="(" separator="," close=")">
+			                #{folId}
+			            </foreach>
+			            
+			        UNION ALL
+                    
+                    SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp         a
+                    ,   edms_doc_link_sp    d
+                    WHERE             
+                        a.u_doc_key = d.u_doc_key
+                    AND a.i_has_folder = 1
+                    AND a.u_delete_status = ' '
+                    AND d.u_fol_id IN
+                        <foreach collection="folIds" item="folId" open="(" separator="," close=")">
+                            #{folId}
+                        </foreach>
+                ) a    
+             WHERE 1 = 1
+             AND acs.r_object_id = acr.r_object_id
+             AND a.acl_domain = acs.owner_name AND a.acl_name = acs.object_name
+             AND (acr.r_accessor_name = #{userId} OR acr.r_accessor_name IN (SELECT group_name FROM ug))
+             GROUP BY acs.owner_name, acs.object_name
+        )
+        SELECT
+            a.*
+        ,   b.org_id
+        FROM
+                            edms_doc_sp         a
+            LEFT OUTER JOIN edms_v_dept_info    b ON a.u_cabinet_code = b.u_cabinet_code
+            LEFT OUTER JOIN acl                 c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+        WHERE
+            a.u_delete_status = ' '
+        AND a.i_has_folder = 1
+        AND	a.u_fol_id IN
+            <foreach collection="folIds" item="folId" open="(" separator="," close=")">
+                #{folId}
+            </foreach>
+        AND	(
+                (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 3)
+            OR	c.max_level >= COALESCE(#{level}, 3)
+            )
+
+        UNION ALL
+
+        SELECT
+            a.*
+        ,   b.org_id
+        FROM
+                            edms_doc_link_s     d 
+            INNER JOIN      edms_doc_sp         a ON d.u_doc_key = a.u_doc_key
+            LEFT OUTER JOIN edms_v_dept_info    b ON a.u_cabinet_code = b.u_cabinet_code
+            LEFT OUTER JOIN acl                 c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+        WHERE
+            a.i_has_folder = 1
+        AND a.u_delete_status = ' '
+        AND d.u_fol_id IN
+            <foreach collection="folIds" item="folId" open="(" separator="," close=")">
+                #{folId}
+            </foreach>
+        AND (
+                (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 3)
+            OR  c.max_level >= COALESCE(#{level}, 3)
+            )
+    </select>
+
+    <select id="selectDeleteAuthorizedListByFolIds" resultMap="DocMap">
+        WITH ug AS (
+            SELECT DISTINCT gs.group_name
+              FROM dm_group_sp gs,
+                   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+                           gr2.i_supergroups_names AS group_name
+                      FROM dm_group_r gr1,
+                           dm_group_r gr2
+                     WHERE 1=1
+                       AND gr1.r_object_id = gr2.r_object_id
+                       AND gr1.users_names IS NOT NULL
+                   ) gr3
+             WHERE 1=1
+               AND gr3.group_name = gs.group_name
+               AND gr3.i_all_users_names = #{userId}
+        )
+        , acl AS (
+            SELECT
+                acs.owner_name
+            ,   acs.object_name
+            ,   MAX(acr.r_accessor_permit) as max_level
+            FROM
+                dm_acl_s acs
+            ,   dm_acl_r acr
+            ,   (
+                    SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp a
+                    WHERE
+			            a.u_delete_status IN ('D', 'E')
+			        AND a.u_fol_id IN
+			            <foreach collection="folIds" item="folId" open="(" separator="," close=")">
+			                #{folId}
+			            </foreach>
+                ) a    
+             WHERE 1 = 1
+             AND acs.r_object_id = acr.r_object_id
+             AND a.acl_domain = acs.owner_name AND a.acl_name = acs.object_name
+             AND (acr.r_accessor_name = #{userId} OR acr.r_accessor_name IN (SELECT group_name FROM ug))
+             GROUP BY acs.owner_name, acs.object_name
+        )
+        SELECT
+            *
+        FROM
+            edms_doc_sp	a LEFT OUTER JOIN
+            acl			c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+        WHERE
+            a.u_delete_status IN ('D', 'E')
+        AND	a.u_fol_id IN
+            <foreach collection="folIds" item="folId" open="(" separator="," close=")">
+                #{folId}
+            </foreach>
+        AND	(
+                (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 3)
+            OR	c.max_level >= COALESCE(#{level}, 3)
+            )
+    </select>
+
+    <select id="selectListByFolIds" resultMap="DocMap">
+        WITH
+
+        acl AS (
+            SELECT
+
+                acs.object_name
+
+            FROM
+                dm_acl_s acs
+
+        )
+        SELECT
+            *
+        FROM
+            edms_doc_sp	a LEFT OUTER JOIN
+            acl			c ON a.acl_name = c.object_name
+        WHERE
+            a.u_doc_status = 'L'
+            AND a.u_fol_id IN
+            <foreach collection="folIds" item="folId" open="(" separator="," close=")">
+                #{folId}
+            </foreach>
+    </select>
+    
+    <select id="recycleListByFolIds" resultMap="DocMap">
+        WITH
+
+        acl AS (
+            SELECT
+
+                acs.object_name
+
+            FROM
+                dm_acl_s acs
+
+        )
+        SELECT
+            *
+        FROM
+            edms_doc_sp a LEFT OUTER JOIN
+            acl     c ON a.acl_name = c.object_name
+        WHERE
+            a.u_doc_status = 'L' and
+            a.u_delete_status NOT IN ('D')
+            AND a.u_fol_id IN
+            <foreach collection="folIds" item="folId" open="(" separator="," close=")">
+                #{folId}
+            </foreach>
+    </select>
+    
+    <select id="selectLockStatus" resultType="boolean">
+        select case when a.r_lock_owner = ' ' then 0
+                else 1 end as isLocked
+            from edms_doc_sp a
+        <where>
+            a.r_object_id = #{rObjectId}
+        </where>
+    </select>
+    <select id="selectDocChk" resultType="String">
+         select r_object_id,
+                object_name ,
+                u_fol_id,
+                r_lock_owner ,
+                r_lock_date
+          from  edms_doc_sp
+         where  r_lock_owner  != ' '
+           and u_fol_id = #{dataId}
+    </select>
+
+    <select id="selectDocCreators" resultMap="DocCreatorsMap">
+        SELECT  doc.r_object_id
+             , 	user.com_org_id
+             ,  user.org_nm
+             ,	user.display_name
+             , 	user.pstn_name
+             ,  user.title_name
+             ,  TO_CHAR(u_update_date, 'YYYY-MM-DD HH24:MI:SS') AS u_update_date
+            FROM edms_doc_sp doc, edms_doc_rp r, edms_v_user_info user
+                WHERE doc.r_object_id = r.r_object_id
+                    AND doc.u_last_editor = user.user_id
+                    AND doc.u_doc_key = #{dataId}
+                    AND r.r_version_label != 'CURRENT'
+                    ORDER BY u_update_date DESC
+    </select>
+
+    <select id="selectDocVersionList" resultMap="DocVersionListMap">
+        SELECT  a.r_object_id
+             ,  a.object_name
+             ,  a.r_content_size as contentsize
+             ,  a.u_editor_names
+             ,  ( SELECT (display_name || c.pstn_name) FROM edms_v_user_info c WHERE b.u_wf_approver =  c.user_id) AS approver
+             ,  ( SELECT display_name FROM edms_v_user_info c WHERE a.u_last_editor = c.user_id) AS modifier
+             ,  TO_CHAR(u_update_date, 'YYYY-MM-DD HH24:MI:SS') AS modify_date
+             ,  b.r_version_label
+             ,  a.u_takeout_flag
+             ,  a.u_ver_keep_flag
+            FROM edms_doc_sp a, edms_doc_rp b
+                WHERE a.r_object_id  = b.r_object_id
+                    AND a.i_is_deleted = 0
+                    AND b.r_version_label != ' '
+                    AND b.r_version_label != 'CURRENT'
+                    AND a.u_doc_key  = #{dataId}
+                    ORDER BY NUMBER(b.r_version_label) DESC
+    </select>
+    
+    <select id = "selectDocImpVersionList" resultMap = "DocVersionListMap">
+        select a.r_object_id ,
+               TO_CHAR(ROUND(a.r_content_size/POWER(1024, FLOOR(LOG(1024, a.r_content_size))), 0))  || 
+               DECODE(FLOOR(LOG(1024, a.r_content_size)) ,0,'B',1,'KB',2,'MB',3,'GB') as contentsize,
+               a.u_editor_names ,
+               (select (display_name || c.pstn_name)
+                   from edms_v_user_info c
+                 where b.u_wf_approver =  c.user_id) as approver,
+               (select display_name 
+                  from edms_v_user_info c
+                 where a.r_modifier = c.user_id) as modifier,
+               TO_CHAR(r_modify_date,'YYYY-MM-DD') as modify_date,
+               b.r_version_label,
+               a.u_takeout_flag,
+               a.u_ver_keep_flag  
+          from edms_doc__imp_sp a,
+               edms_doc_rp b
+         where a.r_object_id  = b.r_object_id 
+           and u_doc_key  = #{dataId};
+    </select>
+    
+    <select id = "selectDocLinkList" resultMap = "DocLinkListMap">
+        select eds.r_object_id
+             , eds.object_name
+             , (select display_name
+                  from edms_v_user_info c
+                 where eds.r_creator_name = c.user_id) as u_create_user
+             , (select title_name
+                  from edms_v_user_info c
+                 where eds.r_creator_name = c.user_id) as u_create_title_name
+             , (select org_nm
+                  from edms_v_user_info c
+                 where eds.r_creator_name = c.user_id) as u_create_org_nm
+             , edr.u_wf_system 
+             , edr.u_wf_form 
+             , edr.u_wf_title 
+             , edr.u_wf_approver 
+             , edr.u_wf_approval_date 
+             , edr.u_wf_link 
+          from edms_doc_sp eds
+             , edms_doc_r edr
+             , edms_doc_link_sp edls
+        where eds.r_object_id  = edr.r_object_id 
+          and edr.r_object_id  = edls.u_doc_id 
+          and eds.r_object_id  = #{dataId}
+ 
+    </select>
+    
+     
+    <select id="selectAuthorizedSearchList" resultMap="DocDetailSearchMap">
+         /* DBOX-PGM-DOC-006 | 일반검색 | 이우영 */
+   WITH ug AS (
+            SELECT DISTINCT gs.group_name
+              FROM dm_group_sp gs,
+                   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+                           gr2.i_supergroups_names AS group_name
+                      FROM dm_group_r gr1,
+                           dm_group_r gr2
+                     WHERE 1=1
+                       AND gr1.r_object_id = gr2.r_object_id
+                       AND gr1.users_names IS NOT NULL
+                   ) gr3
+             WHERE 1=1
+               AND gr3.group_name = gs.group_name
+               AND gr3.i_all_users_names = #{userId}
+        ), acl AS (
+            SELECT
+                acs.owner_name,
+                acs.object_name,
+                MAX(acr.r_accessor_permit) AS max_level
+                        FROM
+                dm_acl_s acs
+              , dm_acl_r acr
+              , (SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp a
+                    WHERE
+                        a.i_has_folder = 1
+                     AND a.u_cabinet_code = #{dataCabinetCode}
+                     AND a.u_delete_status = ' '
+                     AND a.u_privacy_flag  = '0'
+                   <if test = "dataId != null">
+               AND a.u_fol_id = #{dataId}
+             </if>
+             <if test  = "doc.uPrCode != null">
+               AND a.u_pr_code = #{doc.uPrCode}
+               AND a.u_pr_type = #{doc.uPrType}
+             </if>
+             <if test = 'doc.uPrType == "P"'>
+               AND a.u_pr_type in ('P')
+             </if>
+             <if test = 'doc.uPrType == "R"'>
+               AND a.u_pr_type in ('R')
+             </if>
+             <if test = 'doc.uPrType == "D"'>
+               AND a.u_pr_type not in ('P', 'R')
+             </if>
+                UNION ALL
+                
+                    SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp         a
+                    ,   edms_doc_link_sp    d
+                    WHERE             
+                        a.u_doc_key = d.u_doc_key
+                    AND a.i_has_folder = 1
+                    AND d.u_cabinet_code = #{dataCabinetCode}
+                    AND a.u_delete_status = ' '
+                    AND a.u_privacy_flag  = '0'
+                   <if test = "dataId != null">
+              AND d.u_fol_id = #{dataId}
+             </if>
+             <if test  = "doc.uPrCode != null">
+              AND a.u_pr_code = #{doc.uPrCode}
+              AND a.u_pr_type = #{doc.uPrType}
+             </if>
+             <if test = 'doc.uPrType == "P"'>
+              AND a.u_pr_type in ('P')
+             </if>
+             <if test = 'doc.uPrType == "R"'>
+              AND a.u_pr_type in ('R')
+             </if>
+             <if test = 'doc.uPrType == "D"'>
+              AND a.u_pr_type not in ('P', 'R')
+             </if>
+
+                ) a  
+            WHERE 1=1
+            AND acs.r_object_id = acr.r_object_id
+            AND a.acl_domain = acs.owner_name 
+            AND a.acl_name = acs.object_name
+            AND (acr.r_accessor_name = #{userId} OR acr.r_accessor_name IN (SELECT group_name FROM ug))
+            GROUP BY acs.owner_name, acs.object_name
+        ), imwon AS(
+            SELECT a.u_cabinet_code
+              FROM edms_v_dept_info a INNER JOIN   
+                   edms_gw_imwon b ON a.org_id = b.org_id 
+             WHERE b.org_id not in (
+                SELECT u_code_val2
+                  FROM edms_code_s
+                 WHERE u_code_type = 'IMWON_SEARCH_EXCEPTION'
+                   AND u_code_val1 = 'E')  
+             UNION ALL   
+             SELECT c.u_cabinet_code
+               FROM edms_v_dept_info c INNER JOIN
+                    edms_code_s d on c.org_id  = d.u_code_val2 
+              WHERE d.u_code_type  = 'IMWON_SEARCH_ADD'
+         )
+        select 
+              rowNum,
+              searchSelect.*
+         from 
+        (
+        SELECT
+          a.r_object_id
+        , a.object_name
+        , a.title
+        , a.r_lock_owner
+        , a.r_content_size
+        , a.u_cabinet_code
+        , a.u_pr_code
+        , a.u_pr_type
+        , a.u_doc_key
+        , a.u_fol_id
+        , a.u_sec_level
+        , a.u_doc_status
+        , a.u_doc_flag
+        , a.u_delete_status
+        , a.u_wf_doc_yn
+        , a.u_closed_date
+        , a.u_closer
+        , a.u_open_flag
+        , a.u_privacy_flag
+        , a.u_preserve_flag
+        , a.u_expired_date
+        , a.u_copy_org_id
+        , a.u_file_ext
+        , a.u_doc_tag
+        , a.u_doc_class
+        , a.u_reg_source
+        , a.u_reg_user
+        , a.u_reg_date
+        , a.u_auto_auth_mail_flag
+        , a.u_editor_names
+        , a.u_folder_path
+        , a.u_update_date
+        , b.user_id           AS b_user_id
+        , b.display_name      AS b_display_name
+        , b.com_org_id        AS b_com_org_id
+        , b.org_id            AS b_org_id
+        , b.org_nm            AS b_org_nm
+        , b.pstn_code         AS b_pstn_code
+        , b.pstn_name         AS b_pstn_name
+        , b.level_code        AS b_level_code
+        , b.level_name        AS b_level_name
+        , b.title_code        AS b_title_code
+        , b.title_name        AS b_title_name
+        , CASE
+            WHEN (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) THEN GREATEST(c.max_level, a.owner_permit)
+            ELSE c.max_level
+          END                 AS c_max_level
+        , NULL                AS d_r_object_id
+        , NULL                AS d_u_cabinet_code
+        , NULL                AS d_u_doc_id
+        , NULL                AS d_u_doc_key
+        , NULL                AS d_u_fol_id
+        , NULL                AS d_u_link_type
+        , NULL                AS d_u_create_user
+        , NULL                AS d_u_create_date
+        , f.org_id            AS f_org_id
+        , f.org_nm            AS f_org_nm
+        , f.com_org_id        AS f_com_org_id
+        , h.user_id           AS h_user_id
+        , h.display_name      AS h_display_name
+        , h.com_org_id        AS h_com_org_id
+        , h.org_id            AS h_org_id
+        , h.org_nm            AS h_org_nm
+        , h.pstn_code         AS h_pstn_code
+        , h.pstn_name         AS h_pstn_name
+        , h.level_code        AS h_level_code
+        , h.level_name        AS h_level_name
+        , h.title_code        AS h_title_code
+        , h.title_name        AS h_title_name
+        , i.user_id           AS i_user_id
+        , i.display_name      AS i_display_name
+        , i.com_org_id        AS i_com_org_id
+        , i.org_id            AS i_org_id
+        , i.org_nm            AS i_org_nm
+        , i.pstn_code         AS i_pstn_code
+        , i.pstn_name         AS i_pstn_name
+        , i.level_code        AS i_level_code
+        , i.level_name        AS i_level_name
+        , i.title_code        AS i_title_code
+        , i.title_name        AS i_title_name
+        FROM
+            edms_doc_sp     a LEFT OUTER JOIN
+            edms_v_user_info  b ON a.u_reg_user = b.user_id LEFT OUTER JOIN
+            edms_v_dept_info  f ON a.u_cabinet_code = f.u_cabinet_code LEFT OUTER join
+            (     SELECT
+                      ga.u_doc_key
+                  ,   COUNT(*)        AS feedback_count
+                  FROM
+                                      edms_feedback_s gb
+                      LEFT OUTER JOIN edms_doc_sp     ga ON ga.u_doc_key = gb.u_doc_key
+                  WHERE
+                      gb.u_level = 0
+                  AND ga.i_has_folder = 1
+                  AND ga.u_delete_status = ' '
+                  AND ga.u_privacy_flag  = '0'
+                  AND ga.u_cabinet_code = #{dataCabinetCode}
+               <if test = "dataId != null">
+                AND ga.u_fol_id = #{dataId}
+               </if>
+               <if test  = "doc.uPrCode != null">
+                AND ga.u_pr_code = #{doc.uPrCode}
+                AND ga.u_pr_type = #{doc.uPrType}
+               </if>
+               <if test = 'doc.uPrType == "P"'>
+                AND ga.u_pr_type in ('P')
+               </if>
+               <if test = 'doc.uPrType == "R"'>
+                AND ga.u_pr_type in ('R')
+               </if>
+               <if test = 'doc.uPrType == "D"'>
+                AND ga.u_pr_type not in ('P', 'R')
+              </if>
+                  GROUP BY ga.u_doc_key
+              )               g ON a.u_doc_key = g.u_doc_key LEFT OUTER JOIN
+            edms_v_user_info    h ON a.u_closer = h.user_id LEFT OUTER JOIN
+            edms_v_user_info    i ON a.r_lock_owner = i.user_id LEFT OUTER JOIN
+            acl         c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+        WHERE a.i_has_folder = 1
+          AND (((a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 2)
+               OR c.max_level >= COALESCE(#{level}, 2)
+              )OR(a.u_doc_status = 'C' and u_sec_level != 'S' )
+               <if test  = "imwoncheck != null">
+               AND((a.u_cabinet_code in (select * from imwon) AND a.u_doc_status = 'C') AND (c.max_level > owner_permit))
+               </if>
+              )
+          AND a.u_cabinet_code = #{dataCabinetCode}
+          AND a.u_delete_status = ' '
+          AND a.u_privacy_flag  = '0'
+        <if test = "dataId != null">
+          AND a.u_fol_id = #{dataId}
+        </if>
+        <if test  = "doc.uPrCode != null">
+          AND a.u_pr_code = #{doc.uPrCode}
+          AND a.u_pr_type = #{doc.uPrType}
+        </if>
+        <if test = 'doc.uPrType == "P"'>
+          AND a.u_pr_type in ('P')
+        </if>
+        <if test = 'doc.uPrType == "R"'>
+          AND a.u_pr_type in ('R')
+        </if>
+        <if test = 'doc.uPrType == "D"'>
+          AND a.u_pr_type not in ('P', 'R')
+        </if>
+        
+        UNION ALL
+          SELECT
+          a.r_object_id
+        , a.object_name
+        , a.title
+        , a.r_lock_owner
+        , a.r_content_size
+        , a.u_cabinet_code
+        , a.u_pr_code
+        , a.u_pr_type
+        , a.u_doc_key
+        , a.u_fol_id
+        , a.u_sec_level
+        , a.u_doc_status
+        , a.u_doc_flag
+        , a.u_delete_status
+        , a.u_wf_doc_yn
+        , a.u_closed_date
+        , a.u_closer
+        , a.u_open_flag
+        , a.u_privacy_flag
+        , a.u_preserve_flag
+        , a.u_expired_date
+        , a.u_copy_org_id
+        , a.u_file_ext
+        , a.u_doc_tag
+        , a.u_doc_class
+        , a.u_reg_source
+        , a.u_reg_user
+        , a.u_reg_date
+        , a.u_auto_auth_mail_flag
+        , a.u_editor_names
+        , a.u_folder_path
+        , a.u_update_date
+        , b.user_id           AS b_user_id
+        , b.display_name      AS b_display_name
+        , b.com_org_id        AS b_com_org_id
+        , b.org_id            AS b_org_id
+        , b.org_nm            AS b_org_nm
+        , b.pstn_code         AS b_pstn_code
+        , b.pstn_name         AS b_pstn_name
+        , b.level_code        AS b_level_code
+        , b.level_name        AS b_level_name
+        , b.title_code        AS b_title_code
+        , b.title_name        AS b_title_name
+        , CASE
+            WHEN (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) THEN GREATEST(c.max_level, a.owner_permit)
+            ELSE c.max_level
+          END                 AS c_max_level
+		    , d.r_object_id       AS d_r_object_id
+		    , d.u_cabinet_code    AS d_u_cabinet_code
+		    , d.u_doc_id          AS d_u_doc_id
+		    , d.u_doc_key         AS d_u_doc_key
+		    , d.u_fol_id          AS d_u_fol_id
+		    , d.u_link_type       AS d_u_link_type
+		    , d.u_create_user     AS d_u_create_user
+		    , d.u_create_date     AS d_u_create_date
+        , f.org_id            AS f_org_id
+        , f.org_nm            AS f_org_nm
+        , f.com_org_id        AS f_com_org_id
+        , h.user_id           AS h_user_id
+        , h.display_name      AS h_display_name
+        , h.com_org_id        AS h_com_org_id
+        , h.org_id            AS h_org_id
+        , h.org_nm            AS h_org_nm
+        , h.pstn_code         AS h_pstn_code
+        , h.pstn_name         AS h_pstn_name
+        , h.level_code        AS h_level_code
+        , h.level_name        AS h_level_name
+        , h.title_code        AS h_title_code
+        , h.title_name        AS h_title_name
+        , i.user_id           AS i_user_id
+        , i.display_name      AS i_display_name
+        , i.com_org_id        AS i_com_org_id
+        , i.org_id            AS i_org_id
+        , i.org_nm            AS i_org_nm
+        , i.pstn_code         AS i_pstn_code
+        , i.pstn_name         AS i_pstn_name
+        , i.level_code        AS i_level_code
+        , i.level_name        AS i_level_name
+        , i.title_code        AS i_title_code
+        , i.title_name        AS i_title_name
+          FROM
+                              edms_doc_link_s     d
+              INNER JOIN      edms_doc_sp         a ON d.u_doc_key = a.u_doc_key
+              LEFT OUTER JOIN edms_v_user_info    b ON a.r_creator_name = b.user_id
+              LEFT OUTER JOIN edms_v_dept_info    f ON a.u_cabinet_code = f.u_cabinet_code
+              LEFT OUTER JOIN ( 
+                 SELECT
+                      ga.u_doc_key
+                  ,   COUNT(*)        AS feedback_count
+                  FROM
+                                      edms_feedback_s gb
+                      LEFT OUTER JOIN edms_doc_sp     ga ON ga.u_doc_key = gb.u_doc_key
+                      INNER JOIN      edms_doc_link_s gd ON ga.u_doc_key = gd.u_doc_key
+                  WHERE
+                      gb.u_level = 0
+                  AND ga.i_has_folder = 1
+                  AND ga.u_delete_status = ' '
+                  AND ga.u_cabinet_code = #{dataCabinetCode}
+                  AND ga.u_privacy_flag  = '0'
+               <if test = "dataId != null">
+                AND ga.u_fol_id = #{dataId}
+               </if>
+               <if test  = "doc.uPrCode != null">
+                AND ga.u_pr_code = #{doc.uPrCode}
+                AND ga.u_pr_type = #{doc.uPrType}
+               </if>
+               <if test = 'doc.uPrType == "P"'>
+                AND ga.u_pr_type in ('P')
+               </if>
+               <if test = 'doc.uPrType == "R"'>
+                AND ga.u_pr_type in ('R')
+               </if>
+               <if test = 'doc.uPrType == "D"'>
+                AND ga.u_pr_type not in ('P', 'R')
+              </if>
+                  GROUP BY ga.u_doc_key
+              )                                   g ON a.u_doc_key = g.u_doc_key 
+              LEFT OUTER JOIN edms_v_user_info    h ON a.u_closer = h.user_id
+              LEFT OUTER JOIN edms_v_user_info    i ON a.r_lock_owner = i.user_id
+              LEFT OUTER JOIN acl                 c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+          WHERE a.i_has_folder = 1
+            AND a.u_delete_status = ' '
+            AND a.u_privacy_flag  = '0'
+            AND (((a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 2)
+                 OR c.max_level >= COALESCE(#{level}, 2))
+                 OR(a.u_doc_status = 'C' and u_sec_level != 'S' )
+                <if test  = "imwoncheck != null">
+                 AND((a.u_cabinet_code in (select * from imwon) AND a.u_doc_status = 'C') AND (c.max_level > owner_permit))
+                 </if>
+              )         
+            AND d.u_cabinet_code = #{dataCabinetCode}
+       <if test = "dataId != null">
+            AND d.u_fol_id = #{dataId}
+      </if>
+      <if test  = "doc.uPrCode != null">
+        AND a.u_pr_code = #{doc.uPrCode}
+        AND a.u_pr_type = #{doc.uPrType}
+      </if>
+      <if test = 'doc.uPrType == "P"'>
+        AND a.u_pr_type in ('P')
+      </if>
+      <if test = 'doc.uPrType == "R"'>
+        AND a.u_pr_type in ('R')
+      </if>
+      <if test = 'doc.uPrType == "D"'>
+        AND a.u_pr_type not in ('P', 'R')
+      </if>
+        )searchSelect
+        where UPPER(searchSelect.u_doc_tag)LIKE UPPER(CONCAT('%', #{searchName}, '%')) or UPPER(searchSelect.object_name) LIKE UPPER(CONCAT('%', #{searchName}, '%'));
+       
+   
+    </select>
+      <!--DBOX-PGM-DOC-006 // 일반검색 기능 // 담당자 : 이우영 -->
+    <select id="selectAuthorizedRepeatingSearchList" resultMap="DocRepeatingMap">
+        WITH ug AS (
+            SELECT DISTINCT gs.group_name
+              FROM dm_group_sp gs,
+                   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+                           gr2.i_supergroups_names AS group_name
+                      FROM dm_group_r gr1,
+                           dm_group_r gr2
+                     WHERE 1=1
+                       AND gr1.r_object_id = gr2.r_object_id
+                       AND gr1.users_names IS NOT NULL
+                   ) gr3
+             WHERE 1=1
+               AND gr3.group_name = gs.group_name
+               AND gr3.i_all_users_names = #{userId}
+        ), acl AS (
+            SELECT
+                acs.owner_name,
+                acs.object_name,
+                MAX(acr.r_accessor_permit) AS max_level
+                        FROM
+                dm_acl_s acs
+              , dm_acl_r acr
+              , (SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp a
+                    WHERE
+                        a.i_has_folder = 1
+                     AND a.u_cabinet_code = #{dataCabinetCode}
+                     AND a.u_delete_status = ' '
+                     AND a.u_privacy_flag  = '0'
+                   <if test = "dataId != null">
+               AND a.u_fol_id = #{dataId}
+             </if>
+             <if test  = "doc.uPrCode != null">
+               AND a.u_pr_code = #{doc.uPrCode}
+               AND a.u_pr_type = #{doc.uPrType}
+             </if>
+             <if test = 'doc.uPrType == "P"'>
+               AND a.u_pr_type in ('P')
+             </if>
+             <if test = 'doc.uPrType == "R"'>
+               AND a.u_pr_type in ('R')
+             </if>
+             <if test = 'doc.uPrType == "D"'>
+               AND a.u_pr_type not in ('P', 'R')
+             </if>
+                UNION ALL
+                
+                    SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp         a
+                    ,   edms_doc_link_sp    d
+                    WHERE             
+                        a.u_doc_key = d.u_doc_key
+                    AND a.i_has_folder = 1
+                    AND d.u_cabinet_code = #{dataCabinetCode}
+                    AND a.u_delete_status = ' '
+                    AND a.u_privacy_flag  = '0'
+                   <if test = "dataId != null">
+              AND d.u_fol_id = #{dataId}
+             </if>
+             <if test  = "doc.uPrCode != null">
+              AND a.u_pr_code = #{doc.uPrCode}
+              AND a.u_pr_type = #{doc.uPrType}
+             </if>
+             <if test = 'doc.uPrType == "P"'>
+              AND a.u_pr_type in ('P')
+             </if>
+             <if test = 'doc.uPrType == "R"'>
+              AND a.u_pr_type in ('R')
+             </if>
+             <if test = 'doc.uPrType == "D"'>
+              AND a.u_pr_type not in ('P', 'R')
+             </if>
+
+                ) a  
+            WHERE 1=1
+            AND acs.r_object_id = acr.r_object_id
+            AND a.acl_domain = acs.owner_name 
+            AND a.acl_name = acs.object_name
+            AND (acr.r_accessor_name = #{userId} OR acr.r_accessor_name IN (SELECT group_name FROM ug))
+            GROUP BY acs.owner_name, acs.object_name
+        ), imwon AS(
+            SELECT a.u_cabinet_code
+              FROM edms_v_dept_info a INNER JOIN   
+                   edms_gw_imwon b ON a.org_id = b.org_id 
+             WHERE b.org_id not in (
+                SELECT u_code_val2
+                  FROM edms_code_s
+                 WHERE u_code_type = 'IMWON_SEARCH_EXCEPTION'
+                   AND u_code_val1 = 'E')  
+             UNION ALL   
+             SELECT c.u_cabinet_code
+               FROM edms_v_dept_info c INNER JOIN
+                    edms_code_s d on c.org_id  = d.u_code_val2 
+              WHERE d.u_code_type  = 'IMWON_SEARCH_ADD'
+         )
+        SELECT
+            r_object_id,
+            u_editor,
+            r_version_label,
+            u_wf_key,
+            u_wf_system,
+            u_wf_form,
+            u_wf_title,
+            u_wf_approval_date,
+            u_wf_approver
+        FROM
+            edms_doc_rp
+        WHERE
+            r_object_id IN (
+                SELECT
+                    a.r_object_id
+                FROM
+                    edms_doc_sp	a LEFT OUTER JOIN
+                    acl			    c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+                <where>
+                    a.i_has_folder = 1
+                AND (((a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 2))
+                     OR  c.max_level >= COALESCE(#{level}, 2)
+                     OR (a.u_doc_status = 'C' and u_sec_level != 'S' )
+                   <if test  = "imwoncheck != null">
+                    AND((a.u_cabinet_code in (select * from imwon) AND a.u_doc_status = 'C') AND (c.max_level > owner_permit))
+                   </if>
+                     )
+                
+                AND UPPER(a.u_doc_tag)LIKE UPPER(CONCAT('%', #{searchName}, '%')) or UPPER(a.object_name) LIKE UPPER(CONCAT('%', #{searchName}, '%'))                  
+				        AND a.u_cabinet_code = #{dataCabinetCode}
+				        AND a.u_delete_status = ' '
+				        AND a.u_privacy_flag  = '0'
+							<if test = "dataId != null">
+			          AND a.u_fol_id = #{dataId}
+			        </if>
+			        <if test  = "doc.uPrCode != null">
+			          AND a.u_pr_code = #{doc.uPrCode}
+			          AND a.u_pr_type = #{doc.uPrType}
+			        </if>
+			        <if test = 'doc.uPrType == "P"'>
+			          AND a.u_pr_type in ('P')
+			        </if>
+			        <if test = 'doc.uPrType == "R"'>
+			          AND a.u_pr_type in ('P')
+			        </if>
+			        <if test = 'doc.uPrType == "D"'>
+			          AND a.u_pr_type not in ('P', 'R')
+			        </if>
+			        </where>
+			          UNION ALL
+			          SELECT
+			              a.r_object_id
+			          FROM
+			              edms_doc_link_s		d INNER JOIN
+			              edms_doc_sp			a ON d.u_doc_key = a.u_doc_key  LEFT OUTER JOIN
+			              acl					c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+			          <where>
+			              a.i_has_folder = 1
+			          AND(  (
+			                 (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 2)
+			              OR  c.max_level >= COALESCE(#{level}, 2))
+			              OR (a.u_doc_status = 'C' and u_sec_level != 'S' )
+			              <if test  = "imwoncheck != null">
+			              AND((a.u_cabinet_code in (select * from imwon) AND a.u_doc_status = 'C') AND (c.max_level > owner_permit))
+			              </if>
+			              )
+			         
+			          AND UPPER(a.u_doc_tag)LIKE UPPER(CONCAT('%', #{searchName}, '%')) or UPPER(a.object_name) LIKE UPPER(CONCAT('%', #{searchName}, '%'))
+			          AND d.u_cabinet_code = #{dataCabinetCode}
+			          AND a.u_delete_status = ' '
+			          AND a.u_privacy_flag  = '0'
+							<if test = "dataId != null">
+			          AND d.u_fol_id = #{dataId}
+			        </if>
+			        <if test  = "doc.uPrCode != null">
+			          AND a.u_pr_code = #{doc.uPrCode}
+			          AND a.u_pr_type = #{doc.uPrType}
+			        </if>
+			        <if test = 'doc.uPrType == "P"'>
+			          AND a.u_pr_type in ('P')
+			        </if>
+			        <if test = 'doc.uPrType == "R"'>
+			          AND a.u_pr_type in ('P')
+			        </if>
+			        <if test = 'doc.uPrType == "D"'>
+			          AND a.u_pr_type not in ('P', 'R')
+			        </if>
+			      </where>
+            )
+    </select>
+      <!--DBOX-PGM-DOC-006 // 일반검색 기능 // 담당자 : 이우영 -->
+    <select id="selectImpAuthorizedSearchList" resultMap="DocImpDetailMap">
+	   WITH ug AS (
+            SELECT DISTINCT gs.group_name
+              FROM dm_group_sp gs,
+                   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+                           gr2.i_supergroups_names AS group_name
+                      FROM dm_group_r gr1,
+                           dm_group_r gr2
+                     WHERE 1=1
+                       AND gr1.r_object_id = gr2.r_object_id
+                       AND gr1.users_names IS NOT NULL
+                   ) gr3
+             WHERE 1=1
+               AND gr3.group_name = gs.group_name
+               AND gr3.i_all_users_names = #{userId}
+        ), acl AS (
+            SELECT
+                acs.owner_name,
+                acs.object_name,
+                MAX(acr.r_accessor_permit) AS max_level
+            FROM
+                dm_acl_s acs
+              , dm_acl_r acr
+            WHERE 1=1
+            AND acs.r_object_id = acr.r_object_id
+            AND (acr.r_accessor_name = #{userId} OR acr.r_accessor_name IN (SELECT group_name FROM ug))
+            GROUP BY acs.owner_name, acs.object_name
+        )
+        select *
+         from 
+        (
+        SELECT
+          a.r_object_id
+        , a.object_name
+        , a.title
+        , a.r_lock_owner
+        , a.r_content_size
+        , a.u_cabinet_code
+        , a.u_pr_code
+        , a.u_pr_type
+        , a.u_doc_key
+        , a.u_fol_id
+        , a.u_sec_level
+        , a.u_doc_status
+        , a.u_doc_flag
+        , a.u_delete_status
+        , a.u_wf_doc_yn
+        , a.u_closed_date
+        , a.u_closer
+        , a.u_open_flag
+        , a.u_privacy_flag
+        , a.u_preserve_flag
+        , a.u_expired_date
+        , a.u_copy_org_id
+        , a.u_file_ext
+        , a.u_doc_tag
+        , a.u_doc_class
+        , a.u_reg_source
+        , a.u_reg_user
+        , a.u_reg_date
+        , a.u_auto_auth_mail_flag
+        , a.u_editor_names
+        , a.u_folder_path
+        , a.u_update_date
+        , b.user_id           AS b_user_id
+        , b.display_name      AS b_display_name
+        , b.com_org_id        AS b_com_org_id
+        , b.org_id            AS b_org_id
+        , b.org_nm            AS b_org_nm
+        , b.pstn_code         AS b_pstn_code
+        , b.pstn_name         AS b_pstn_name
+        , b.level_code        AS b_level_code
+        , b.level_name        AS b_level_name
+        , b.title_code        AS b_title_code
+        , b.title_name        AS b_title_name
+        , CASE
+            WHEN (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) THEN GREATEST(c.max_level, a.owner_permit)
+            ELSE c.max_level
+          END                 AS c_max_level 
+        , d.r_object_id       AS d_r_object_id
+        , d.u_cabinet_code    AS d_u_cabinet_code
+        , d.u_doc_id          AS d_u_doc_id
+        , d.u_doc_key         AS d_u_doc_key
+        , d.u_fol_id          AS d_u_fol_id
+        , d.u_link_type       AS d_u_link_type
+        , d.u_create_user     AS d_u_create_user
+        , d.u_create_date     AS d_u_create_date
+        , f.org_id            AS f_org_id
+        , f.org_nm            AS f_org_nm
+        , f.com_org_id        AS f_com_org_id
+        FROM
+            edms_doc_imp_sp     a LEFT OUTER JOIN
+            edms_v_user_info  b ON a.u_reg_user = b.user_id LEFT OUTER JOIN
+            edms_doc_link_s   d ON d.u_doc_key = a.u_doc_key LEFT OUTER JOIN
+            edms_v_dept_info  f ON a.u_cabinet_code = f.u_cabinet_code LEFT OUTER JOIN
+            acl         c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+      where a.i_has_folder = 1
+          AND  ((
+                  (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 2)
+                OR c.max_level >= COALESCE(#{level}, 2)
+               )OR(a.u_doc_status = 'C' and u_sec_level != 'S' ))
+          AND a.u_cabinet_code = #{dataCabinetCode}
+          AND a.u_delete_status = ' '
+         <if test = "dataId != null">
+          AND a.u_fol_id = #{dataId}
+        </if>
+        <if test  = "doc.uPrCode != null">
+          AND a.u_pr_code = #{doc.uPrCode}
+          AND a.u_pr_type = #{doc.uPrType}
+        </if>
+        <if test = 'doc.uPrType == "P"'>
+          AND a.u_pr_type in ('P')
+        </if>
+        <if test = 'doc.uPrType == "R"'>
+          AND a.u_pr_type in ('R')
+        </if>
+        <if test = 'doc.uPrType == "D"'>
+          AND a.u_pr_type not in ('P', 'R')
+        </if>
+        )searchSelect
+        <!-- UPPER(searchSelect.u_folder_path) LIKE UPPER(CONCAT('%', #{searchName}, '%')) or  폴더 경로 검색 -->
+        where UPPER(searchSelect.u_doc_tag)LIKE UPPER(CONCAT('%', #{searchName}, '%')) or UPPER(searchSelect.object_name) LIKE UPPER(CONCAT('%', #{searchName}, '%'));
+        
+        </select>
+     <!--DBOX-PGM-DOC-006 // 일반검색 기능 // 담당자 : 이우영 -->
+    <select id="selectDocImpAuthorizedRepeatingSearchList" resultMap="DocRepeatingMap">
+        WITH ug AS (
+            SELECT DISTINCT gs.group_name
+              FROM dm_group_sp gs,
+                   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+                           gr2.i_supergroups_names AS group_name
+                      FROM dm_group_r gr1,
+                           dm_group_r gr2
+                     WHERE 1=1
+                       AND gr1.r_object_id = gr2.r_object_id
+                       AND gr1.users_names IS NOT NULL
+                   ) gr3
+             WHERE 1=1
+               AND gr3.group_name = gs.group_name
+               AND gr3.i_all_users_names = #{userId}
+        ), acl AS (
+            SELECT
+                acs.owner_name,
+                acs.object_name,
+                MAX(acr.r_accessor_permit) AS max_level
+            FROM
+                dm_acl_s acs
+            ,	dm_acl_r acr
+            WHERE 1=1
+            AND	acs.r_object_id = acr.r_object_id
+            AND	(acr.r_accessor_name = #{userId} OR acr.r_accessor_name IN (SELECT group_name FROM ug))
+            GROUP BY acs.owner_name, acs.object_name
+        )
+        SELECT
+            r_object_id,
+            u_editor,
+            r_version_label,
+            u_wf_key,
+            u_wf_system,
+            u_wf_form,
+            u_wf_title,
+            u_wf_approval_date,
+            u_wf_approver
+        FROM
+            edms_doc_imp_rp
+        WHERE
+            r_object_id IN (
+                SELECT
+                    a.r_object_id
+                FROM
+                    edms_doc_sp	a LEFT OUTER JOIN
+                    acl			c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+                <where>
+                    a.i_has_folder = 1
+                 AND((
+                        (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 2)
+                     OR  c.max_level >= COALESCE(#{level}, 2))
+                     OR (a.u_doc_status = 'C' and u_sec_level != 'S' ))
+                 AND UPPER(a.u_doc_tag)LIKE UPPER(CONCAT('%', #{searchName}, '%')) or UPPER(a.object_name) LIKE UPPER(CONCAT('%', #{searchName}, '%'))                  
+				         AND a.u_cabinet_code = #{dataCabinetCode}
+				         AND a.u_delete_status = ' '
+        <if test = "dataId != null">
+          AND a.u_fol_id = #{dataId}
+        </if>
+        <if test  = "doc.uPrCode != null">
+         AND a.u_pr_code = #{doc.uPrCode}
+          AND a.u_pr_type = #{doc.uPrType}
+        </if>
+        <if test = 'doc.uPrType == "P"'>
+          AND a.u_pr_type in ('P')
+        </if>
+        <if test = 'doc.uPrType == "R"'>
+          AND a.u_pr_type in ('P')
+        </if>
+        <if test = 'doc.uPrType == "D"'>
+          AND a.u_pr_type not in ('P', 'R')
+        </if>
+                </where>
+                UNION ALL
+                
+                SELECT
+                    a.r_object_id
+                FROM
+                    edms_doc_link_s		d INNER JOIN
+                    edms_doc_imp_sp		a ON d.u_doc_key = a.u_doc_key  LEFT OUTER JOIN
+                    acl					c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+                <where>
+                    a.i_has_folder = 1
+                 AND((
+                        (a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= COALESCE(#{level}, 2)
+                     OR  c.max_level >= COALESCE(#{level}, 2))
+                     OR (a.u_doc_status = 'C' and u_sec_level != 'S' ))
+                 AND UPPER(a.u_doc_tag)LIKE UPPER(CONCAT('%', #{searchName}, '%')) or UPPER(a.object_name) LIKE UPPER(CONCAT('%', #{searchName}, '%'))
+					       AND a.u_cabinet_code = #{dataCabinetCode}
+					       AND a.u_delete_status = ' '
+        <if test = "dataId != null">
+          AND a.u_fol_id = #{dataId}
+        </if>
+        <if test  = "doc.uPrCode != null">
+          AND a.u_pr_code = #{doc.uPrCode}
+          AND a.u_pr_type = #{doc.uPrType}
+        </if>
+        <if test = 'doc.uPrType == "P"'>
+          AND a.u_pr_type in ('P')
+        </if>
+        <if test = 'doc.uPrType == "R"'>
+          AND a.u_pr_type in ('P')
+        </if>
+        <if test = 'doc.uPrType == "D"'>
+          AND a.u_pr_type not in ('P', 'R')
+        </if>
+
+       </where>
+            )
+    </select>
+
+    <!-- // TODO resultType -> resultMap 변경 -->
+    <select id="selectDocsEApproval" resultType="hashMap">
+        SELECT doc.r_object_id
+             , doc.u_wf_system
+             , doc.u_wf_form
+             , doc.u_wf_title
+             , doc.u_wf_approver
+             , to_char(doc.u_wf_approval_date, 'YYYY-MM-DD HH24:MI:SS') u_wf_approval_date
+             , doc.u_wf_key
+             , doc.u_wf_link
+             , user.display_name
+             , user.org_nm
+             , user.pstn_name
+        FROM edms_doc_rp doc, edms_v_user_info user
+        WHERE doc.u_wf_approver = user.user_id(+)
+          AND doc.r_object_id = #{rObjectId}
+          AND doc.u_wf_key IS NOT NULL
+    </select>
+
+    <select id="selectDSearchLinkList" resultMap="DocLinkMap">
+			   SELECT r_object_id
+			        , u_cabinet_code
+			        , u_doc_id
+			        , u_doc_key
+			        , u_fol_id
+			        , u_link_type
+			        , u_create_user
+			        , u_create_date
+			  FROM edms_doc_link_s 
+			  WHERE r_object_id  = #{doc.rObjectId}
+ </select>
+
+    
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+namespace="com.dongkuksystems.dbox.daos.type.manager.autochange.AutoChangeMapper">	<resultMap id="AutoChangeMap"
+		type="com.dongkuksystems.dbox.models.type.code.Code">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uCodeVal1" column="U_CODE_VAL1" />
+		<result property="uCodeType" column="U_CODE_TYPE" />
+		<result property="uCodeVal2" column="U_CODE_VAL2" />
+
+	</resultMap>
+	
+	<select id="selectAutoChange" resultMap="AutoChangeMap">
+		/* DBOX-PGM-MNG-007 | 자료 관리 - Live->Closed 자동 변환 기간 사별 조회 | 이성현 */	
+		SELECT
+			r_object_id,
+			u_code_type,
+			u_code_val1,
+			u_code_val2
+		FROM
+			edms_code_s
+			
+		<where>
+			u_code_type = 'CONFIG_CLOSED_PERIOD'		
+			AND u_code_val1 = #{uCodeVal1}
+		</where>
+			ORDER BY r_object_id ASC
+	</select>
+	
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.grade.GradeRedefinitionMapper">
+	<resultMap id="GradeRedefinitionMap"
+		type="com.dongkuksystems.dbox.models.type.manager.graderedefinition.GradeRedefinition">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uCodeType" column="U_CODE_TYPE" />
+		<result property="uCodeVal1" column="U_CODE_VAL1" />
+		<result property="uCodeName1" column="U_CODE_NAME1" />
+	</resultMap>
+		
+	<select id="selectGradeRedefinition" resultMap="GradeRedefinitionMap">
+	/* DBOX-PGM-MNG-002 | 보안 등급 - 보안등급명 조회 | 이성현  */
+		SELECT
+			u_code_name1,
+			r_object_id
+		FROM
+			edms_code_sp
+
+		<where>
+			u_code_type = 'SEC_LEVEL'
+		</where>
+			ORDER BY r_object_id ASC	
+	</select>
+
+</mapper>
+

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.agentpolicy.AgentMapper">
+	
+	<resultMap id="UseUsbPolicyMap" type="com.dongkuksystems.dbox.models.type.request.ReqUseUsb">
+			<id property="uReqUserId" 		column="U_REQ_USER_ID" 		/>
+			<id property="uRegistUser" 		column="U_REGIST_USER" 		/>
+			<id property="uReqDeptCode" 	column="U_REQ_DEPT_CODE" 	/>
+			<id property="uReqDate" 		column="U_REQ_DATE" 		/>
+			<id property="uReqStatus" 		column="U_REQ_STATUS" 		/>
+			<id property="uReqReason" 		column="U_REQ_REASON" 		/>
+			<id property="uExpiredDate" 	column="U_EXPIRED_DATE" 	/>
+			<id property="uApprover" 		column="U_APPROVER" 		/>
+			<id property="uApprovDate" 		column="U_APPROVE_DATE" 	/>
+			<id property="uRejectReason" 	column="U_REJECT_REASON" 	/>
+			
+	</resultMap>
+	
+	<resultMap id="UserDeptUsbPolicyMap" type="com.dongkuksystems.dbox.models.type.manager.UsbPolicy">
+			<id property="r_object_id" 		column="R_OBJECT_ID" 		/>
+			<id property="u_target_type"	column="U_TARGET_TYPE" 		/>
+			<id property="u_target_id" 		column="U_TARGET_ID" 		/>
+			<id property="u_policy" 		column="U_POLICY" 			/>
+			<id property="u_start_date"		column="U_START_DATE" 		/>
+			<id property="u_end_date" 		column="U_END_DATE" 		/>
+	</resultMap>
+
+	<!-- Agent 사용자 USB 정책 조회 -->
+	<select id="selectUserDeptUsbPolicy" resultMap="UserDeptUsbPolicyMap" >
+		SELECT * FROM 
+			(
+				SELECT 
+					1				as order_usb,
+					r_object_id		as r_object_id,
+					'U' 			as u_target_type,
+					#{uReqUserId}	as u_target_id,
+					'RW'	 		as u_policy,
+					u_approve_date  as u_start_date,
+					u_expired_date 	as u_end_date 
+					from edms_req_use_usb_sp
+					where u_req_user_id = #{uReqUserId}
+					and     u_allow_usb = 1
+					and 	now() > u_approve_date
+					and 	u_expired_date > now()
+				UNION 
+				SELECT 
+					2				as order_usb,
+					r_object_id,
+					u_target_type,
+					u_target_id,
+					u_policy,
+					u_start_date,
+					u_end_date
+				FROM edms_usb_policy_sp eups 
+				where 	u_target_type = 'U'
+				and 	u_target_id = #{uReqUserId}
+				and 	now() > u_start_date
+				and 	u_end_date > now()
+				UNION
+				SELECT 
+					3				as order_usb,
+					r_object_id,
+					u_target_type,
+					u_target_id,
+					u_policy,
+					u_start_date,
+					u_end_date
+				FROM edms_usb_policy_sp eups 
+				where 	u_target_type = 'D'
+				and 	u_target_id = #{uDeptCode}
+				and 	now() > u_start_date
+				and 	u_end_date > now()
+			)
+			ORDER BY order_usb, u_policy DESC
+			limit 1
+
+	</select>
+
+	<!-- Agent 사용자 USB 정책 조회 -->
+	<select id="selectUseUsbPolicy" resultMap="UseUsbPolicyMap" >
+		SELECT
+			r_object_id,
+			u_req_user_id,
+			u_regist_user,
+			u_req_dept_code,
+			u_req_date,
+			u_req_status,
+			u_req_reason,
+			u_expired_date,
+			u_approver,
+			u_approve_date,
+			u_reject_reason
+		FROM
+		edms_req_use_usb_sp
+		<where>
+			u_req_user_id 		= #{uReqUserId}
+			and u_expired_date > now()
+			and u_req_status 	= 'A'
+			LIMIT 1
+		</where>
+
+	</select>
+
+
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<jeus-web-dd xmlns="http://www.tmaxsoft.com/xml/ns/jeus">
+    <!-- configure whether to find it below web-inf directory when loading class. -->
+    <!--   <webinf-first>
+        <enabled>true</enabled>
+    </webinf-first>
+    -->
+    <res-ref>
+	    <jndi-info>
+	        <ref-name>dbox_ds</ref-name>
+	        <export-name>dbox_ds</export-name>
+	    </jndi-info>
+	</res-ref>
+</jeus-web-dd>

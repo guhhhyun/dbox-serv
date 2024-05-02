@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.manager.autoclosing.AutoClosingMapper">
+    <select id="selectPeriodToCloseByComCode" resultType="hashMap">
+        SELECT * FROM edms_code_sp
+            WHERE u_code_type = 'CONFIG_VER_DEL_PERIOD'
+                AND u_code_val1 = #{uCodeVal1}
+    </select>
+
+    <select id="selectDataToClose" resultType="hashMap">
+					with vers as (
+					select
+							r_object_id,
+							version_count,
+							s.u_doc_key,
+							s.u_reg_user,
+							s.object_name,
+							s.r_content_size,
+							to_char(s.u_closed_date, 'YYYY-MM-DD HH24:MI:SS') u_closed_date,
+							to_char(s.u_update_date, 'YYYY-MM-DD HH24:MI:SS') u_update_date
+					from
+								edms_doc_sp s,
+							(
+						select
+							i_chronicle_id as u_doc_key,
+									count(i_chronicle_id) as version_count
+						from
+							dm_sysobject_s
+						group by
+							i_chronicle_id
+						having
+									count(i_chronicle_id) > 1
+						order by
+							i_chronicle_id
+							) x
+					where
+								x.u_doc_key = s.u_doc_key
+						and s.i_has_folder = 1
+						and s.i_is_deleted = 0
+						and s.u_doc_status = 'C'
+						and s.u_closed_date > '1753-01-01'
+						and s.u_delete_status != 'T'
+						)
+					select
+						e.r_object_id,
+						e.u_doc_key,
+						e.object_name,
+						e.r_content_size,
+						e.u_closed_date,
+						e.u_update_date,
+						ldoc.last_use_date,
+						u.display_name,
+						u.org_nm,
+						u.com_org_id,
+						e.version_count
+					from
+						vers e
+					left outer join edms_v_user_info u on
+						( e.u_reg_user = u.user_id
+							and u.org_id != 'DKS50118816' )
+					left outer join lateral (
+						select
+							to_char(max(c.u_job_date), 'yyyy-mm-dd') as last_use_date
+						from
+							edms_log_doc c
+						where
+							e.u_doc_key = c.u_doc_key
+							and c.u_job_code in ('VE', 'DL', 'AP', 'ER', 'EA', 'TR', 'PR', 'PA', 'DP')
+								) ldoc on
+						true
+					where
+						exists (
+						select
+								1
+						from
+								edms_doc_sp s,
+								edms_doc_rp r
+						where
+								s.r_object_id = r.r_object_id
+							and s.r_object_id in (
+							select
+										r_object_id
+							from
+										edms_doc_sp
+							where
+										u_doc_key in (
+								select
+												u_doc_key
+								from
+												edms_doc_sp
+								where
+												u_doc_status = 'C'
+									and i_has_folder = 1
+									and u_closed_date > '1753-01-01'
+									and r_object_id = e.r_object_id
+											)
+									)
+							and s.i_is_deleted = 0
+							and r.r_version_label != ' '
+							and r.r_version_label != 'CURRENT'
+						group by
+							s.u_doc_key
+						having
+							COUNT(s.u_doc_key) > 1
+						)						
+                    <if test="comOrgId != null and comOrgId != ''">
+                        AND u.com_org_id = #{comOrgId}
+                    </if>
+                    <if test="orgId != null and orgId != ''">
+                        AND u.org_id = #{orgId}
+                    </if>
+                    <if test="uRegUser != null and uRegUser != ''">
+                        AND u.user_id = #{uRegUser}
+                    </if>
+										<if test="versionCount > 1">
+                        AND e.version_count >= #{versionCount}
+                    </if>
+                    <if test="objectName != null and objectName != ''">
+                        AND e.object_name LIKE CONCAT('%', #{objectName}, '%')
+                    </if>  
+                    <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+                        AND to_char(e.u_closed_date, 'YYYY-MM-DD') BETWEEN #{startDate} AND #{endDate}
+                    </if>
+										<if test="deptCodeList != null and !deptCodeList.isEmpty()">												
+												AND u.org_id IN
+											  <foreach collection="deptCodeList" item="deptCode" open="(" separator="," close=")">
+													#{deptCode}
+												</foreach>
+										</if>                                              
+    </select>
+
+    <select id="selectDataByDocKeyToClose" resultType="hashMap">
+        SELECT  doc.r_object_id
+            ,   doc.u_doc_key
+            ,   doc.object_name
+            ,   doc.r_content_size
+            ,	doc.u_ver_keep_flag
+            ,   r.r_version_label
+            ,   user.display_name
+            ,   user.org_nm
+            ,   user.com_org_id
+            FROM edms_doc_sp doc
+               , edms_v_user_info user
+               , edms_doc_rp r
+            WHERE doc.r_object_id = r.r_object_id
+                AND doc.u_reg_user = user.user_id
+                AND doc.i_is_deleted = 0
+                AND r.r_version_label != ' '
+                AND r.r_version_label != 'CURRENT'
+                AND doc.u_doc_key = #{docKey}
+                ORDER BY NUMBER(r.r_version_label) DESC
+    </select>
+
+</mapper>

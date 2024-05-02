@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.realTime.RealTimeMapper">	                                                              
+	<resultMap id="RealTimeMap"
+		type="com.dongkuksystems.dbox.models.type.manager.realTime.RealTime">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uCodeType" column="U_CODE_TYPE" />
+		<result property="uTypeName" column="U_TYPE_NAME" />
+		<result property="uCodeVal1" column="U_CODE_VAL1" />
+		<result property="uCodeVal2" column="U_CODE_VAL2" />
+		<result property="uCodeVal3" column="U_CODE_VAL3" />
+		<result property="uCodeName1" column="U_CODE_NAME1" />
+		<result property="uCodeName2" column="U_CODE_NAME2" />
+		<result property="uCodeName3" column="U_CODE_NAME3" />
+		<result property="uOrgInfo" column="U_ORG_INFO" />
+		<result property="uCreateDate" column="U_CREATE_DATE" />
+		<result property="uUpdateDate" column="U_UPDATE_DATE" />		
+	</resultMap>	
+	
+	<select id="selectRealTime" resultMap="RealTimeMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 실시간 저장 기능 사용 조직 조회 | 이성현(DMES) */
+		SELECT
+			r_object_id,
+		  u_code_type,
+		  u_type_name,
+		  u_code_val1,
+		  u_code_val2,
+		  u_code_val3,
+		  u_code_name1,
+		  u_code_name2,
+		  u_code_name3,
+		  u_code_name1 || ' - '|| u_code_name2 as u_org_info,
+		  split_part(u_create_date, ' ', 1) as u_create_date,
+		  u_update_date      
+		FROM
+			edms_code_sp
+		<where>
+			u_code_type='CONFIG_MID_SAVE_DEPT'
+			AND u_code_val1 = #{uComCode}
+		</where>
+			order by u_create_date desc
+	</select>	
+</mapper>

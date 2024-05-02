@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.auth.share.AuthShareMapper">
+	<resultMap id="AuthShareMap"
+		type="com.dongkuksystems.dbox.models.type.auth.AuthShare">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uObjId" column="U_OBJ_ID" />
+		<result property="uAuthorId" column="U_AUTHOR_ID" />
+		<result property="uAuthorType" column="U_AUTHOR_TYPE" />
+		<result property="uPermitType" column="U_PERMIT_TYPE" />
+		<result property="uCreateUser" column="U_CREATE_USER" />
+		<result property="uCreateDate" column="U_CREATE_DATE" />
+	</resultMap>
+	
+	<resultMap id="AuthShareDetailMap" type="com.dongkuksystems.dbox.models.type.auth.AuthShare">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uObjId" column="U_OBJ_ID" />
+		<result property="uAuthorId" column="U_AUTHOR_ID" />
+		<result property="uAuthorName" column="U_AUTHOR_NAME" />
+		<result property="authorOrgId" column="author_org_id" />
+		<result property="authorCabinetCode" column="author_cabinet_code" />
+		<result property="uPermitNum" column="U_PERMIT_NUM" />
+		<result property="uAuthorType" column="U_AUTHOR_TYPE" />
+		<result property="uPermitType" column="U_PERMIT_TYPE" />
+		<result property="uCreateUser" column="U_CREATE_USER" />
+		<result property="uCreateDate" column="U_CREATE_DATE" />
+		
+		<association property="user" javaType="VUser">
+			<id property="userId" column="B_USER_ID" />
+			<result property="displayName" column="B_DISPLAY_NAME" />
+			<result property="comOrgId" column="B_COM_ORG_ID" />
+			<result property="orgId" column="B_ORG_ID" />
+			<result property="orgNm" column="B_ORG_NM" />
+			<result property="pstnCode" column="B_PSTN_CODE" />
+			<result property="pstnName" column="B_PSTN_NAME" />
+			<result property="levelCode" column="B_LEVEL_CODE" />
+			<result property="levelName" column="B_LEVEL_NAME" />
+			<result property="titleCode" column="B_TITLE_CODE" />
+			<result property="titleName" column="B_TITLE_NAME" />
+		</association>
+		
+		<association property="dept" javaType="VDept">
+			<result property="orgId" column="C_ORG_ID" />
+			<result property="orgNm" column="C_ORG_NM" />
+			<result property="comOrgId" column="C_COM_ORG_ID" />
+			<result property="uCabinetCode" column="C_U_CABINET_CODE" />
+		</association>
+	</resultMap>
+	
+	<select id="selectList" resultMap="AuthShareMap">
+		SELECT
+		R_OBJECT_ID,
+		U_OBJ_ID,
+		U_AUTHOR_ID,
+		U_AUTHOR_TYPE,
+		U_PERMIT_TYPE,
+		U_CREATE_USER,
+		U_CREATE_DATE
+		FROM
+		EDMS_AUTH_SHARE_SP
+		<where>
+			U_OBJ_ID = #{objectId}
+		</where>
+	</select>
+	
+	<select id="selectDetailList" resultMap="AuthShareDetailMap">
+      SELECT
+			a.r_object_id
+		,	a.u_obj_id
+		,	a.u_author_id
+		,   a.u_permit_type 
+		,	a.u_author_type
+		,	a.u_create_user
+		,	a.u_create_date
+		,   b.user_id			AS b_user_id
+		,   b.display_name		AS b_display_name
+		,   b.com_org_id		AS b_com_org_id
+		,   b.org_id			AS b_org_id
+		,   b.org_nm			AS b_org_nm
+		,   b.pstn_code			AS b_pstn_code
+		,   b.pstn_name			AS b_pstn_name
+		,   b.level_code		AS b_level_code
+		,   b.level_name		AS b_level_name
+		,   b.title_code		AS b_title_code
+		,   b.title_name		AS b_title_name
+		,	c.org_id			AS c_org_id
+		,	c.org_nm			AS c_org_nm
+		,	c.com_org_id		AS c_com_org_id
+		,	c.u_cabinet_code	AS c_u_cabinet_code
+		, CASE WHEN a.U_PERMIT_TYPE = 'R' THEN 3
+		     ELSE 7 END AS U_PERMIT_NUM
+		, CASE WHEN a.u_author_type = 'D' THEN c.org_nm
+		     ELSE b.display_name END AS U_AUTHOR_NAME
+		, c.ORG_ID AS author_org_id 
+		, c.U_CABINET_CODE AS author_cabinet_code
+		FROM
+			edms_auth_share_sp	a LEFT OUTER JOIN
+			edms_v_user_info	b ON a.u_author_id = b.user_id LEFT OUTER JOIN
+			edms_v_dept_info	c ON a.u_author_id = c.u_cabinet_code 
+		<where>
+			u_obj_id = #{objectId}
+		</where>
+	</select>
+</mapper>

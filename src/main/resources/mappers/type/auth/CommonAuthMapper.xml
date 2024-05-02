@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.auth.CommonAuthMapper">
+
+	<resultMap id="CommonAuthMap"
+		type="com.dongkuksystems.dbox.models.dto.type.auth.FolderAuthResult">
+		<id property="uAuthorId" column="U_AUTHOR_ID" />
+		<result property="uPermitType" column="U_PERMIT_TYPE" />
+	</resultMap>
+	
+	<resultMap id="HamInfoMap" type="com.dongkuksystems.dbox.models.dto.type.auth.HamInfoResult">
+		<id property="hamType" column="HAM_TYPE" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />
+		<result property="myCode" column="code" />
+		<result property="cabinetOrgId" column="CABINET_ORG_ID" />
+	</resultMap>
+	
+	<resultMap id="DrmAuthorDtoMap" type="com.dongkuksystems.dbox.models.dto.etc.DrmAuthorDto">
+		<id property="id" column="author_id" />
+		<result property="authorType" column="U_AUTHOR_TYPE" /> 
+		<result property="name" column="author_nm" /> 
+	</resultMap>
+	
+	<resultMap id="DrmUserDtoMap" type="com.dongkuksystems.dbox.models.dto.etc.DrmUserDto">
+		<id property="userId" column="user_id" />
+		<result property="displayName" column="display_name" /> 
+		<result property="empType" column="emp_type" /> 
+	</resultMap>
+	
+	<resultMap id="GroupMemebersMap" type="com.dongkuksystems.dbox.models.dto.type.auth.AuthBaseGroupMembersDto">
+		<id property="orgId" column="org_id" />
+		<result property="orgNm" column="org_nm" />
+		<result property="groupMembers" column="defulat_group_ids" />
+	</resultMap>
+	
+	
+	<select id="selectHamInfo" resultMap="HamInfoMap">
+		SELECT 'P' AS HAM_TYPE, LOWER(B.COM_ORG_ID) AS COM_ORG_ID, A.U_CABINET_CODE, LOWER(A.u_pjt_code) as code, B.org_id as CABINET_ORG_ID 
+		  FROM EDMS_PROJECT_SP A
+		INNER JOIN EDMS_V_DEPT_INFO B ON A.U_OWN_DEPT = B.ORG_ID 
+	 	 WHERE cast(LOWER(A.U_PJT_CODE) as character varying(100) ) = LOWER(#{hamId}) 
+		UNION 
+		SELECT 'R' AS HAM_TYPE, LOWER(B.COM_ORG_ID) AS COM_ORG_ID, A.U_CABINET_CODE, LOWER(A.u_rsch_code) as code, B.org_id as CABINET_ORG_ID
+	  	  FROM EDMS_RESEARCH_SP A
+		INNER JOIN EDMS_V_DEPT_INFO B ON A.U_OWN_DEPT = B.ORG_ID 
+	 	 WHERE cast(LOWER(A.U_RSCH_CODE) as character varying(100) ) = LOWER(#{hamId}) 
+		UNION
+		SELECT 'D' AS HAM_TYPE, LOWER(A.COM_ORG_ID) AS COM_ORG_ID, A.U_CABINET_CODE, LOWER(A.org_id) as code, A.org_id as CABINET_ORG_ID 
+	  	  FROM EDMS_V_DEPT_INFO A 
+	 	 WHERE LOWER(A.ORG_ID) = LOWER(#{hamId}) OR LOWER(A.U_CABINET_CODE) = LOWER(#{hamId})
+	</select>
+	
+	<select id="selectHamSearchInfo" resultMap="HamInfoMap">
+	   SELECT 'P' AS HAM_TYPE, LOWER(B.COM_ORG_ID) AS COM_ORG_ID, A.U_CABINET_CODE, LOWER(A.u_pjt_code) as code, B.org_id as CABINET_ORG_ID 
+		  FROM EDMS_PROJECT_SP A
+		INNER JOIN EDMS_V_DEPT_INFO B ON A.U_OWN_DEPT = B.ORG_ID 
+	 	 WHERE cast(LOWER(A.U_PJT_CODE) as character varying(100) ) = LOWER(#{dataCode}) 
+		UNION 
+		SELECT 'R' AS HAM_TYPE, LOWER(B.COM_ORG_ID) AS COM_ORG_ID, A.U_CABINET_CODE, LOWER(A.u_rsch_code) as code, B.org_id as CABINET_ORG_ID
+	  	  FROM EDMS_RESEARCH_SP A
+		INNER JOIN EDMS_V_DEPT_INFO B ON A.U_OWN_DEPT = B.ORG_ID 
+	 	 WHERE cast(LOWER(A.U_RSCH_CODE) as character varying(100) ) = LOWER(#{dataCode}) 
+	 	 		UNION 
+	 	SELECT 'E' AS HAM_TYPE, LOWER(B.COM_ORG_ID) AS COM_ORG_ID, A.U_CABINET_CODE, null, B.org_id as CABINET_ORG_ID
+	  	  FROM EDMS_RECYCLE_SP A
+		INNER JOIN EDMS_V_DEPT_INFO B ON A.U_CABINET_CODE = B.U_CABINET_CODE 
+	 	 WHERE cast(LOWER(A.U_CABINET_CODE) as character varying(100) ) = LOWER(#{dataCode}) 
+		UNION
+		SELECT 'D' AS HAM_TYPE, LOWER(A.COM_ORG_ID) AS COM_ORG_ID, A.U_CABINET_CODE, LOWER(A.org_id) as code, A.org_id as CABINET_ORG_ID 
+	  	  FROM EDMS_V_DEPT_INFO A 
+	 	 WHERE LOWER(A.ORG_ID) = LOWER(#{dataCode})
+	</select>
+	
+	<select id="selectDeptHamInfo" resultMap="HamInfoMap">
+	WITH ug AS 
+		(
+			select a.u_code_val1, a.u_code_val2
+			from edms_code_sp a 
+			where a.u_code_type = 'COMMON_CABINET_DEPT'
+		)
+		select
+			(case when A.ORG_ID in (select u_code_val2 from ug) then (select u_code_val1 from ug where ug.u_code_val2 = A.ORG_ID)
+			     else
+			'D' end)::text as HAM_TYPE,
+			lower(A.COM_ORG_ID) as COM_ORG_ID,
+			A.U_CABINET_CODE,
+			LOWER(A.ORG_ID) as code,
+			A.org_id as CABINET_ORG_ID 
+		from
+			EDMS_V_DEPT_INFO A
+		where
+			lower(A.ORG_ID) = LOWER(#{hamId}) OR LOWER(A.U_CABINET_CODE) = LOWER(#{hamId})
+	</select>
+	
+	<select id="selectHamDefaultAuths" resultType="String" >
+		select gs.group_name
+		FROM dm_group_sp gs,
+	   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+		       gr2.i_supergroups_names AS group_name
+	      FROM dm_group_r gr1,
+		       dm_group_r gr2
+	     WHERE 1=1
+	       AND gr1.r_object_id = gr2.r_object_id
+           AND gr1.users_names IS NOT NULL
+       ) gr3 
+		<where>
+		1=1
+		AND gr3.group_name = gs.group_name
+		AND gr3.i_all_users_names = #{userId}
+		</where>
+	</select>
+	
+	<select id="selectUserAuthOnFolder" resultMap="CommonAuthMap">
+		WITH ug AS
+		(
+		  SELECT DISTINCT gs.group_name
+		  FROM dm_group_sp gs,
+		    (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+		      gr2.i_supergroups_names AS group_name
+		      FROM dm_group_r gr1,
+		          dm_group_r gr2
+		      WHERE 1=1
+		      AND gr1.r_object_id = gr2.r_object_id
+		      AND gr1.users_names IS NOT NULL
+		      ) gr3
+		<where>
+			1=1
+	  	    AND gr3.group_name = gs.group_name
+			AND gr3.i_all_users_names = #{userId} 
+		</where> 
+		)
+		select c.u_author_id, c.u_permit_type
+		from (
+		  select a.u_author_id, a.u_permit_type
+		  from edms_auth_base_sp a
+		<where>
+			1=1
+			AND a.u_obj_id = #{objectId}
+		</where> 
+		union
+		  select b.u_author_id, b.u_permit_type
+		  from edms_auth_share_sp b
+		<where>
+			1=1
+			AND b.u_obj_id = #{objectId}
+		</where> 
+		) c
+		<where>
+			1=1
+			AND (c.u_author_id = #{userId} OR c.u_author_id IN (SELECT group_name FROM ug))
+		</where> 
+	</select>
+	
+	<select id="checkUserInDepts" resultType="boolean">
+		SELECT
+			COUNT(*) > 0
+		FROM
+			(
+			SELECT
+				a.USER_ID AS user_id
+			FROM
+				EDMS_V_USER_INFO	a INNER JOIN
+				EDMS_V_DEPT_INFO	b ON a.org_id = b.org_id 
+			WHERE
+				a.USER_ID = #{userId}
+			AND (
+                FALSE
+                <foreach collection="deptCodes" item="deptCode" open="OR a.org_id IN (" separator="," close=")">
+                    #{deptCode}
+                </foreach>
+			)
+			AND	a.usage_state = 'A'
+			AND b.usage_state = 'A'
+			
+			UNION ALL
+			
+			SELECT
+				a.person_code AS user_id
+			FROM
+				edms_gw_addjob	a INNER JOIN
+				EDMS_V_USER_INFO	b ON a.person_code = b.user_id INNER JOIN
+				EDMS_V_DEPT_INFO	c ON a.unit_code = c.org_id
+			WHERE
+				a.person_code = #{userId}
+			AND (
+                FALSE
+                <foreach collection="deptCodes" item="deptCode" open="OR a.unit_code IN (" separator="," close=")">
+                    #{deptCode}
+                </foreach>
+			)
+			AND	b.usage_state = 'A'
+			AND c.usage_state = 'A'
+		)
+	</select>
+    
+    <select id="checkFolderAuth" resultType="boolean">
+        /* DBOX-PGM-DOC-008 | 폴더 권한 조회 | 차소익 */
+    	WITH ug AS (
+			SELECT
+				DISTINCT gs.group_name
+			FROM
+				dm_group_sp gs,
+				(
+					SELECT
+						DISTINCT gr1.users_names AS i_all_users_names,
+				     	gr2.i_supergroups_names AS group_name
+				   	FROM
+				   		dm_group_r gr1,
+				     	dm_group_r gr2
+				  	WHERE
+				  		gr1.r_object_id = gr2.r_object_id
+				    AND	gr1.users_names IS NOT NULL
+				) gr3
+			WHERE
+				gr3.group_name = gs.group_name
+			AND	gr3.i_all_users_names = #{userId}
+		)
+		SELECT
+			COUNT(*) > 0
+		FROM
+			(SELECT a.u_author_id, a.u_obj_id, a.U_PERMIT_TYPE 
+			FROM EDMS_AUTH_BASE_S a
+			WHERE u_doc_status = 'L'
+			UNION ALL 
+			SELECT CASE WHEN b.U_AUTHOR_TYPE = 'D' THEN CONCAT('g_', b.u_author_id) 
+				ELSE b.u_author_id END AS u_author_id, b.u_obj_id, b.U_PERMIT_TYPE
+			FROM EDMS_AUTH_SHARE_S b) tba
+		WHERE
+			tba.u_obj_id = #{folderId}
+		AND (tba.u_author_id = #{userId} OR tba.u_author_id IN (SELECT group_name FROM ug))
+ 		 
+			<if test='permitType == "B"'>
+			AND	tba.u_permit_type IN ('B', 'R', 'D')
+			</if>
+			<if test='permitType == "R"'>
+			AND	tba.u_permit_type IN ('R', 'D')
+			</if>
+			<if test='permitType == "D"'>
+			AND	tba.u_permit_type = 'D'
+			</if>
+			<if test='permitType != "B" and permitType != "R" and permitType != "D"'>
+			AND	FALSE
+			</if>
+    </select>
+    
+    <select id="checkDocAuth" resultType="boolean">
+        /* DBOX-PGM-DOC-007 | 문서 권한 조회 | 차소익 */
+	    WITH ug AS (
+            SELECT DISTINCT
+                gs.group_name
+			FROM
+				dm_group_sp gs
+			,	(
+                    SELECT DISTINCT
+                        gr1.users_names             AS i_all_users_names
+                    ,   gr2.i_supergroups_names     AS group_name
+				   	FROM
+				   		dm_group_r gr1
+				    , 	dm_group_r gr2
+				  	WHERE
+				  		gr1.r_object_id = gr2.r_object_id
+				    AND	gr1.users_names IS NOT NULL
+				) gr3
+			WHERE
+				gr3.group_name = gs.group_name
+			AND	gr3.i_all_users_names = #{userId}
+		), acl AS (
+            SELECT
+                acs.owner_name
+            ,   acs.object_name
+            ,   MAX(acr.r_accessor_permit) AS max_level
+			FROM
+                dm_acl_s acs
+			,   dm_acl_r acr
+            ,   (
+                    SELECT
+                        acl_domain
+                    ,   acl_name
+                    FROM
+                        edms_doc_sp
+                    WHERE
+                        r_object_id = #{docId}
+                ) a
+			WHERE
+				acs.r_object_id = acr.r_object_id
+            AND a.acl_domain = acs.owner_name AND a.acl_name = acs.object_name
+			AND	(acr.r_accessor_name = #{userId} OR acr.r_accessor_name IN (SELECT group_name FROM ug))
+			GROUP BY acs.owner_name, acs.object_name
+		)
+		SELECT
+			COUNT(*) > 0
+		FROM
+			edms_doc_sp		a LEFT OUTER JOIN
+			acl				c ON (a.acl_domain = c.owner_name AND a.acl_name = c.object_name)
+		WHERE
+			a.r_object_id = #{docId}
+		AND	(
+				(a.owner_name = #{userId} OR a.owner_name IN (SELECT group_name FROM ug)) AND a.owner_permit >= #{level}
+			OR	c.max_level >= #{level}
+			)
+    </select>
+    
+    <select id="checkFolderOwner" resultType="boolean">
+        SELECT
+            SUM(cnt) > 0
+        FROM
+            (
+                SELECT
+                    COUNT(*) AS cnt
+                FROM
+                                    edms_folder_s     a
+                    LEFT OUTER JOIN edms_v_dept_info  b ON a.u_cabinet_code = b.u_cabinet_code
+                    LEFT OUTER JOIN edms_v_user_info  c ON b.org_id = c.org_id
+                WHERE
+                        a.r_object_id = #{folderId}
+                    AND c.user_id = #{userId}
+                    AND b.usage_state = 'A'
+                    AND c.usage_state = 'A'
+               
+                UNION ALL
+                
+                SELECT
+                    COUNT(*) AS cnt
+                FROM
+                                    edms_folder_s       a
+                    LEFT OUTER JOIN edms_v_dept_info    b ON a.u_cabinet_code = b.u_cabinet_code
+                    LEFT OUTER JOIN edms_gw_addjob      c ON b.org_id = c.unit_code
+                    LEFT OUTER JOIN edms_v_user_info    d ON c.person_code = d.user_id
+                WHERE
+                        a.r_object_id = #{folderId}
+                    AND c.person_code = #{userId}
+                    AND b.usage_state = 'A'
+                    AND d.usage_state = 'A'
+           )
+    </select>
+    
+    <select id="checkDocOwner" resultType="boolean">
+        SELECT
+            SUM(cnt) > 0
+        FROM
+            (
+                SELECT
+                    COUNT(*) AS cnt
+                FROM
+                                    edms_doc_s     a
+                    LEFT OUTER JOIN edms_v_dept_info  b ON a.u_cabinet_code = b.u_cabinet_code
+                    LEFT OUTER JOIN edms_v_user_info  c ON b.org_id = c.org_id
+                WHERE
+                        a.u_doc_key = #{docId}
+                    AND c.user_id = #{userId}
+                    AND b.usage_state = 'A'
+                    AND c.usage_state = 'A'
+               
+                UNION ALL
+                
+                SELECT
+                    COUNT(*) AS cnt
+                FROM
+                                    edms_doc_s       a
+                    LEFT OUTER JOIN edms_v_dept_info    b ON a.u_cabinet_code = b.u_cabinet_code
+                    LEFT OUTER JOIN edms_gw_addjob      c ON b.org_id = c.unit_code
+                    LEFT OUTER JOIN edms_v_user_info    d ON c.person_code = d.user_id
+                WHERE
+                        a.u_doc_key = #{docId}
+                    AND c.person_code = #{userId}
+                    AND b.usage_state = 'A'
+                    AND d.usage_state = 'A'
+           )
+    </select>
+    
+    <select id="selectDocAccesor" resultMap="DrmUserDtoMap">
+		WITH group_list AS (
+		         SELECT ds.r_object_id AS doc_id,
+		            	ds.u_doc_key AS doc_key,
+		            	acr.r_accessor_name AS accessor,
+		            	acr.r_accessor_permit AS permit,
+		                CASE
+		                    WHEN acr.r_is_group = 0 THEN 'U'
+		                    ELSE 'G'
+		                END AS accessor_type
+		           FROM dm_acl_s acs,
+		            	dm_acl_r acr,
+		            	dm_sysobject_s ss,
+		            	edms_doc_s ds
+		          WHERE ss.i_has_folder = 1 
+		          	AND ss.r_object_id = ds.r_object_id 
+		          	AND acs.r_object_id = acr.r_object_id 
+		          	AND (acr.r_accessor_name  <![CDATA[<>]]> ALL (ARRAY['dm_world', 'dm_group', 'dm_owner']))
+		          	AND acs.object_name = ss.acl_name 
+		          	AND acr.r_accessor_permit > 1
+		          	and ds.u_doc_key = #{docKey}
+		  		), user_list AS (
+		         SELECT DISTINCT gs.group_name,
+		            	gr1.users_names
+		           FROM dm_group_s gs,
+		            	dm_group_r gr1,
+		            	dm_group_r gr2
+		          WHERE gr1.r_object_id = gr2.r_object_id 
+		          	AND gr2.i_supergroups_names = gs.group_name 
+		          	AND (gs.group_name ~~ like_escape('g@_%' , '@' ) OR gs.group_name  ~~ like_escape('edm@_%' , '@' )) 
+		          	AND gr1.users_names IS NOT NULL
+		        )
+		select distinct tbx.*
+		  from
+			(
+			select 	a.ACCESSOR as user_id,
+					b.DISPLAY_NAME as display_name,
+					b.emp_type 
+			  from 	(
+			  			SELECT gl.doc_id,
+						    	gl.doc_key,
+						    	'' AS group_name,
+						    	gl.accessor,
+						    	gl.permit
+						   FROM group_list gl
+						  WHERE gl.accessor_type = 'U'
+						UNION
+						 SELECT gl.doc_id,
+						    	gl.doc_key,
+						    	gl.accessor AS group_name,
+						    	ul.users_names AS accessor,
+						    	gl.permit
+						   FROM group_list gl,
+						    	user_list ul
+						  WHERE gl.accessor_type = 'G' AND gl.accessor = ul.group_name
+			  		)
+			  a inner join EDMS_V_USER_INFO b on a.ACCESSOR = b.USER_ID
+			  where DOC_KEY = #{docKey}
+			union all
+			select 	a.U_AUTHOR_ID as user_id,
+					b.DISPLAY_NAME as display_name,
+					b.emp_type 
+			  from EDMS_AUTH_BASE_SP a inner join EDMS_V_USER_INFO b on a.U_AUTHOR_ID = b.USER_ID
+			 where A.U_OBJ_ID = #{docKey}
+			   and A.U_DOC_STATUS = #{docStatus}
+			   and A.U_OBJ_TYPE = 'U' 
+		    ) tbx  
+    </select>
+    
+    <select id="selectDocAccesorOld" resultMap="DrmUserDtoMap">
+		SELECT DISTINCT tbx.*
+		  FROM ( 
+			SELECT a.ACCESSOR AS user_id, b.DISPLAY_NAME AS display_name
+			  FROM edms_v_doc_accessor a INNER JOIN EDMS_V_USER_INFO b ON a.ACCESSOR = b.USER_ID
+			 WHERE DOC_KEY = #{docKey}
+			 UNION ALL
+			SELECT a.U_AUTHOR_ID AS user_id, b.DISPLAY_NAME AS display_name 
+			  FROM EDMS_AUTH_BASE_SP a
+			  INNER JOIN EDMS_V_USER_INFO b ON a.U_AUTHOR_ID = b.USER_ID 
+			 WHERE A.U_OBJ_ID = #{docKey}
+			   AND A.U_DOC_STATUS = #{docStatus}
+			   AND A.U_OBJ_TYPE = 'U'
+		) tbx
+    </select>
+    
+    <select id="selectAccesorGroups" resultType="String">
+		SELECT DISTINCT g.group_name
+		FROM
+		    dm_group_s  g
+		,   dm_group_r  r 
+		WHERE
+		    g.r_object_id = r.r_object_id
+		AND r.users_names = #{userId}
+    </select>
+    
+    <select id="selectGroupMembersList" resultMap="GroupMemebersMap">
+	     SELECT tba.ORG_ID as org_id, tba.ORG_NM as org_nm, string_agg(c.USER_ID, ',')::text AS defulat_group_ids
+		  FROM 
+		(
+			with recursive VIEWNAME as(
+					select
+						a.org_id,
+						a.up_org_id
+					from
+						edms_v_dept_info a
+					WHERE
+						a.USAGE_STATE = 'A'
+					AND a.ORG_ID IN (SELECT b.u_dept_code 
+											FROM EDMS_AUTH_BASE_S a LEFT JOIN EDMS_DEPT_S b ON a.u_author_id = concat('g_', b.U_CABINET_CODE)
+											WHERE a.U_OBJ_ID = #{docKey}
+											   AND a.U_DOC_STATUS = #{docStatus}
+											   AND a.U_OBJ_TYPE = 'D'
+											   AND a.U_OWN_DEPT_YN = 'N')
+					union all
+					select
+						c.org_id,
+						c.up_org_id
+					from
+						VIEWNAME b,
+						edms_v_dept_info c
+					WHERE
+						c.USAGE_STATE = 'A'
+					AND b.org_id = c.up_org_id)
+					select
+						DISTINCT b.org_id, b.org_nm
+					from
+						VIEWNAME a
+					inner join edms_v_dept_info b on a.org_id = b.org_id
+					UNION ALL 
+			SELECT b.ORG_ID, b.ORG_NM 
+			FROM EDMS_AUTH_BASE_S a LEFT JOIN EDMS_V_DEPT_INFO b ON a.u_author_id = concat('g_', b.U_CABINET_CODE)
+			WHERE a.U_OBJ_ID = #{docKey}
+			   AND a.U_DOC_STATUS = #{docStatus}
+			   AND a.U_OBJ_TYPE = 'D'
+			   AND a.U_OWN_DEPT_YN = 'Y'
+			   AND b.USAGE_STATE = 'A'
+		) tba LEFT OUTER JOIN (SELECT cc.USER_ID, cc.ORG_ID
+						FROM EDMS_V_USER_INFO cc
+						UNION ALL
+						SELECT dd.PERSON_CODE AS user_id, dd.UNIT_CODE AS ORG_ID
+						FROM EDMS_GW_ADDJOB dd ) c ON tba.ORG_ID = c.ORG_ID 
+		GROUP BY tba.ORG_ID, tba.ORG_NM
+    </select>
+    
+    <select id="selectDocAdditionalAuthorList" resultMap="DrmAuthorDtoMap">
+		SELECT * 
+		FROM (
+			SELECT a.U_AUTHOR_TYPE, 
+			       CASE WHEN a.U_AUTHOR_TYPE = 'D' THEN b.ORG_ID ELSE c.USER_ID END AS author_id, 
+			       CASE WHEN a.U_AUTHOR_TYPE = 'D' THEN b.ORG_NM ELSE c.DISPLAY_NAME END AS author_nm 
+			FROM EDMS_AUTH_BASE_S a
+			LEFT OUTER JOIN EDMS_V_DEPT_INFO b ON a.U_AUTHOR_ID = concat('g_', b.U_CABINET_CODE)
+			LEFT OUTER JOIN EDMS_V_USER_INFO c ON a.U_AUTHOR_ID = c.USER_ID 
+		 	WHERE a.U_OBJ_ID = #{docKey}
+			  AND a.U_DOC_STATUS = #{docStatus}
+			  AND a.U_OBJ_TYPE = 'D'
+		) tbx 
+		WHERE tbx.author_id IS NOT NULL 
+    </select>
+    
+    <select id="selectsearchNameCheck" resultType = "String">
+		  SELECT stopword
+		    FROM edms_dsearch_stopword eds
+		   WHERE company_code IN ('DKG', #{userDept})
+		     AND stopword  = #{searchName}
+    </select>
+    
+    <select id="selectsearchImwonCheck" resultType = "String">
+    <!--DBOX-PGM-DOC-006 // 일반검색 기능 // 담당자 : 이우영 -->
+         SELECT u_cabinet_code
+          FROM (
+              SELECT a.u_cabinet_code
+                FROM edms_v_dept_info a INNER JOIN   
+                     edms_gw_imwon b ON a.org_id = b.org_id 
+               WHERE b.org_id not in (
+                  SELECT u_code_val2
+                    FROM edms_code_s
+                   WHERE u_code_type = 'IMWON_SEARCH_EXCEPTION'
+                     AND u_code_val1 = 'E')  
+               UNION ALL   
+               SELECT c.u_cabinet_code
+                 FROM edms_v_dept_info c INNER JOIN
+                      edms_code_s d on c.org_id  = d.u_code_val2 
+                WHERE d.u_code_type  = 'IMWON_SEARCH_ADD'
+               )
+           WHERE u_cabinet_code = #{dataCabinetCode};
+    </select>
+    
+</mapper>

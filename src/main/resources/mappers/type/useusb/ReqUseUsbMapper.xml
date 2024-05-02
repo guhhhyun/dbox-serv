@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper
+    namespace="com.dongkuksystems.dbox.daos.table.useusb.ReqUseUsbMapper">
+    <resultMap id="ReqUseUsbMap"
+        type="com.dongkuksystems.dbox.models.type.request.ReqUseUsb">
+        <id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uReqUserId" column="U_REQ_USER_ID" />
+		<result property="uRegistUser" column="U_REGIST_USER" />
+		<result property="uReqDeptCode" column="U_REQ_DEPT_CODE" />
+		<result property="uReqDate" column="U_REQ_DATE" />
+		<result property="uReqStatus" column="U_REQ_STATUS" />
+		<result property="uAllowUsb" column="U_ALLOW_USB" />
+		<result property="uAllowCd" column="U_ALLOW_CD" />
+		<result property="uUseTime" column="U_USE_TIME" />
+		<result property="uReqReason" column="U_REQ_REASON" />
+		<result property="uExpiredDate" column="U_EXPIRED_DATE" />
+		<result property="uApprover" column="U_APPROVER" />
+		<result property="uApproveDate" column="U_APPROVE_DATE" />
+		<result property="uRejectReason" column="U_REJECT_REASON" />
+    </resultMap>
+    
+    <resultMap id="ReqUseUsbApprovalMap" 
+        type="com.dongkuksystems.dbox.models.dto.type.request.ReqUseUsbApprovalListDto">
+        
+        <id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uReqUserId" column="U_REQ_USER_ID"      />
+		<result property="uReqUserName" column="U_REQ_USER_NAME"    />
+		<result property="uAllowUsb" column="U_ALLOW_USB"       />
+		<result property="uAllowCd" column="U_ALLOW_CD"       />
+		<result property="uUseTime" column="U_USE_TIME"         />
+		<result property="uReqReason" column="U_REQ_REASON"       />
+		<result property="uReqDate" column="U_REQ_DATE"         />
+    </resultMap>
+   
+    <select id="selectOneByObjectId" resultMap="ReqUseUsbMap">
+        SELECT
+            *
+        FROM
+            edms_req_use_usb_sp
+        <where>
+			r_object_id = #{rObjectId}
+        </where>
+    </select>
+    
+     <select id="selectReqUseUsbApprovList" resultMap="ReqUseUsbApprovalMap">
+		SELECT 
+			  a.r_object_id       as r_object_id
+			, a.u_req_user_id     as u_req_user_id
+			, b.display_name      as u_req_user_name 
+			, u_allow_usb         as u_allow_usb
+			, u_allow_cd          as u_allow_cd
+			, a.u_use_time        as u_use_time
+			, a.u_req_reason      as u_req_reason
+			, a.u_req_date        as u_req_date
+		FROM edms_req_use_usb_sp a
+		LEFT JOIN edms_gw_user b on a.u_req_user_id = b.social_per_id 
+        <where>
+            a.u_approver = #{uApprover}
+            and a.u_req_status = 'P'
+        </where>
+     </select>
+    
+</mapper>

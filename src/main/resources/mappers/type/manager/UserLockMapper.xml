@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.userlock.UserLockMapper">
+	<resultMap id="UserLockMap"
+		type="com.dongkuksystems.dbox.models.type.user.UserLock">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uUserId" column="U_USER_ID" />
+		<result property="uLockType" column="U_LOCK_TYPE" />
+		<result property="uAutoYn" column="U_AUTO_YN" />
+		<result property="uLockStatus" column="U_LOCK_STATUS" />
+		<result property="uWfInfo" column="U_WF_INFO" />
+		<result property="uWfFlag" column="U_WF_FLAG" />
+		<result property="uWarnCount" column="U_WARN_COUNT" />
+		<result property="uDeigReason" column="U_DESIG_REASON" />
+		<result property="uDeigSetter" column="U_DESIG_SETTER" />
+		<result property="uDesigDate" column="U_DESIG_DATE" />		
+		<result property="uUndesigReason" column="U_UNDESIG_REASON" />
+		<result property="uUndesigSetter" column="U_UNDESIG_SETTER" />
+		<result property="uUndesigDate" column="U_UNDESIG_DATE" />		
+		<result property="uUserType" column="U_USER_TYPE" />	
+		<result property="uLimitOverDate" column="U_LIMIT_OVER_DATE" />	
+		<result property="userObjectId" column="USER_OBJECT_ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="uLockType" column="U_LOCK_TYPE" />
+		<result property="uDisplayName" column="DISPLAY_NAME" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="uCodeName1" column="U_CODE_NAME1" />
+		<result property="lockUserName" column="LOCK_USER_NAME" />
+		<result property="informCnt" column="INFORM_CNT" />
+		<result property="unLockUserName" column="UNLOCK_USER_NAME" />
+	</resultMap>
+	<select id="selectOneByObjId" resultMap="UserLockMap">
+	/* DBOX-PGM-MNG-004 | 특이사용자 데이터 단건 조회  | 김수연 */
+	 select 
+	   *
+	 from edms_user_lock_sp
+	 <where>
+	   r_object_id = #{rObjectId}
+	 </where>
+	</select>
+	<select id="selectAll" resultMap="UserLockMap">
+	/* DBOX-PGM-MNG-004 | 특이사용자 조회  | 김수연 */
+		SELECT
+			a.*
+			,b.r_object_id as user_object_id
+			,b.user_name
+			,b.user_state
+			,c.display_name
+			,d.org_nm
+			,e.u_code_name1
+			<if test='userLock.uLockInfo == "A" || userLock.uLockStatus == "U" ' >
+				,(select f.display_name 
+				from edms_gw_user as f 
+				where f.social_per_id = a.u_desig_setter ) as lock_user_name 
+				,(select count(*) 
+				from edms_log_user_inform as g 
+				where g.u_user_id = a.u_user_id) as inform_cnt
+				,(select h.display_name 
+				from edms_gw_user as h
+				 where h.social_per_id = a.u_undesig_setter ) as unlock_user_name
+			</if>
+		FROM
+			edms_user_lock_sp as a
+			LEFT JOIN edms_user_sp as b 
+				ON a.u_user_id = b.user_name
+			LEFT JOIN edms_v_user_info as c 
+				ON c.user_id = b.user_name
+			LEFT JOIN edms_v_dept_info as d 
+				ON d.org_id = c.org_id
+			LEFT JOIN edms_code_sp as e 
+				ON e.u_code_val1 = d.com_org_id
+		<where>
+		 	e.u_code_type = 'COM_CODE'
+		</where>
+		<if test="userLock.uUserType != null and userLock.uUserType != ''">
+			AND a.u_user_type = #{userLock.uUserType}
+		</if>
+		<if test="userLock.uLockType != null and userLock.uLockType != '' ">
+			AND a.u_lock_type = #{userLock.uLockType}
+		</if>
+		<if test="userLock.uLockStatus != null and userLock.uLockStatus != '' ">
+			AND a.u_lock_status = #{userLock.uLockStatus}
+		</if>
+		<if test="userLock.uCodeValue1 != null and userLock.uCodeValue1 != '' ">
+			AND e.u_code_val1 = #{userLock.uCodeValue1}
+		</if>
+		<if test="userLock.orgId != null and userLock.orgId != ''">
+			AND d.org_id = #{userLock.orgId}
+		</if>
+		<if test="userLock.deptCodeList != null and !userLock.deptCodeList.isEmpty()">
+			AND d.org_id IN 
+	        <foreach collection="userLock.deptCodeList" item="deptCode" open="(" separator="," close=")">
+				#{deptCode}
+			</foreach>
+		</if>
+		<if test="userLock.uUserId != null and userLock.uUserId != ''">
+			AND a.u_user_id = #{userLock.uUserId}
+		</if>
+		<if test='userLock.type == "D"'>
+			AND c.emp_type != '0'
+			AND d.manager_per_id != b.user_name
+		</if>
+		
+		<if test="userLock.overStartDate != null and userLock.overStartDate != '' and userLock.overEndDate != null and userLock.overEndDate != ''">
+			AND a.u_limit_over_date between #{userLock.overStartDate} and #{userLock.overEndDate}
+		</if>
+		<if test="userLock.desigStartDate != null and userLock.desigStartDate != '' and userLock.desigEndDate != null and userLock.desigEndDate != ''">
+			AND a.u_desig_date between #{userLock.desigStartDate} and #{userLock.desigEndDate}
+		</if>
+		<if test="userLock.undesigStartDate != null and userLock.undesigStartDate != '' and userLock.undesigEndDate != null and userLock.undesigEndDate != ''">
+			AND a.u_undesig_date between #{userLock.undesigStartDate} and #{userLock.undesigEndDate}
+		</if>
+	</select>
+</mapper>

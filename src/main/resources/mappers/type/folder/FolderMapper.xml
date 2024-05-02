@@ -1,0 +1,1388 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.folder.FolderMapper">
+	<resultMap id="FolderMap" type="com.dongkuksystems.dbox.models.type.folder.Folder">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />
+		<result property="uFolType" column="U_FOL_TYPE" />
+		<result property="uFolName" column="U_FOL_NAME" />
+		<result property="uUpFolId" column="U_UP_FOL_ID" />
+		<result property="uSecLevel" column="U_SEC_LEVEL" />
+		<result property="uFolStatus" column="U_FOL_STATUS" />
+		<result property="uFolTag" column="U_FOL_TAG" />
+		<result property="uFolClass" column="U_FOL_CLASS" />
+		<result property="uEditableFlag" column="U_EDITABLE_FLAG" />
+		<result property="uDeleteStatus" column="U_DELETE_STATUS" />
+		<result property="uCreateUser" column="U_CREATE_USER" />
+		<result property="uCreateDate" column="U_CREATE_DATE" />
+		
+		<result property="uPrCode" column="U_PR_CODE" />
+		<result property="uPrType" column="U_PR_TYPE" />
+		<result property="uDeptCode" column="ORG_ID" />
+		
+		<!-- <association property="folSize" column="{objectId=r_object_id}" javaType="long" select="selectFolderFullSize" /> -->
+		<association property="createUserDetail" column="{userId=u_create_user}" javaType="VUser"
+			select="com.dongkuksystems.dbox.daos.table.etc.gwuser.GwUserMapper.selectOneByUserId" />
+		
+		<collection property="authBases" column="{objectId=r_object_id}" ofType="AuthBase" select="com.dongkuksystems.dbox.daos.type.auth.base.AuthBaseMapper.selectList" />
+	</resultMap>
+	
+	<resultMap id="FolderDetailMap" type="com.dongkuksystems.dbox.models.type.folder.Folder">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />
+		<result property="uFolType" column="U_FOL_TYPE" />
+		<result property="uFolName" column="U_FOL_NAME" />
+		<result property="uUpFolId" column="U_UP_FOL_ID" />
+		<result property="uSecLevel" column="U_SEC_LEVEL" />
+		<result property="uFolStatus" column="U_FOL_STATUS" />
+		<result property="uFolTag" column="U_FOL_TAG" />
+		<result property="uFolClass" column="U_FOL_CLASS" />
+		<result property="uEditableFlag" column="U_EDITABLE_FLAG" />
+		<result property="uDeleteStatus" column="U_DELETE_STATUS" />
+		<result property="uCreateUser" column="U_CREATE_USER" />
+		<result property="uCreateDate" column="U_CREATE_DATE" />
+		<result property="uUpdateUser" column="U_UPDATE_USER" />
+		<result property="uUpdateDate" column="U_UPDATE_DATE" />
+		<result property="uPrCode" column="U_PR_CODE" />
+		<result property="uPrType" column="U_PR_TYPE" />
+
+		<result property="folSize" column="FOL_SIZE" />
+		<result property="maxPermitType" column="D_MAX_PERMIT_TYPE" />
+		<result property="hasFolderChildren" column="HAS_FOLDER_CHILDREN" />
+		<result property="hasDocChildren" column="HAS_DOC_CHILDREN" />
+		<result property="hasProjectChildren" column="HAS_PROJECT_CHILDREN" />
+		<result property="hasResearchChildren" column="HAS_RESEARCH_CHILDREN" />
+
+		<result property="ownShareYn" column="OWN_SHARE_YN" />
+
+		<association property="createUserDetail" javaType="VUser">
+			<id property="userId" column="B_USER_ID" />
+			<result property="displayName" column="B_DISPLAY_NAME" />
+			<result property="comOrgId" column="B_COM_ORG_ID" />
+			<result property="orgId" column="B_ORG_ID" />
+			<result property="orgNm" column="B_ORG_NM" />
+			<result property="pstnCode" column="B_PSTN_CODE" />
+			<result property="pstnName" column="B_PSTN_NAME" />
+			<result property="levelCode" column="B_LEVEL_CODE" />
+			<result property="levelName" column="B_LEVEL_NAME" />
+			<result property="titleCode" column="B_TITLE_CODE" />
+			<result property="titleName" column="B_TITLE_NAME" />
+		</association>
+		<association property="ownDeptDetail" javaType="VDept">
+			<result property="orgId" column="C_ORG_ID" />
+			<result property="orgNm" column="C_ORG_NM" />
+			<result property="comOrgId" column="C_COM_ORG_ID" />
+			<result property="uCabinetCode" column="C_U_CABINET_CODE" />
+		</association>
+	</resultMap>
+
+	<resultMap id="FolderDescendantMap"
+		type="com.dongkuksystems.dbox.models.dto.type.folder.FolderDescendantDto">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uFolName" column="U_FOL_NAME" />
+		<result property="uFolTag" column="U_FOL_TAG" />
+		<result property="path" column="PATH" />
+	</resultMap>
+
+	<resultMap id="DocCreatorsMap" type="com.dongkuksystems.dbox.models.dto.type.data.DataCreatorDto">
+		<id property="rObjectId" column="r_object_id" />
+		<result property="displayName" column="display_name" />
+		<result property="comOrgId" column="com_org_id" />
+		<result property="orgNm" column="org_nm" />
+		<result property="pstnName" column="pstn_name" />
+		<result property="titleName" column="title_name" />
+		<result property="uUpdateDate" column="u_create_date" />
+	</resultMap>
+
+	<select id="selectList" resultMap="FolderMap">
+		select a.*, b.org_id
+		from edms_folder_sp a
+		inner join edms_v_dept_info b on a.u_cabinet_code = b.u_cabinet_code
+		<where>
+			1=1
+			<if test="folder.rObjectId != null">
+				AND a.R_OBJECT_ID = #{folder.rObjectId}
+			</if>
+			<if test="folder.uCabinetCode != null">
+				AND a.U_CABINET_CODE = #{folder.uCabinetCode}
+			</if>
+			<if test="folder.uFolType != null">
+				AND a.U_FOL_TYPE = #{folder.uFolType}
+			</if>
+			<if test="folder.uFolName != null">
+				AND a.U_FOL_NAME = #{folder.uFolName}
+			</if>
+			<if test="folder.uUpFolId != null">
+				AND a.U_UP_FOL_ID = #{folder.uUpFolId}
+			</if>
+			<if test="folder.uSecLevel != null">
+				AND a.U_SEC_LEVEL = #{folder.uSecLevel}
+			</if>
+			<if test="folder.uFolStatus != null">
+				AND a.U_FOL_STATUS = #{folder.uFolStatus}
+			</if>
+			<if test="folder.uFolClass != null">
+				AND a.U_FOL_CLASS = #{folder.uFolClass}
+			</if>
+			<if test="folder.uPrCode != null">
+				AND a.U_PR_CODE = #{folder.uPrCode}
+			</if>
+			<if test="folder.uDeleteStatus != null">
+				AND a.U_DELETE_STATUS = #{folder.uDeleteStatus}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectListByPrCode" resultMap="FolderMap">
+    select a.*, b.org_id
+    from edms_folder_sp a
+    inner join edms_v_dept_info b on a.u_cabinet_code = b.u_cabinet_code
+    <where>
+      a.u_pr_code = #{uPrCode} AND
+      a.u_delete_status NOT IN ('D')
+    </where>
+  </select>
+
+	<select id="selectAuthorizedList" resultMap="FolderDetailMap">
+        /* DBOX-PGM-DOC-002 | 지정한 폴더 하위의 권한있는 폴더 리스트 조회 (조건에 따라 권한있는 하위 폴더/문서 존재여부도 제공) | 차소익 */
+	    /* DBOX-PGM-DOC-003 */
+		WITH ug AS (
+                SELECT DISTINCT
+                    gs.group_name
+                FROM
+                    dm_group_sp gs
+                ,   (
+                        SELECT DISTINCT
+                            gr1.users_names         AS i_all_users_names
+                        ,   gr2.i_supergroups_names AS group_name
+				      FROM dm_group_r gr1,
+					       dm_group_r gr2
+				     WHERE 1=1
+				       AND gr1.r_object_id = gr2.r_object_id
+			           AND gr1.users_names IS NOT NULL
+			       ) gr3
+                WHERE 1=1
+                AND gr3.group_name = gs.group_name
+                AND gr3.i_all_users_names = #{userId}
+            )
+        ,   auth AS (
+                SELECT
+                    u_obj_id
+                ,   CASE
+                        WHEN max_permit_type_value = 7 THEN 'D'
+                        WHEN max_permit_type_value = 3 THEN 'R'
+                        WHEN max_permit_type_value = 2 THEN 'B'
+	                    ELSE NULL
+                    END AS max_permit_type
+	        FROM (
+	                SELECT
+	                    u_obj_id
+	                ,   MAX(
+	                        CASE
+	                            WHEN u_permit_type = 'D' THEN 7
+	                            WHEN u_permit_type = 'R' THEN 3
+	                            WHEN u_permit_type = 'B' THEN 2
+	                            ELSE NULL
+	                        END
+	                    ) AS max_permit_type_value
+		            FROM (
+		                    SELECT
+		                        u_obj_id
+		                    ,   u_permit_type
+		                    FROM
+		                        edms_auth_base_sp sp
+		                    ,   edms_folder_sp a
+		                    WHERE (u_author_id = #{userId} OR u_author_id IN (SELECT group_name FROM ug))
+			                 AND a.r_object_id::text = sp.u_obj_id
+			                 AND u_doc_status = 'L'
+			                 AND a.u_delete_status = ' '
+                            <if test="folder.rObjectId != null">
+                                AND a.r_object_id = #{folder.rObjectId}
+                            </if>
+                            <if test="folder.uCabinetCode != null">
+                                AND a.U_CABINET_CODE = #{folder.uCabinetCode}
+                            </if>
+                            <if test="folder.uFolType != null">
+                                AND a.U_FOL_TYPE = #{folder.uFolType}
+                            </if>
+                            <if test="folder.uFolName != null">
+                                AND a.U_FOL_NAME = #{folder.uFolName}
+                            </if>
+                            <if test="folder.uUpFolId != null">
+                                AND a.U_UP_FOL_ID = #{folder.uUpFolId}
+                            </if>
+                            <if test="folder.uSecLevel != null">
+                                AND a.U_SEC_LEVEL = #{folder.uSecLevel}
+                            </if>
+                            <if test="folder.uFolStatus != null">
+                                AND a.U_FOL_STATUS = #{folder.uFolStatus}
+                            </if>
+                            <if test="folder.uFolClass != null">
+                                AND a.U_FOL_CLASS = #{folder.uFolClass}
+                            </if>
+                            <if test="folder.uPrCode != null">
+                                AND a.U_PR_CODE = #{folder.uPrCode}
+                            </if>
+                            <if test="folder.uPrType != null">
+                                AND a.U_PR_TYPE = #{folder.uPrType}
+                            </if>
+		                )
+	                GROUP BY u_obj_id
+	                
+	                UNION ALL
+	                
+	                SELECT
+	                    u_obj_id
+	                ,   MAX(
+	                        CASE
+	                            WHEN u_permit_type = 'D' THEN 7
+	                            WHEN u_permit_type = 'R' THEN 3
+	                            WHEN u_permit_type = 'B' THEN 2
+	                            ELSE NULL
+	                        END
+	                    ) AS max_permit_type_value
+	                FROM (
+		                    SELECT
+		                        u_obj_id
+		                    ,   u_permit_type
+		                    FROM
+		                        edms_auth_share_sp sp,
+		                        edms_folder_sp a
+		                    WHERE (u_author_id = #{userId} OR concat('g_', u_author_id) IN (SELECT group_name FROM ug))
+		                    AND a.r_object_id = sp.u_obj_id
+		                    AND a.u_delete_status = ' '
+				            <if test="folder.rObjectId != null">
+				                AND a.r_object_id = #{folder.rObjectId}
+				            </if>
+				            <if test="folder.uCabinetCode != null">
+				                AND a.U_CABINET_CODE = #{folder.uCabinetCode}
+				            </if>
+				            <if test="folder.uFolType != null">
+				                AND a.U_FOL_TYPE = #{folder.uFolType}
+				            </if>
+				            <if test="folder.uFolName != null">
+				                AND a.U_FOL_NAME = #{folder.uFolName}
+				            </if>
+				            <if test="folder.uUpFolId != null">
+				                AND a.U_UP_FOL_ID = #{folder.uUpFolId}
+				            </if>
+				            <if test="folder.uSecLevel != null">
+				                AND a.U_SEC_LEVEL = #{folder.uSecLevel}
+				            </if>
+				            <if test="folder.uFolStatus != null">
+				                AND a.U_FOL_STATUS = #{folder.uFolStatus}
+				            </if>
+				            <if test="folder.uFolClass != null">
+				                AND a.U_FOL_CLASS = #{folder.uFolClass}
+				            </if>
+				            <if test="folder.uPrCode != null">
+				                AND a.U_PR_CODE = #{folder.uPrCode}
+				            </if>
+				            <if test="folder.uPrType != null">
+				                AND a.U_PR_TYPE = #{folder.uPrType}
+				            </if>
+	                    )
+	                GROUP BY u_obj_id
+	            )
+            )
+		SELECT
+			a.r_object_id
+		,	a.u_cabinet_code
+		,	a.u_fol_type
+		,	a.u_fol_name
+		,	a.u_up_fol_id
+		,	a.u_sec_level
+		,	a.u_fol_status
+		,	a.u_fol_tag
+		,	a.u_fol_class
+		,	a.u_editable_flag
+		,	a.u_delete_status
+		,	a.u_create_user
+		,	a.u_create_date
+		,	a.u_update_user
+		,	a.u_update_date
+		,	a.u_pr_code
+		,	a.u_pr_type
+		,	b.user_id			AS b_user_id
+		,	b.display_name		AS b_display_name
+		,	b.com_org_id		AS b_com_org_id
+		,	b.org_id			AS b_org_id
+		,	b.org_nm			AS b_org_nm
+		,	b.pstn_code			AS b_pstn_code
+		,	b.pstn_name			AS b_pstn_name
+		,	b.level_code		AS b_level_code
+		,	b.level_name		AS b_level_name
+		,	b.title_code		AS b_title_code
+		,	b.title_name		AS b_title_name
+		,	c.org_id			AS c_org_id
+		,	c.org_nm			AS c_org_nm
+		,	c.com_org_id		AS c_com_org_id
+		,   c.u_cabinet_code	AS c_u_cabinet_code
+		,	COALESCE(d.max_permit_type, 'N') AS d_max_permit_type
+			<if test="orgId != null">
+            ,   COALESCE(e.hfc, false) AS has_folder_children
+            ,   COALESCE(f.hpc, false) AS has_project_children
+            ,   COALESCE(g.hrc, false) AS has_research_children
+			</if>
+		FROM
+			                 edms_folder_sp       a
+			LEFT OUTER JOIN  edms_v_user_info     b ON a.u_create_user = b.user_id
+			LEFT OUTER JOIN  edms_v_dept_info     c ON a.u_cabinet_code = c.u_cabinet_code
+			LEFT OUTER JOIN  auth                 d ON a.r_object_id::text = d.u_obj_id
+            <if test="orgId != null">
+                LEFT OUTER JOIN (
+	                SELECT
+				        COUNT(*) > 0 AS hfc
+				    ,   u_up_fol_id
+	                FROM
+	                    edms_folder_s
+	                WHERE
+	                    u_delete_status = ' '
+	                GROUP BY u_up_fol_id
+	            )              e ON e.u_up_fol_id = a.r_object_id
+	            LEFT OUTER JOIN (
+                    SELECT
+                        COUNT(*) > 0 AS hpc
+                    ,   u_fol_id
+                    FROM
+                        edms_project_s
+                    WHERE
+                        u_own_dept = #{orgId}
+                    OR  r_object_id IN (SELECT r_object_id FROM edms_project_r WHERE u_join_dept_read = #{orgId} OR u_join_dept_del = #{orgId})
+                    OR  u_list_open_yn = 'Y'
+                    GROUP BY u_fol_id
+                )               f ON f.u_fol_id = a.r_object_id
+                LEFT OUTER JOIN (
+                    SELECT
+                        COUNT(*) > 0 AS hrc
+                    ,   u_fol_id
+                    FROM
+                        edms_research_s
+                    WHERE
+                        u_own_dept = #{orgId}
+                    OR  r_object_id IN (SELECT r_object_id FROM edms_project_r WHERE u_join_dept_read = #{orgId} OR u_join_dept_del = #{orgId})
+                    OR  u_list_open_yn = 'Y'
+                    GROUP BY u_fol_id
+                )               g ON g.u_fol_id = a.r_object_id
+            </if>
+		<where>
+				a.u_delete_status = ' '
+			<if test="folder.uFolType == 'DFO' or folder.uFolType == 'PFO' or folder.uFolType == 'RFO'">
+				AND d.max_permit_type IN ('B', 'R', 'D')
+			</if>
+			<if test="folder.rObjectId != null">
+				AND a.r_object_id = #{folder.rObjectId}
+			</if>
+			<if test="folder.uCabinetCode != null">
+				AND a.U_CABINET_CODE = #{folder.uCabinetCode}
+			</if>
+			<if test="folder.uFolType != null">
+				AND a.U_FOL_TYPE = #{folder.uFolType}
+			</if>
+			<if test="folder.uFolName != null">
+				AND a.U_FOL_NAME = #{folder.uFolName}
+			</if>
+			<if test="folder.uUpFolId != null">
+				AND a.U_UP_FOL_ID = #{folder.uUpFolId}
+			</if>
+			<if test="folder.uSecLevel != null">
+				AND a.U_SEC_LEVEL = #{folder.uSecLevel}
+			</if>
+			<if test="folder.uFolStatus != null">
+				AND a.U_FOL_STATUS = #{folder.uFolStatus}
+			</if>
+			<if test="folder.uFolClass != null">
+				AND a.U_FOL_CLASS = #{folder.uFolClass}
+			</if>
+			<if test="folder.uPrCode != null">
+				AND a.U_PR_CODE = #{folder.uPrCode}
+			</if>
+			<if test="folder.uPrType != null">
+				AND a.U_PR_TYPE = #{folder.uPrType}
+			</if>
+		</where>
+        ORDER BY (
+            CASE
+                WHEN ASCII(SUBSTRING(a.u_fol_name, 1, 1)) >= 48 AND ASCII(SUBSTRING(a.u_fol_name, 1, 1)) <![CDATA[<=]]> 57  THEN 1 /* 숫자 */
+                WHEN ASCII(SUBSTRING(a.u_fol_name, 1, 1)) >= 65 AND ASCII(SUBSTRING(a.u_fol_name, 1, 1)) <![CDATA[<=]]> 119 THEN 2 /* 영어 */
+                WHEN ASCII(SUBSTRING(a.u_fol_name, 1, 1)) >= 128                                                            THEN 3 /* 한글 */
+                ELSE 0 /* 기타(특수문자) */
+            END
+        ), a.u_fol_name
+	</select>
+
+	<select id="selectDetailList" resultMap="FolderDetailMap">
+		SELECT a.r_object_id,
+		       a.u_cabinet_code,
+		       a.u_fol_type,
+		       a.u_fol_name,
+		       a.u_up_fol_id,
+		       a.u_sec_level,
+		       a.u_fol_status,
+		       a.u_fol_tag,
+		       a.u_fol_class,
+		       a.u_editable_flag,
+		       a.u_delete_status,
+		       a.u_create_user,
+		       a.u_create_date,
+		       b.b_user_id,
+		       b.b_display_name,
+		       b.b_com_org_id,
+		       b.b_org_id,
+		       b.b_org_nm,
+		       b.b_pstn_code,
+		       b.b_level_code,
+		       b.b_title_code, 
+		       u_pr_code, 
+		       u_pr_type,
+		       c.org_id
+		FROM
+			edms_folder_sp		a INNER JOIN
+			edms_v_user_info	b ON a.u_create_user = b.user_id
+		inner join edms_v_dept_info c on a.u_cabinet_code = c.u_cabinet_code 
+		<where>
+			1=1
+			<if test="folder.rObjectId != null">
+				AND a.R_OBJECT_ID = #{folder.rObjectId}
+			</if>
+			<if test="folder.uCabinetCode != null">
+				AND a.U_CABINET_CODE = #{folder.uCabinetCode}
+			</if>
+			<if test="folder.uFolType != null">
+				AND a.U_FOL_TYPE = #{folder.uFolType}
+			</if>
+			<if test="folder.uFolName != null">
+				AND a.U_FOL_NAME = #{folder.uFolName}
+			</if>
+			<if test="folder.uUpFolId != null">
+				AND a.U_UP_FOL_ID = #{folder.uUpFolId}
+			</if>
+			<if test="folder.uSecLevel != null">
+				AND a.U_SEC_LEVEL = #{folder.uSecLevel}
+			</if>
+			<if test="folder.uFolStatus != null">
+				AND a.U_FOL_STATUS = #{folder.uFolStatus}
+			</if>
+			<if test="folder.uFolClass != null">
+				AND a.U_FOL_CLASS = #{folder.uFolClass}
+			</if>
+			<if test="folder.uPrCode != null">
+				AND a.U_PR_CODE = #{folder.uPrCode}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectOne" resultMap="FolderMap">
+		select a.*, b.org_id
+		from edms_folder_sp a
+		inner join edms_v_dept_info b on a.u_cabinet_code = b.u_cabinet_code  
+		<where>
+			a.R_OBJECT_ID = #{objectId}
+		</where>
+	</select>
+
+	<select id="selectDetailOne" resultMap="FolderDetailMap">
+        /* DBOX-PGM-DOC-006 | 지정한 폴더 상세정보 조회 | 차소익 */
+        /* DBOX-PGM-DOC-008 */
+        WITH ug AS (
+                SELECT DISTINCT
+                    gs.group_name
+                FROM
+                    dm_group_sp gs
+                ,   (
+                        SELECT DISTINCT
+                            gr1.users_names         AS i_all_users_names
+                        ,   gr2.i_supergroups_names AS group_name
+                      FROM dm_group_r gr1,
+                           dm_group_r gr2
+                     WHERE 1=1
+                       AND gr1.r_object_id = gr2.r_object_id
+                       AND gr1.users_names IS NOT NULL
+                   ) gr3
+                WHERE 1=1
+                AND gr3.group_name = gs.group_name
+                AND gr3.i_all_users_names = #{userId}
+            )
+        ,   auth AS (
+	            SELECT
+	                u_obj_id,
+	                CASE
+	                    WHEN max_permit_type_value = 7 THEN 'D'
+	                    WHEN max_permit_type_value = 3 THEN 'R'
+	                    WHEN max_permit_type_value = 2 THEN 'B'
+	                    ELSE NULL
+	                END             AS max_permit_type
+	            FROM (
+	                SELECT
+	                    u_obj_id,
+	                    MAX(
+	                        CASE
+	                            WHEN u_permit_type = 'D' THEN 7
+	                            WHEN u_permit_type = 'R' THEN 3
+	                            WHEN u_permit_type = 'B' THEN 2
+	                            ELSE NULL
+	                        END
+	                    )           AS max_permit_type_value
+	                FROM
+	                    edms_auth_base_sp
+	                WHERE
+                        u_obj_id = #{objectId}
+                    AND u_doc_status = 'L'
+	                AND (u_author_id = #{userId} OR u_author_id IN (SELECT group_name FROM ug))
+                    GROUP BY u_obj_id
+	                
+	                UNION ALL
+	                
+	                SELECT
+	                    u_obj_id,
+	                    MAX(
+	                        CASE
+	                            WHEN u_permit_type = 'D' THEN 7
+	                            WHEN u_permit_type = 'R' THEN 3
+	                            WHEN u_permit_type = 'B' THEN 2
+	                            ELSE NULL
+	                        END
+	                    )           AS max_permit_type_value
+	                FROM
+	                    edms_auth_share_sp
+	                WHERE
+                        u_obj_id = #{objectId}
+                    AND (u_author_id = #{userId} OR concat('g_', u_author_id) IN (SELECT group_name FROM ug))
+                    GROUP BY u_obj_id
+	            )
+	        )
+		SELECT
+			a.r_object_id
+		,	a.u_cabinet_code
+		,	a.u_fol_type
+		,	a.u_fol_name
+		,	a.u_up_fol_id
+		,	a.u_sec_level
+		,	a.u_fol_status
+		,	a.u_fol_tag
+		,	a.u_fol_class
+		,	a.u_editable_flag
+		,	a.u_delete_status
+		,	a.u_create_user
+		,	a.u_create_date
+		,	a.u_pr_code
+		,	a.u_pr_type
+		,	b.user_id			AS b_user_id
+		,	b.display_name		AS b_display_name
+		,	b.com_org_id		AS b_com_org_id
+		,	b.org_id			AS b_org_id
+		,	b.org_nm			AS b_org_nm
+		,	b.pstn_code			AS b_pstn_code
+		,	b.pstn_name			AS b_pstn_name
+		,	b.level_code		AS b_level_code
+		,	b.level_name		AS b_level_name
+		,	b.title_code		AS b_title_code
+		,	b.title_name		AS b_title_name
+		,	c.org_id			AS c_org_id
+		,	c.org_nm			AS c_org_nm
+		,	c.com_org_id		AS c_com_org_id
+		,	c.u_cabinet_code	AS c_u_cabinet_code
+		,	 COALESCE(d.max_permit_type, 'N') AS d_max_permit_type
+		FROM
+			edms_folder_sp		a LEFT OUTER JOIN
+			edms_v_user_info	b ON a.u_create_user = b.user_id LEFT OUTER JOIN
+			edms_v_dept_info	c ON a.u_cabinet_code = c.u_cabinet_code LEFT OUTER JOIN
+			auth				d ON a.r_object_id = d.u_obj_id
+		<where>
+			a.r_object_id = #{objectId}
+		</where>
+	</select>
+
+	<select id="selectFolderFullSize" resultType="long">
+		WITH RECURSIVE get_folder_id_tree AS (
+			SELECT
+				a.r_object_id,
+				a.u_up_fol_id
+			FROM
+				edms_folder_s a
+			WHERE
+				a.r_object_id = #{objectId}
+				
+			UNION ALL
+			
+			SELECT
+				b.r_object_id,
+				b.u_up_fol_id
+			FROM
+				get_folder_id_tree	a INNER JOIN
+				edms_folder_s		b ON a.r_object_id = b.u_up_fol_id
+		)
+		SELECT
+			coalesce(sum(b.r_content_size), 0)
+		FROM
+			get_folder_id_tree	a INNER JOIN
+			edms_doc_sp			b ON a.r_object_id = b.u_fol_id;
+	</select>
+
+	<select id="selectFolderPaths" resultMap="FolderMap">
+        /* DBOX-PGM-DOC-002 | 루트로부터 지정한 폴더까지의 경로 조회 | 차소익 */
+		WITH RECURSIVE get_folder_path AS (
+			SELECT
+				1 AS level,
+				a.*
+			FROM
+				edms_folder_s a
+			WHERE
+				a.r_object_id = #{objectId}
+				
+			UNION ALL
+			
+			SELECT
+				a.level + 1 AS level,
+				b.*
+			FROM
+				get_folder_path	a INNER JOIN
+				edms_folder_s	b ON a.u_up_fol_id = b.r_object_id
+		)
+		SELECT
+			*
+		FROM
+			get_folder_path
+		ORDER BY level DESC
+	</select>
+
+	<select id="selectAncestorHasFolType" resultType="boolean">
+        /* DBOX-PGM-DOC-008 | 지정한 폴더의 상위 폴더들 중 전달받은 folType이 있는지 여부 조회 | 차소익 */
+		WITH RECURSIVE get_folder_id_tree AS (
+			SELECT
+				a.r_object_id,
+				a.u_up_fol_id,
+				a.u_fol_type
+			FROM
+				edms_folder_s a
+			WHERE
+				a.r_object_id = #{objectId}
+			OR	a.r_object_id IN (SELECT u_fol_id FROM edms_doc_s WHERE r_object_id = #{objectId})
+				
+			UNION ALL
+			
+			SELECT
+				b.r_object_id,
+				b.u_up_fol_id,
+				b.u_fol_type
+			FROM
+				get_folder_id_tree	a INNER JOIN
+				edms_folder_s		b ON a.u_up_fol_id = b.r_object_id
+		)
+		SELECT
+			COUNT(*) > 0
+		FROM
+			get_folder_id_tree
+		WHERE
+			u_fol_type = #{folType}
+	</select>
+    
+    <select id="selectDescendants" resultMap="FolderDescendantMap">
+	    WITH RECURSIVE descendants as (
+		    SELECT
+			r_object_id ,
+			u_up_fol_id ,
+			u_fol_name , 
+			u_fol_name::TEXT AS PATH
+			FROM edms_folder_s
+			WHERE r_object_id = #{rObjectId}
+		    UNION ALL 
+		    SELECT
+			b.r_object_id ,
+			b.u_up_fol_id ,
+			b.u_fol_name , 
+			CONCAT(a.PATH, '/' , b.u_fol_name)::TEXT AS PATH
+			FROM descendants a 
+			INNER JOIN edms_folder_s b ON b.U_UP_FOL_ID = a.R_OBJECT_ID 
+		),
+		    ug AS (
+			    SELECT
+			        DISTINCT gs.group_name
+			    FROM
+			        dm_group_sp gs
+			    ,   (
+			            SELECT DISTINCT
+			                gr1.users_names         AS i_all_users_names
+			            ,   gr2.i_supergroups_names AS group_name
+			            FROM
+			                dm_group_r gr1
+			            ,   dm_group_r gr2
+			            WHERE 1 = 1
+			            AND gr1.r_object_id = gr2.r_object_id
+			            AND gr1.users_names IS NOT NULL
+			        ) gr3
+			    WHERE
+			        1 = 1
+			        AND gr3.group_name = gs.group_name
+			        AND gr3.i_all_users_names = #{userId}
+			)
+        ,   ud AS (
+			    SELECT
+			        b.u_cabinet_code
+			    FROM
+			                edms_gw_user    a
+			    INNER JOIN  edms_dept_s     b ON a.org_id = b.u_dept_code
+			    WHERE
+			        a.social_per_id = #{userId}
+			)
+
+		SELECT
+		    *
+		FROM
+		    descendants
+		WHERE
+            <if test="cutUnder.equals(true)">
+			    r_object_id IN (
+			        SELECT
+			            a.r_object_id
+			        FROM
+			                        descendants         a
+			        LEFT OUTER JOIN edms_auth_base_s    b ON a.r_object_id::text = b.u_obj_id
+			        LEFT OUTER JOIN edms_auth_share_s   c ON a.r_object_id::text = c.u_obj_id
+			        WHERE
+			            b.u_doc_status = 'L' AND (b.u_author_id = #{userId} OR b.u_author_id IN ( SELECT group_name FROM ug))
+			        OR  (c.u_author_id = #{userId} OR c.u_author_id IN ( SELECT u_cabinet_code FROM ud))
+			    )
+            </if>
+    </select>
+    
+        <select id="selectDescendantsAll" resultMap="FolderDescendantMap">
+      WITH RECURSIVE descendants AS (
+      SELECT
+        a.r_object_id,
+        a.u_up_fol_id,
+        a.u_fol_name,
+        a.u_fol_name::text  AS path
+      FROM
+        edms_folder_s a
+      WHERE
+        a.r_object_id = #{rObjectId}
+      <if test="cutUnder.equals(true)">
+          AND a.r_object_id IN (SELECT u_obj_id FROM auth)
+      </if>
+      UNION ALL
+      
+      SELECT
+        b.r_object_id,
+        b.u_up_fol_id,
+        b.u_fol_name,
+        CONCAT(a.path, '/', b.u_fol_name)::text AS path
+      FROM
+        descendants   a INNER JOIN
+        edms_folder_s b ON a.r_object_id = b.u_up_fol_id
+       
+      <if test="cutUnder.equals(true)">
+          AND b.r_object_id IN (SELECT u_obj_id FROM auth)
+      </if>
+      where b.u_delete_status NOT IN ('D')
+    )
+    SELECT
+      *
+    FROM
+      descendants
+    <if test="cutUnder.equals(false)">
+     WHERE
+      r_object_id IN (SELECT u_obj_id FROM auth)
+    </if> 
+    </select>
+    
+    
+       <select id="selectListDescendants" resultMap="FolderDescendantMap">
+    	WITH RECURSIVE descendants AS (
+			SELECT
+				a.r_object_id,
+				a.u_up_fol_id,
+				a.u_fol_name,
+				a.u_fol_tag,
+				a.u_fol_name::text	AS path
+			FROM
+				edms_folder_s a
+			WHERE
+				a.r_object_id = #{rObjectId}
+			UNION ALL
+			
+			SELECT
+				b.r_object_id,
+				b.u_up_fol_id,
+				b.u_fol_name,
+				b.u_fol_tag,
+				CONCAT(a.path, '/', b.u_fol_name)::text	AS path
+			FROM
+				descendants		a INNER JOIN
+				edms_folder_s	b ON a.r_object_id = b.u_up_fol_id
+			WHERE
+				b.u_delete_status = ' '
+		), ug AS (
+			SELECT DISTINCT gs.group_name
+			  FROM dm_group_sp gs,
+				   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+					       gr2.i_supergroups_names AS group_name
+				      FROM dm_group_r gr1,
+					       dm_group_r gr2
+				     WHERE 1=1
+				       AND gr1.r_object_id = gr2.r_object_id
+			           AND gr1.users_names IS NOT NULL
+			       ) gr3
+			 WHERE 1=1
+			   AND gr3.group_name = gs.group_name
+			   AND gr3.i_all_users_names = #{userId}
+		), ud AS (
+			SELECT
+				b.u_cabinet_code 
+			FROM
+				edms_gw_user	a INNER JOIN
+				edms_dept_s		b ON a.org_id = b.u_dept_code
+			WHERE
+				a.social_per_id = #{userId}
+		), auth AS (
+			SELECT
+				u_obj_id
+			FROM
+				edms_auth_base_sp
+			WHERE
+				(u_author_id = #{userId} OR u_author_id IN (SELECT group_name FROM ug))
+			AND	u_doc_status = 'L'
+			
+			UNION
+			
+			SELECT
+				u_obj_id
+			FROM
+			    edms_auth_share_sp
+			WHERE
+				(u_author_id = #{userId} OR u_author_id IN (SELECT u_cabinet_code FROM ud))
+		)
+		SELECT
+			*
+		FROM
+			descendants
+    </select>
+    
+    
+	<select id="selectShareFolderList" resultMap="FolderDetailMap">
+	   /* 권한있는 공유/협업 리스트 */
+		WITH ug AS (
+				SELECT DISTINCT gs.group_name
+				  FROM dm_group_sp gs,
+					   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+						       gr2.i_supergroups_names AS group_name
+					      FROM dm_group_r gr1,
+						       dm_group_r gr2
+					     WHERE 1=1
+					       AND gr1.r_object_id = gr2.r_object_id
+				           AND gr1.users_names IS NOT NULL
+				       ) gr3
+				 WHERE 1=1
+				   AND gr3.group_name = gs.group_name
+				   AND gr3.i_all_users_names = #{userId}
+			)
+        ,    auth_base AS (
+			  SELECT u_obj_id
+			    ,CASE 
+			      WHEN max_permit_type_value = 7
+			        THEN 'D'
+			      WHEN max_permit_type_value = 3
+			        THEN 'R'
+			      WHEN max_permit_type_value = 2
+			        THEN 'B'
+			      ELSE NULL
+			      END AS max_permit_type
+			  FROM (
+			    SELECT A.U_OBJ_ID
+			           ,MAX(CASE 
+			                     WHEN A.U_PERMIT_TYPE = 'D'
+			                       THEN 7
+			                     WHEN A.U_PERMIT_TYPE = 'R'
+			                       THEN 3
+			                     WHEN A.U_PERMIT_TYPE = 'B'
+			                       THEN 2
+			                     ELSE NULL
+			                     END) AS MAX_PERMIT_TYPE_VALUE
+			    FROM (
+			      SELECT a.u_obj_id, a.u_permit_type
+			          FROM edms_auth_base_sp a
+			            ,edms_auth_share_sp b
+			          WHERE a.u_obj_Id = b.u_obj_id
+					    AND a.u_obj_type = 'F'
+			            AND a.u_author_id = #{userId}
+			      UNION
+			      SELECT a.u_obj_id, a.u_permit_type
+			          FROM edms_auth_base_sp a
+			            ,edms_auth_share_sp b
+			          WHERE a.u_obj_Id = b.u_obj_id
+			            AND a.u_obj_type = 'F'
+			            AND a.u_author_id IN (
+			               SELECT group_name
+			               FROM ug
+			               )
+			      UNION
+			      SELECT a.u_obj_id, a.u_permit_type
+			          FROM edms_auth_base_sp a
+			            ,edms_auth_share_sp b
+			          WHERE a.u_obj_Id = b.u_obj_id
+			            AND a.u_obj_type = 'F'
+			            AND a.u_author_id IN (
+			                SELECT substr(group_name, - 4)
+			                FROM ug
+			                WHERE group_name LIKE '%sub'
+			             )
+			    ) A
+			    GROUP BY A.U_OBJ_ID	
+			  )
+			)
+        ,   auth_share AS (
+				SELECT
+					u_obj_id,
+					CASE
+						WHEN max_permit_type_value = 7 THEN 'D'
+						WHEN max_permit_type_value = 3 THEN 'R'
+						WHEN max_permit_type_value = 2 THEN 'B'
+						ELSE NULL
+					END				AS max_permit_type
+				FROM (
+					SELECT
+						u_obj_id,
+						MAX(
+							CASE
+								WHEN u_permit_type = 'D' THEN 7
+								WHEN u_permit_type = 'R' THEN 3
+								WHEN u_permit_type = 'B' THEN 2
+								ELSE NULL
+							END
+						)			AS max_permit_type_value
+					FROM
+					    edms_auth_share_sp
+					WHERE
+						(u_author_id = #{userId} OR u_author_id IN (SELECT substr(group_name,3) FROM ug WHERE group_name LIKE 'g_%'))
+					GROUP BY u_obj_id
+				)
+			)
+        ,   user_info AS (
+				SELECT
+				    b.U_CABINET_CODE 
+				FROM
+				            EDMS_V_USER_INFO a 
+				INNER JOIN  EDMS_V_DEPT_INFO b ON a.ORG_ID = b.ORG_ID 
+				WHERE
+				    USER_ID = #{userId}
+            )
+        SELECT
+            tbx.*
+		FROM 
+			(
+                SELECT DISTINCT
+					a.r_object_id
+				,   'Y'                 AS own_share_yn
+				,	d.max_permit_type	AS d_max_permit_type
+				,	a.u_cabinet_code
+				,	a.u_fol_type
+				,	a.u_fol_name
+				,	a.u_up_fol_id
+				,	a.u_sec_level
+				,	a.u_fol_status
+				,	a.u_fol_tag
+				,	a.u_fol_class
+				,	a.u_editable_flag
+				,	a.u_delete_status
+				,	a.u_create_user
+				,	a.u_create_date
+				,	a.u_pr_code
+				,	a.u_pr_type
+				,	b.user_id			AS b_user_id
+				,	b.display_name		AS b_display_name
+				,	b.com_org_id		AS b_com_org_id
+				,	b.org_id			AS b_org_id
+				,	b.org_nm			AS b_org_nm
+				,	b.pstn_code			AS b_pstn_code
+				,	b.pstn_name			AS b_pstn_name
+				,	b.level_code		AS b_level_code
+				,	b.level_name		AS b_level_name
+				,	b.title_code		AS b_title_code
+				,	b.title_name		AS b_title_name
+				,	c.org_id			AS c_org_id
+				,	c.org_nm			AS c_org_nm
+				,	c.com_org_id		AS c_com_org_id
+				,   c.u_cabinet_code	AS c_u_cabinet_code
+                   <if test="checkChildren">
+				,	(
+						SELECT COUNT(*) > 0
+						FROM
+							edms_folder_s	e LEFT OUTER JOIN
+							auth_base		f ON e.r_object_id = f.u_obj_id
+						WHERE
+							e.u_up_fol_id = a.r_object_id
+						AND e.u_delete_status = ' '
+						AND	f.max_permit_type IN ('B', 'R', 'D')
+					)					AS has_folder_children
+                   </if>
+	            FROM
+                                EDMS_FOLDER_S       a 
+                INNER JOIN      user_info           f ON a.u_cabinet_code = f.u_cabinet_code 
+				INNER JOIN      edms_auth_share_sp  e ON a.R_OBJECT_ID = e.U_OBJ_ID
+				LEFT OUTER JOIN edms_v_user_info	b ON a.u_create_user = b.user_id
+				LEFT OUTER JOIN edms_v_dept_info	c ON a.u_cabinet_code = c.u_cabinet_code
+				INNER JOIN  	auth_base			d ON a.r_object_id = d.u_obj_id  
+			WHERE 1=1  
+			
+			UNION ALL
+			
+			SELECT DISTINCT 
+					a.r_object_id
+				,   'N'                 AS own_share_yn
+				,	e.max_permit_type	AS d_max_permit_type
+				,	a.u_cabinet_code
+				,	a.u_fol_type
+				,	a.u_fol_name
+				,	a.u_up_fol_id
+				,	a.u_sec_level
+				,	a.u_fol_status
+				,	a.u_fol_tag
+				,	a.u_fol_class
+				,	a.u_editable_flag
+				,	a.u_delete_status
+				,	a.u_create_user
+				,	a.u_create_date
+				,	a.u_pr_code
+				,	a.u_pr_type
+				,	b.user_id			AS b_user_id
+				,	b.display_name		AS b_display_name
+				,	b.com_org_id		AS b_com_org_id
+				,	b.org_id			AS b_org_id
+				,	b.org_nm			AS b_org_nm
+				,	b.pstn_code			AS b_pstn_code
+				,	b.pstn_name			AS b_pstn_name
+				,	b.level_code		AS b_level_code
+				,	b.level_name		AS b_level_name
+				,	b.title_code		AS b_title_code
+				,	b.title_name		AS b_title_name
+				,	c.org_id			AS c_org_id
+				,	c.org_nm			AS c_org_nm
+				,	c.com_org_id		AS c_com_org_id
+	            ,   c.u_cabinet_code    AS c_u_cabinet_code 
+                   <if test="checkChildren">
+				,	(
+						SELECT COUNT(*) > 0
+						FROM
+							edms_folder_s	e LEFT OUTER JOIN
+							auth_base		f ON e.r_object_id = f.u_obj_id
+						WHERE
+							e.u_up_fol_id = a.r_object_id
+						AND e.u_delete_status = ' '
+						AND	f.max_permit_type IN ('B', 'R', 'D')
+					)					AS has_folder_children
+				</if>
+			FROM
+			                 edms_folder_s       a 
+			INNER JOIN       auth_share          e ON a.R_OBJECT_ID = e.U_OBJ_ID
+			LEFT OUTER JOIN  edms_v_user_info    b ON a.u_create_user = b.user_id
+			LEFT OUTER JOIN  edms_v_dept_info    c ON a.u_cabinet_code = c.u_cabinet_code
+			LEFT OUTER JOIN  auth_base           d ON a.R_OBJECT_ID = d.U_OBJ_ID
+			WHERE 1=1 
+			AND  e.max_permit_type IS NOT NULL 
+		) tbx
+		<where>
+			1=1
+			AND tbx.U_DELETE_STATUS = ' '
+			AND tbx.U_UP_FOL_ID NOT IN (
+				SELECT DISTINCT a.R_OBJECT_ID
+				FROM EDMS_FOLDER_S a 
+				INNER JOIN auth_share b ON a.R_OBJECT_ID = b.U_OBJ_ID
+				WHERE 1=1 
+			    AND a.U_DELETE_STATUS = ' '
+			    UNION ALL 
+				SELECT
+					DISTINCT a.R_OBJECT_ID
+				FROM
+					EDMS_FOLDER_S a
+				INNER JOIN auth_base c ON
+					a.R_OBJECT_ID = c.U_OBJ_ID
+				WHERE
+					1 = 1
+					AND a.U_DELETE_STATUS = ' '
+			) 
+			<if test="folder.rObjectId != null">
+				AND tbx.R_OBJECT_ID = #{folder.rObjectId}
+			</if>
+			<if test="folder.uCabinetCode != null">
+				AND tbx.U_CABINET_CODE = #{folder.uCabinetCode}
+			</if>
+			<if test="folder.uFolType != null">
+				AND tbx.U_FOL_TYPE = #{folder.uFolType}
+			</if>
+			<if test="folder.uFolName != null">
+				AND tbx.U_FOL_NAME = #{folder.uFolName}
+			</if>
+			<if test="folder.uUpFolId != null">
+				AND tbx.U_UP_FOL_ID = #{folder.uUpFolId}
+			</if>
+			<if test="folder.uSecLevel != null">
+				AND tbx.U_SEC_LEVEL = #{folder.uSecLevel}
+			</if>
+			<if test="folder.uFolStatus != null">
+				AND tbx.U_FOL_STATUS = #{folder.uFolStatus}
+			</if>
+			<if test="folder.uFolClass != null">
+				AND tbx.U_FOL_CLASS = #{folder.uFolClass}
+			</if>
+			<if test="folder.uPrCode != null">
+				AND tbx.U_PR_CODE = #{folder.uPrCode}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectAncestorHasLock" resultType="Integer">
+	WITH RECURSIVE scendants AS (
+			SELECT  a.U_FOL_STATUS 
+			      , a.U_UP_FOL_ID 
+			FROM edms_folder_sp a
+		     WHERE a.R_OBJECT_ID = #{objectId}
+			UNION ALL
+			
+			SELECT
+				b.U_FOL_STATUS
+				, b.U_UP_FOL_ID 
+			FROM
+				scendants		a 
+				INNER JOIN edms_folder_sp	b ON a.U_UP_FOL_ID = b.R_OBJECT_ID 
+	)
+	SELECT CASE WHEN  count(a.U_FOL_STATUS) = 0 THEN 0 
+	            ELSE 1 END AS has_lock
+	FROM scendants a
+	WHERE a.u_fol_status = 'C'
+	GROUP BY a.u_fol_status
+	</select>
+	
+	
+	<select id="selectAuthorizedSearchList" resultMap="FolderDetailMap">
+	  WITH RECURSIVE descendants AS (
+			SELECT
+				a.r_object_id
+			,	a.u_up_fol_id
+			,	a.u_fol_name
+			,	a.u_cabinet_code
+			,	a.u_fol_type
+			,	a.u_sec_level
+			,	a.u_fol_status
+			,	a.u_fol_tag
+			,	a.u_fol_class
+			,	a.u_editable_flag
+			,	a.u_delete_status
+			,	a.u_create_user
+			,	a.u_create_date
+			,	a.u_pr_code
+			,	a.u_pr_type
+			,	a.u_fol_name::text	AS path
+			FROM
+				edms_folder_s a
+			where 1=1
+			AND a.u_cabinet_code  = #{dataCabinetCode}
+			AND a.u_delete_status != 'D' 
+      <if test="folder.uFolType != null">
+			 AND a.U_FOL_TYPE = #{folder.uFolType}
+			</if> 
+			<if test="dataId != null">
+       AND a.r_object_id = #{dataId}
+      </if>
+			UNION ALL
+			SELECT
+				b.r_object_id
+			,	b.u_up_fol_id
+			,	b.u_fol_name
+			,	b.u_cabinet_code
+			,	b.u_fol_type
+			,	b.u_sec_level
+			,	b.u_fol_status
+			,	b.u_fol_tag
+			,	b.u_fol_class
+			,	b.u_editable_flag
+			,	b.u_delete_status
+			,	b.u_create_user
+			,	b.u_create_date
+			,	b.u_pr_code
+			,	b.u_pr_type
+			,	CONCAT(a.path, '/', b.u_fol_name)::text	AS path
+			FROM
+				descendants		a INNER JOIN
+				edms_folder_s	b ON a.r_object_id = b.u_up_fol_id
+		), ug AS (
+			SELECT DISTINCT gs.group_name
+			  FROM dm_group_sp gs,
+				   (SELECT DISTINCT gr1.users_names AS i_all_users_names,
+					       gr2.i_supergroups_names AS group_name
+				      FROM dm_group_r gr1,
+					       dm_group_r gr2
+				     WHERE 1=1
+				       AND gr1.r_object_id = gr2.r_object_id
+			           AND gr1.users_names IS NOT NULL
+			       ) gr3
+			 WHERE 1=1
+			   AND gr3.group_name = gs.group_name
+			   AND gr3.i_all_users_names = #{userId}
+		), ud AS (
+			SELECT
+				b.u_cabinet_code 
+			FROM
+				edms_gw_user	a INNER JOIN
+				edms_dept_s		b ON a.org_id = b.u_dept_code
+			WHERE
+				a.social_per_id = #{userId}
+		), auth AS (
+			SELECT
+				u_obj_id,
+				CASE
+					WHEN max_permit_type_value = 7 THEN 'D'
+					WHEN max_permit_type_value = 3 THEN 'R'
+					WHEN max_permit_type_value = 2 THEN 'B'
+					ELSE NULL
+				END				AS max_permit_type
+			FROM (
+				SELECT
+					u_obj_id,
+					MAX(
+						CASE
+							WHEN u_permit_type = 'D' THEN 7
+							WHEN u_permit_type = 'R' THEN 3
+							WHEN u_permit_type = 'B' THEN 2
+							ELSE NULL
+						END
+					)			AS max_permit_type_value
+				FROM
+					edms_auth_base_sp
+				WHERE
+					(u_author_id = #{userId} OR u_author_id IN (SELECT group_name FROM ug))
+				AND	u_doc_status = 'L'
+				GROUP BY u_obj_id
+				
+				UNION ALL
+				
+				SELECT
+					u_obj_id,
+					MAX(
+						CASE
+							WHEN u_permit_type = 'D' THEN 7
+							WHEN u_permit_type = 'R' THEN 3
+							WHEN u_permit_type = 'B' THEN 2
+							ELSE NULL
+						END
+					)			AS max_permit_type_value
+				FROM
+				    edms_auth_share_sp
+				WHERE
+					(u_author_id = #{userId} OR concat('g_', u_author_id) IN (SELECT u_cabinet_code FROM ud))
+				GROUP BY u_obj_id
+			)
+		),	acl AS (
+				SELECT
+					acs.owner_name,
+					acs.object_name,
+					MAX(acr.r_accessor_permit) AS max_level
+				FROM
+					dm_acl_s acs
+				,	dm_acl_r acr
+				WHERE 1=1
+				AND	acs.r_object_id = acr.r_object_id
+				AND	(acr.r_accessor_name = #{userId} OR acr.r_accessor_name IN (SELECT group_name FROM ug))
+				GROUP BY acs.owner_name, acs.object_name
+			)
+		SELECT
+			  descendants.r_object_id   
+			, descendants.u_up_fol_id
+			, max(descendants.path) as PATH
+      , COALESCE(d.max_permit_type, 'N') AS d_max_permit_type
+      , descendants.u_fol_name
+      , descendants.u_cabinet_code
+			, descendants.u_fol_type
+			, descendants.u_sec_level
+			, descendants.u_fol_status
+			, descendants.u_fol_tag
+			, descendants.u_fol_class
+			, descendants.u_editable_flag
+			, descendants.u_delete_status
+			, descendants.u_create_user
+			, descendants.u_create_date
+			, descendants.u_pr_code
+			, descendants.u_pr_type
+			, c.org_id         AS c_org_id
+	        , c.org_nm         AS c_org_nm           
+	        , c.com_org_id     AS c_com_org_id   
+	        , c.u_cabinet_code AS c_u_cabinet_code
+		FROM
+			descendants left OUTER JOIN
+			edms_v_user_info	b ON descendants.u_create_user = b.user_id LEFT OUTER JOIN
+			edms_v_dept_info	c ON descendants.u_cabinet_code = c.u_cabinet_code LEFT OUTER JOIN
+			auth				d ON descendants.r_object_id = d.u_obj_id
+
+		WHERE UPPER(descendants.u_fol_tag) LIKE UPPER(CONCAT('%', #{searchName}, '%')) or UPPER(descendants.u_fol_name) LIKE UPPER(CONCAT('%', #{searchName}, '%'))
+		  <if test="dataId != null">
+       AND descendants.r_object_id != #{dataId}
+      </if>
+         group by descendants.r_object_id
+		    , d_max_permit_type
+		    , descendants.u_fol_name           
+		    , descendants.u_cabinet_code
+			, descendants.u_fol_type
+			, descendants.u_sec_level
+			, descendants.u_fol_status
+			, descendants.u_fol_tag
+			, descendants.u_fol_class
+			, descendants.u_editable_flag
+			, descendants.u_delete_status
+			, descendants.u_create_user
+			, descendants.u_create_date
+			, descendants.u_pr_code
+			, descendants.u_pr_type
+			, descendants.u_up_fol_id 
+			, c.org_id            
+      , c.org_nm            
+      , c.com_org_id        
+      , c.u_cabinet_code 
+		
+	</select>
+
+	<select id="selectFolderCreators" resultMap="DocCreatorsMap">
+		SELECT	folder.r_object_id
+			 ,	user.display_name
+			 ,	user.com_org_id
+			 ,	user.org_nm
+			 ,	user.pstn_name
+			 ,	user.title_name
+			 ,	folder.u_create_date
+		FROM edms_folder_sp folder, edms_v_user_info user
+		WHERE folder.u_create_user = user.user_id
+		  AND folder.r_object_id = #{dataId}
+	</select>
+	<!--  폴더 하위 리스트 검색  (일반 검색 시 필요) -->
+	<select  id="selectSearchList" resultType="String">
+	WITH RECURSIVE descendants AS (
+      SELECT
+        a.r_object_id,
+        a.u_up_fol_id,
+        a.u_fol_name,
+        a.u_fol_name::text  AS path
+      FROM
+        edms_folder_s a
+      WHERE
+        a.r_object_id = #{dataId}
+      UNION ALL
+      
+      SELECT
+        b.r_object_id,
+        b.u_up_fol_id,
+        b.u_fol_name,
+        CONCAT(a.path, '/', b.u_fol_name)::text AS path
+      FROM
+        descendants   a INNER JOIN
+        edms_folder_s b ON a.r_object_id = b.u_up_fol_id
+      WHERE
+        b.u_delete_status = ' '
+    )select descendants.r_object_id
+      from descendants;
+	</select>
+
+  <select  id="selectDsearchFullPath" resultType="String">
+     SELECT dmadmin.edms_fnc_get_folder_full_path(#{folId} , #{folderType} , #{dataCabinetCode});
+  </select>
+
+</mapper>

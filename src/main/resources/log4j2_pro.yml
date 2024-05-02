@@ -1,0 +1,121 @@
+Configutation:
+  name: Default
+  status: warn
+
+  Properties:
+    Property:
+      name: log-path
+      value: ${sys:dbox_logPath}
+                    
+  Appenders:
+    Console:
+      name: Console_Appender
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t][%F] %c{1} - %msg%n"
+    RollingFile:
+      - name: RollingFile_Appender
+        fileName: ${log-path}/dbox.log
+        filePattern: "${log-path}/archive/%d{yyyy-MM-dd}_dbox-daily.log.gz"
+#        filePattern: "${log-path}/archive/%d{yyyy-MM-dd-HH_mm}_dbox-daily-%i.log.gz"
+        PatternLayout:
+          pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t][%F] %c{1} - %msg%n"
+        Policies:
+          TimeBasedTriggeringPolicy:
+            Interval: 1
+            modulate: true
+#          SizeBasedTriggeringPolicy: 
+#            size: 10MB
+        DefaultRollOverStrategy:
+          Delete: 
+            basePath: "${log-path}/archive" 
+            maxDepth: "1" 
+            IfLastModified:
+              age: 100d
+#            IfAccumulatedFileCount: 
+#              exceeds: 91
+  Loggers:
+    Root:
+      level: info
+      additivity: true
+      AppenderRef:
+#        - ref: Console_Appender
+        - ref: RollingFile_Appender
+    Logger: 
+      - name: com.dongkuksystems.dbox
+        additivity: false
+        level: ${sys:dbox_logLevel}
+        AppenderRef:
+#          - ref: Console_Appender
+          - ref: RollingFile_Appender
+      # BaseJdbcLogger
+      - name: com.dongkuksystems.dbox.daos
+        additivity: false
+        level: error
+        AppenderRef:
+#          - ref: Console_Appender
+          - ref: RollingFile_Appender
+      # log4jdbc
+      - name: jdbc
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef:
+#          - ref: Console_Appender
+          - ref: RollingFile_Appender
+      # for connection "open" or "close"
+      - name: jdbc.connection
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef:
+#          - ref: Console_Appender
+          - ref: RollingFile_Appender
+      # for sql
+      - name: jdbc.sqlonly
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef:
+#          - ref: Console_Appender
+          - ref: RollingFile_Appender
+      # for query time(ms)
+      - name: jdbc.sqltiming
+        additivity: false
+        includeLocation: TRUE
+        level: debug
+        AppenderRef:
+#          - ref: Console_Appender
+          - ref: RollingFile_Appender
+      # alls except for resultset
+      - name: jdbc.audit
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef:
+#          - ref: Console_Appender
+          - ref: RollingFile_Appender
+      # with resultset
+      - name: jdbc.resultset
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef:
+#          - ref: Console_Appender
+          - ref: RollingFile_Appender
+      # with connection   
+      - name: jdbc.connection 
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef: 
+#          - ref: Console_Appender
+          - ref: RollingFile_Appender
+      # with resultset table
+      - name: jdbc.resultsettable
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef: 
+#          - ref: Console_Appender
+          - ref: RollingFile_Appender

@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.table.log.LogMapper">
+	<resultMap id="LogDocMap"
+		type="com.dongkuksystems.dbox.models.table.log.LogDoc">
+		<result property="uJobCode" column="u_job_code" />
+		<result property="uDocId" column="u_doc_id" />
+	</resultMap>
+
+	<insert id="insertLogDoc">
+		INSERT INTO edms_log_doc
+		(u_job_code,
+		u_doc_id,
+		u_doc_key,
+		u_doc_name,
+		u_doc_version,
+		u_file_size,
+		u_own_dept_code,
+		u_act_dept_code,
+		u_job_user,
+		u_job_user_type,
+		u_job_date,
+		u_doc_status,
+		u_sec_level,
+		u_cabinet_code,
+		u_job_gubun,
+		<if test="logDoc.uBeforeChangeVal != null">
+			u_before_change_val,
+		</if>
+		<if test="logDoc.uAfterChangeVal != null">
+			u_after_change_val,
+		</if>
+		<if test="logDoc.uShareTarget != null">
+			u_share_target,
+		</if>
+		<if test="logDoc.uShareTargetType != null">
+			u_share_target_type,
+		</if>
+		<if test="logDoc.uViewDownTime != null">
+			u_file_down_time,
+		</if>
+		<if test="logDoc.uAttachSystem != null">
+			u_attach_system,
+		</if>
+		u_user_ip )
+		VALUES(
+		#{logDoc.uJobCode},
+		#{logDoc.uDocId},
+		#{logDoc.uDocKey},
+		#{logDoc.uDocName},
+		(SELECT CAST(R_VERSION_LABEL AS DOUBLE PRECISION) 
+		FROM edms_doc_rp 
+		WHERE R_OBJECT_ID = #{logDoc.uDocId}
+		AND I_POSITION = -1) ,
+		#{logDoc.uFileSize},
+		#{logDoc.uOwnDeptcode},
+		#{logDoc.uActDeptCode},
+		#{logDoc.uJobUser},
+		#{logDoc.uJobUserType},
+		now(),
+		#{logDoc.uDocStatus},
+		#{logDoc.uSecLevel},
+		#{logDoc.uCabinetCode},
+		#{logDoc.uJobGubun},
+		<if test="logDoc.uBeforeChangeVal != null">
+			#{logDoc.uBeforeChangeVal},
+		</if>
+		<if test="logDoc.uAfterChangeVal != null">
+			#{logDoc.uAfterChangeVal},
+		</if>
+		<if test="logDoc.uShareTarget != null">
+			#{logDoc.uShareTarget},
+		</if>
+		<if test="logDoc.uShareTargetType != null">
+			#{logDoc.uShareTargetType},
+		</if>
+		<if test="logDoc.uViewDownTime != null">
+			#{logDoc.uViewDownTime},
+		</if>
+		<if test="logDoc.uAttachSystem != null">
+			#{logDoc.uAttachSystem},
+		</if>
+		#{logDoc.uUserIp})
+	</insert>
+
+	<insert id="insertLogFolder">
+		INSERT INTO edms_log_folder
+		(u_job_code,
+		u_fol_id,
+		u_fol_key,
+		u_fol_name,
+		u_own_dept_code,
+		u_act_dept_code,
+		u_cabinet_code,
+		u_job_user,
+		u_job_date,
+		u_loc_status,
+		u_sec_level,
+		<if test="logDoc.uBeforeChangeVal != null">
+			u_before_change_val,
+		</if>
+		<if test="logDoc.uAfterChangeVal != null">
+			u_after_change_val,
+		</if>
+		u_include_sub_fol,
+		u_include_sub_Doc,
+		<if test="logDoc.uShareTarget != null">
+			u_share_target,
+		</if>
+		<if test="logDoc.uShareTargetType != null">
+			u_share_target_type,
+		</if>
+		u_user_ip )
+		VALUES(
+		#{logDoc.uJobCode},
+		#{logDoc.uFolId},
+		#{logDoc.uFoldName},
+		#{logDoc.uOwnDeptcode},
+		#{logDoc.uActDeptCode},
+		#{logDoc.uCabinetCode},
+		#{logDoc.uJobUser},
+		now(),
+		#{logDoc.uLockStatus},
+		#{logDoc.uSecLevel},
+		#{logDoc.uCabinetCode},
+		#{logDoc.uSecLevel},
+		<if test="logDoc.uBeforeChangeVal != null">
+			#{logDoc.uBeforeChangeVal},
+		</if>
+		<if test="logDoc.uAfterChangeVal != null">
+			#{logDoc.uAfterChangeVal},
+		</if>
+		#{logDoc.uIncludeSubFol},
+		#{logDoc.uIncludeSubDoc},
+		<if test="logDoc.uShareTarget != null">
+			#{logDoc.uShareTarget},
+		</if>
+		<if test="logDoc.uShareTargetType != null">
+			#{logDoc.uShareTargetType},
+		</if>
+		#{logDoc.uUserIp})
+	</insert>
+
+	<insert id="insertLogLogin">
+		INSERT INTO edms_log_login
+		(
+		u_login_source,
+		u_user_id,
+		u_dept_code,
+		u_login_date,
+		u_user_ip)
+		VALUES(
+		#{logLogin.uLoginSource},
+		#{logLogin.uUserId},
+		(SELECT ORG_ID FROM EDMS_V_USER_INFO WHERE USER_ID = #{logLogin.uUserId}),
+		now(),
+		#{logLogin.uUserIp});
+	</insert>
+
+	<insert id="insertLogUsb">
+		INSERT INTO edms_log_usb
+		(
+		u_file_name,
+		u_file_ext,
+		u_file_size,
+		u_job_user,
+		u_dept_code,
+		u_com_code,
+		u_job_date,
+		u_user_ip)
+		VALUES(
+		#{logUsb.uFileName},
+		#{logUsb.uFileExt},
+		#{logUsb.uFileSize},
+		#{logUsb.uJobUser},
+		#{logUsb.uDeptCode},
+		#{logUsb.uComCode},
+		now(),
+		#{logUsb.uUserIp});
+	</insert>
+
+	<insert id="insertLogShare">
+		INSERT INTO edms_log_share
+		(
+		u_obj_id,
+		u_obj_type,
+		u_doc_status,
+		u_permit_type,
+		u_own_dept_yn,
+		u_author_id,
+		u_author_type,
+		u_job_user,
+		u_job_date,
+		u_user_ip,
+		u_job_gubun)
+		VALUES(
+		#{logShare.uObjId},
+		#{logShare.uObjType},
+		#{logShare.uDocStatus},
+		#{logShare.uPermitType},
+		#{logShare.uOwnDeptYn},
+		#{logShare.uAuthorId},
+		#{logShare.uAuthorType},
+		#{logShare.uJobUser},
+		now(),
+		#{logShare.uUserIp}),
+		#{logShare.uJobGubun});
+	</insert>
+
+	<insert id="insertPcDocs">
+		INSERT INTO edms_log_pc_docs
+		(
+		u_com_code,
+		u_dept_code,
+		u_user_id,
+		u_file_name,
+		u_file_create_date,
+		<if test="logPcDocs.uModifyDate != null">
+			u_file_modify_date,
+		</if>
+		<if test="logPcDocs.uAccessDate != null">
+			u_file_access_date,
+		</if>
+		u_file_size,
+		u_log_date)
+		VALUES(
+		#{logPcDocs.uComCode},
+		#{logPcDocs.u_deptuDeptCode_code},
+		#{logPcDocs.uUserId},
+		#{logPcDocs.uFileName},
+		#{logPcDocs.uCreateDate},
+		<if test="logPcDocs.uModifyDate != null">
+			#{logPcDocs.uModifyDate},
+		</if>
+		<if test="logPcDocs.uAccessDate != null">
+			#{logPcDocs.uAccessDate},
+		</if>
+		#{logPcDocs.uFileSize},
+		now());
+	</insert>
+	
+	<insert id="insertLogPcDocsList"  parameterType="java.util.List">
+		INSERT INTO edms_log_pc_docs
+		(
+			u_com_code,
+			u_dept_code,
+			u_user_id,
+			u_file_name,
+			u_file_create_date,
+			u_file_modify_date,
+			u_file_access_date,
+			u_file_size,
+			u_log_date
+		)
+		VALUES
+		
+		<foreach collection="list" item="item" separator=",">
+       	(
+       		#{item.uComCode},
+			#{item.uDeptCode},
+			#{item.uUserId},
+			#{item.uFileName},
+			#{item.uCreateDate},
+			#{item.uModifyDate},
+			#{item.uAccessDate},
+			#{item.uFileSize},
+			#{item.uLogDate}
+       	)
+    	</foreach>
+		
+	</insert>
+	
+	<delete id="deleteLogPcDocsList"> 
+		delete from edms_log_pc_docs where u_user_id = #{userid} 
+	</delete>
+
+	<insert id="insertLogUserLock">
+		INSERT INTO edms_log_user_lock
+		(
+		u_com_code,
+		u_dept_code,
+		u_user_id,
+		u_job_type,
+		u_job_user,
+		u_job_date)
+		VALUES(
+		#{logUserLock.uComCode},
+		#{logUserLock.uDeptCode},
+		#{logUserLock.uUserId},
+		#{logUserLock.uJobType},
+		#{logUserLock.uJobUser},
+		now());
+	</insert>
+</mapper>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper 
+	namespace="com.dongkuksystems.dbox.daos.type.noti.AlarmMapper">
+	<resultMap id="AlarmMap" type="com.dongkuksystems.dbox.models.type.noti.Alarm">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uMsgType" column="U_MSG_TYPE" />
+		<result property="uSenderId" column="U_SENDER_ID" />
+		<result property="uReceiverId" column="U_RECEIVER_ID" />
+		<result property="uMsg" column="U_MSG" />
+		<result property="uObjId" column="U_OBJ_ID" />
+		<result property="uDocKey" column="U_DOC_KEY" />
+		<result property="uActionYn" column="U_ACTION_YN" />
+		<result property="uPerformerId" column="U_PERFORMER_ID" />
+		<result property="uActionDate" column="U_ACTION_DATE" />
+		<result property="uSentDate" column="U_SENT_DATE" />
+		
+		<association property="senderDetail" column="{userId=u_sender_id}" javaType="VUser"
+			select="com.dongkuksystems.dbox.daos.table.etc.gwuser.GwUserMapper.selectOneByUserId" />
+		<association property="receiverDetail" column="{userId=u_sender_id}" javaType="VUser"
+			select="com.dongkuksystems.dbox.daos.table.etc.gwuser.GwUserMapper.selectOneByUserId" />
+		<association property="performerDetail" column="{userId=u_sender_id}" javaType="VUser"
+			select="com.dongkuksystems.dbox.daos.table.etc.gwuser.GwUserMapper.selectOneByUserId" />
+	</resultMap>
+	
+	<resultMap id="AlarmDetailMap" type="com.dongkuksystems.dbox.models.type.noti.Alarm">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uMsgType" column="U_MSG_TYPE" />
+		<result property="uSenderId" column="U_SENDER_ID" />
+		<result property="uReceiverId" column="U_RECEIVER_ID" />
+		<result property="uMsg" column="U_MSG" />
+		<result property="uObjId" column="U_OBJ_ID" />
+		<result property="uDocKey" column="U_DOC_KEY" />
+		<result property="uActionYn" column="U_ACTION_YN" />
+		<result property="uPerformerId" column="U_PERFORMER_ID" />
+		<result property="uActionDate" column="U_ACTION_DATE" />
+		<result property="uSentDate" column="U_SENT_DATE" />
+		<result property="uDelYn" column="U_DEL_YN" />
+		<result property="uActionNeedYn" column="U_ACTION_NEED_YN" />
+		<result property="uGroupKey" column="U_GROUP_KEY" />
+
+		<association property="senderDetail" javaType="VUser">
+			<id property="userId" column="B_USER_ID" />
+			<result property="displayName" column="B_DISPLAY_NAME" />
+			<result property="comOrgId" column="B_COM_ORG_ID" />
+			<result property="orgId" column="B_ORG_ID" />
+			<result property="orgNm" column="B_ORG_NM" />
+			<result property="pstnCode" column="B_PSTN_CODE" />
+			<result property="levelCode" column="B_LEVEL_CODE" />
+			<result property="titleCode" column="B_TITLE_CODE" />
+			<association property="jobTitleDetail" javaType="GwJobTitle">
+				<id property="titleCode" column="B_TITLE_CODE" />
+				<result property="name" column="BA_TITLE_NAME" />
+			</association>
+			<association property="deptDetail" javaType="VDept">
+				<association property="companyDetail" javaType="Code">
+					<id property="uCodeVal1" column="B_COM_ORG_ID" />
+					<result property="uCodeName1" column="BB_COM_NAME" />
+				</association>
+			</association>
+		</association>
+		<association property="receiverDetail" javaType="VUser">
+			<id property="userId" column="C_USER_ID" />
+			<result property="displayName" column="C_DISPLAY_NAME" />
+			<result property="comOrgId" column="C_COM_ORG_ID" />
+			<result property="orgId" column="C_ORG_ID" />
+			<result property="orgNm" column="C_ORG_NM" />
+			<result property="pstnCode" column="C_PSTN_CODE" />
+			<result property="levelCode" column="C_LEVEL_CODE" />
+			<result property="titleCode" column="C_TITLE_CODE" />
+		</association>
+		<association property="performerDetail" javaType="VUser">
+			<id property="userId" column="D_USER_ID" />
+			<result property="displayName" column="D_DISPLAY_NAME" />
+			<result property="comOrgId" column="D_COM_ORG_ID" />
+			<result property="orgId" column="D_ORG_ID" />
+			<result property="orgNm" column="D_ORG_NM" />
+			<result property="pstnCode" column="D_PSTN_CODE" />
+			<result property="levelCode" column="D_LEVEL_CODE" />
+			<result property="titleCode" column="D_TITLE_CODE" />
+		</association>
+	</resultMap>
+	
+	<select id="selectAlarmByObjId" resultMap="AlarmMap">
+	/* DBOX-PGM-DOC-023 | 알림 관리 | 강구현 */
+    select 
+      *
+    from edms_noti_sp
+    <where>
+      r_object_id = #{rObjectId}
+    </where>
+  </select>
+  
+  <select id="selectOneByObjId" resultMap="AlarmMap">
+  /* DBOX-PGM-DOC-023 | 알림 관리 | 강구현 */
+    select 
+      *
+    from edms_noti_sp
+    <where>
+      u_obj_id = #{uObjId} and
+      u_sender_id = #{uSenderId} and
+      u_msg_type = #{uMsgType}
+    </where>
+  </select>
+	
+	<select id="selectAlarmList" resultMap="AlarmMap">
+	/* DBOX-PGM-DOC-023 | 알림 관리 | 강구현 */
+		select 
+			*
+		from edms_noti_sp
+		<where>
+			u_receiver_id = #{uReceiverId}
+		</where>
+		ORDER BY u_sent_date DESC
+	</select>
+	
+	<select id="selectAlarmDetailList" resultMap="AlarmDetailMap">
+	/* DBOX-PGM-DOC-023 | 알림 관리 | 강구현 */
+		SELECT
+			a.*,
+		    b.user_id		AS b_user_id,
+		    b.display_name	AS b_display_name,
+		    b.com_org_id	AS b_com_org_id,
+		    b.org_id		AS b_org_id,
+		    b.org_nm		AS b_org_nm,
+		    b.pstn_code		AS b_pstn_code,
+		    b.level_code	AS b_level_code,
+		    b.title_code	AS b_title_code,
+		    ba.name			AS ba_title_name,
+		    c.user_id		AS c_user_id,
+		    c.display_name	AS c_display_name,
+		    c.com_org_id	AS c_com_org_id,
+		    c.org_id		AS c_org_id,
+		    c.org_nm		AS c_org_nm,
+		    c.pstn_code		AS c_pstn_code,
+		    c.level_code	AS c_level_code,
+		    c.title_code	AS c_title_code,
+		    d.user_id		AS d_user_id,
+		    d.display_name	AS d_display_name,
+		    d.com_org_id	AS d_com_org_id,
+		    d.org_id		AS d_org_id,
+		    d.org_nm		AS d_org_nm,
+		    d.pstn_code		AS d_pstn_code,
+		    d.level_code	AS d_level_code,
+		    d.title_code	AS d_title_code
+		FROM
+			edms_noti_sp		a LEFT OUTER JOIN
+			edms_v_user_info	b ON a.u_sender_id = b.user_id LEFT OUTER JOIN
+			edms_gw_job_title 	ba ON b.title_code = ba.title_code LEFT OUTER JOIN
+			edms_v_user_info	c ON a.u_receiver_id = c.user_id LEFT OUTER JOIN
+			edms_v_user_info	d ON a.u_performer_id = d.user_id
+			WHERE a.u_receiver_id = #{uReceiverId}
+			<if test="isRequestedFromExternal">
+				AND u_action_need_yn = 'Y'
+			</if>
+		ORDER BY a.u_sent_date DESC
+	</select>
+	
+	<select id="selectAlarmCount" resultType="int">
+	/* DBOX-PGM-DOC-023 | 알림 관리 | 강구현 */
+		select
+			COUNT(*)
+		from edms_noti_sp
+		<where>
+			u_receiver_id = #{uReceiverId}
+		</where>
+	</select>
+</mapper>

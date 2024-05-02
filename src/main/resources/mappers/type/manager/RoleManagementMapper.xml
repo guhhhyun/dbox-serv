@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.rolemanagement.RoleManagementMapper">
+	<resultMap id="RoleManagementMap"
+		type="com.dongkuksystems.dbox.models.type.manager.rolemanagement.RoleManagement">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uAuthType" column="U_AUTH_TYPE" />
+		<result property="uAuthScope" column="U_AUTH_SCOPE" />
+		<result property="uOptionVal" column="U_OPTION_VAL" />
+		<result property="uSelected" column="U_SELECTED" />
+		<result property="uAuthDesc" column="U_AUTH_DESC" />
+		<result property="uDocFlag" column="U_DOC_FLAG" />
+		<result property="uAuthL" column="U_AUTH_L" />
+		<result property="uAuthS" column="U_AUTH_S" />
+		<result property="uAuthT" column="U_AUTH_T" />
+		<result property="uAuthC" column="U_AUTH_C" />
+		<result property="uAuthG" column="U_AUTH_G" />
+		<result property="uSortOrder" column="U_SORT_ORDER" />
+		<result property="groupName" column="GROUP_NAME" />
+		<result property="groupName2" column="GROUP_NAME2" />
+		<result property="uAuthGroup" column="U_AUTH_GROUP" />
+		<result property="uConfigFlag" column="U_CONFIG_FALG" />
+		<result property="uGroupScope" column="U_GROUP_SCOPE" />
+	</resultMap>
+	<resultMap id="RoleRObjectIdMap"
+		type="com.dongkuksystems.dbox.models.type.manager.rolemanagement.RoleManagement">
+		<result property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uSelected" column="U_SELECTED" />
+	</resultMap>
+	
+	<select id="selectRoleManagement" resultMap="RoleManagementMap">
+		/* DBOX-PGM-MNG-010 | 관리 권한 - 업무역할 조회 | 이성현 */		
+		SELECT
+			eaps.r_object_id,
+			eaps.u_auth_type,
+			eaps.u_auth_scope,
+			eaps.u_option_val,
+			eaps.u_selected,
+			eaps.u_auth_desc,
+			eaps.u_doc_flag,
+			eaps.u_auth_l,
+			eaps.u_auth_s,
+			eaps.u_auth_t,
+			eaps.u_auth_c,
+			eaps.u_auth_g,
+			eaps.u_sort_order		
+		FROM
+			edms_auth_policy_s eaps
+			
+		<where>
+			eaps.u_doc_flag = #{uDocFlag}
+		</where>
+			ORDER BY eaps.u_doc_flag, eaps.u_sort_order, eaps.u_option_val
+	</select>
+
+	<select id="selectUnPolicyGroup" resultMap="RoleRObjectIdMap">
+		/* DBOX-PGM-MNG-010 | 관리 권한 - 업무역할 조회 | 이성현 */	
+		SELECT
+			r_object_id,
+			u_selected
+		FROM
+			edms_auth_policy_sp
+		<where>
+			(u_auth_type, u_doc_flag ) IN 
+				(
+				SELECT 
+					u_auth_type, 
+					u_doc_flag 
+				FROM
+					edms_auth_policy_sp 
+				WHERE 
+					r_object_id  = #{rObjectId}
+				)
+			AND u_option_val = #{uOptionVal}
+		</where>
+	</select>
+
+</mapper>

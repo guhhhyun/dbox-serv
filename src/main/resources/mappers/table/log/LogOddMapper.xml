@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.table.log.logodd.LogOddMapper">
+	<resultMap id="LogOddMap"
+		type="com.dongkuksystems.dbox.models.table.log.LogOdd">
+		<result property="uComCode" column="U_COM_CODE" />
+		<result property="uDeptCode" column="U_DEPT_CODE" />
+		<result property="uUserId" column="U_USER_ID" />
+		<result property="uDownloadCnt" column="U_DOWNLOAD_CNT" />
+		<result property="uDownloadOver" column="U_DOWNLOAD_OVER" />
+		<result property="uDownloadWarn" column="U_DOWNLOAD_WARN" />
+		<result property="uTakeoutCnt" column="U_TAKEOUT_CNT" />
+		<result property="uTakeoutOver" column="U_TAKEOUT_OVER" />
+		<result property="uTakeoutWarn" column="U_TAKEOUT_WARN" />
+		<result property="uAuthreqCnt" column="U_AUTHREQ_CNT" />
+		<result property="uAuthreqOver" column="U_AUTHREQ_OVER" />
+		<result property="uAuthreqWarn" column="U_AUTHREQ_WARN" />		
+		<result property="uPrintCnt" column="U_PRINT_CNT" />	
+		<result property="uPrintOver" column="U_PRINT_OVER" />	
+		<result property="uPrintWarn" column="U_PRINT_WARN" />
+		<result property="uDeleteCnt" column="U_DELETE_CNT" />
+		<result property="uDeleteOver" column="U_DELETE_OVER" />
+		<result property="uDeleteWarn" column="U_DELETE_WARN" />
+		<result property="uLogDate" column="U_LOG_DATE" />
+	</resultMap>
+	<select id="selectAll" resultMap="LogOddMap">
+	/* DBOX-PGM-MNG-004 | 특이사용 일별 이력 조회 | 김수연 */
+		select
+			a.*,
+			(
+			select
+				b.u_code_name1
+			from
+				edms_code_sp as b
+			where
+				b.u_code_type = 'COM_CODE'
+				and b.u_code_val1 = a.u_com_code) as com_name,
+			(
+			select
+				c.org_nm
+			from
+				edms_gw_dept as c
+			where
+				c.org_id = a.u_dept_code ) as dept_name,
+			(
+			select
+				d.display_name
+			from
+				edms_gw_user as d
+			where
+				d.social_per_id = a.u_user_id ) as user_name,
+			EXTRACT(day from a.u_log_date) as day 
+		from
+			edms_log_odd  as a
+		<where>
+			a.u_log_date <![CDATA[>]]> to_date(#{logOdd.logStartDate},'YYYYMMDD') AND a.u_log_date <![CDATA[<]]> to_date(#{logOdd.logEndDate},'YYYYMMDD')
+		</where>
+		<if test="logOdd.uComCode != null and logOdd.uComCode != ''">
+			AND a.u_com_code = #{logOdd.uComCode}
+		</if>
+		<if test="logOdd.uDeptCode != null and logOdd.uDeptCode != ''">
+			AND a.u_dept_code = #{logOdd.uDeptCode}
+		</if>
+		<if test="logOdd.uUserId != null and logOdd.uUserId != ''">
+			AND a.u_user_id = #{logOdd.uUserId}
+		</if>
+		ORDER BY day ASC
+	</select>
+</mapper>

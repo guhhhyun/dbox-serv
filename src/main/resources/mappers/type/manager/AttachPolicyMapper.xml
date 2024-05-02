@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.manager.attachpolicy.AttachPolicyMapper">
+	               
+	<resultMap id="AttachPolicyMap" type="com.dongkuksystems.dbox.models.type.manager.AttachPolicy">
+		
+		<id property="rObjectId" 			column="R_OBJECT_ID" 		/>
+		<result property="uSystemName" 		column="U_SYSTEM_NAME" 		/>
+		<result property="uSystemKey1" 		column="U_SYSTEM_KEY1" 		/>
+		<result property="uSystemKey2" 		column="U_SYSTEM_KEY2" 		/>
+		<result property="uSystemKey3"		column="U_SYSTEM_KEY3" 		/>
+		<result property="uAttachType" 		column="U_ATTACH_TYPE" 		/>
+		<result property="uLimitSecLevel"	column="U_LIMIT_SEC_LEVEL" 	/>
+		<result property="uDocStatus" 		column="U_DOC_STATUS" 		/>
+		<result property="uInactiveFlag" 	column="U_INACTIVE_FLAG" 	/>
+		<result property="uForUserFlag" 	column="U_FOR_USER_FLAG" 	/>		
+		<result property="uExternalFlag" 	column="U_EXTERNAL_FLAG" 	/>
+		<result property="uMessengerFlag" 	column="U_MESSENGER_FLAG" 	/>		
+		<result property="uDrmFlag" 		column="U_DRM_FLAG" 		/>
+		<result property="uDocComplete" 		column="U_DOC_COMPLETE" 		/>
+		
+	</resultMap>
+	
+	<select id="selectAll" resultMap="AttachPolicyMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 문서 첨부 정책 설정값 조회 | 이성현(DMES) */
+		SELECT
+			*
+		FROM edms_attach_policy_sp
+		ORDER BY r_object_id ASC
+	</select>
+	
+	<select id="selectOneByObjectId" resultMap="AttachPolicyMap">
+		SELECT  * 
+		FROM   edms_attach_policy_sp a 
+		<where>
+		       a.U_INACTIVE_FLAG = 1 
+		AND    a.R_OBJECT_ID = #{rObjectId}
+		</where>
+	</select>
+	
+	<select id="selectOneBySystemKey" resultMap="AttachPolicyMap">
+		SELECT  * 
+		FROM   edms_attach_policy_sp a 
+		<where>
+		       a.U_INACTIVE_FLAG = 1 
+		AND    a.U_SYSTEM_KEY1 = #{uSystemKey}
+		</where>
+	</select>
+	
+	<select id="selectAllAgentPolicy" resultMap="AttachPolicyMap">
+		SELECT *
+		FROM EDMS_ATTACH_POLICY_SP
+			WHERE 	( U_FOR_USER_FLAG = 0 OR U_FOR_USER_FLAG IS NULL )
+			AND 	U_INACTIVE_FLAG = 1
+		UNION 
+		SELECT *
+		FROM EDMS_ATTACH_POLICY_SP
+		WHERE U_FOR_USER_FLAG = 1
+			AND U_INACTIVE_FLAG = 1
+			AND R_OBJECT_ID IN (
+				SELECT U_POLICY_ID
+				FROM EDMS_ATTACH_POLICY_USER_SP EAPUS
+				WHERE U_USER_ID = #{uUserId}
+				AND U_END_DATE 	> NOW()
+				AND NOW() 		> U_START_DATE
+			) 
+	</select>
+	
+</mapper>

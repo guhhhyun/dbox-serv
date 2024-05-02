@@ -1,0 +1,115 @@
+spring:  
+  servlet: 
+    multipart: 
+      enabled: true
+      max-file-size: 2000MB
+      max-request-size: 2000MB
+  application:
+    name: server
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+    cache-duration: PT1H
+  redis:
+    host: 172.31.1.81
+    port: 6379 
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+      write-dates-as-timestamps: false
+  datasource:
+    jndi-name: dbox_ds
+    hikari:
+      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+      jdbc-url: jdbc:log4jdbc:edb://172.31.1.81:5432/dm_dkdoc_docbase
+      username: dmadmin
+      password: IDC_app03!
+      minimumIdle: 5
+      maximumPoolSize: 30
+      pool-name: postgresql_DB
+
+mybatis: 
+  configuration:
+    lazy-loading-enabled: true
+    aggressive-lazy-loading: false
+
+logging:
+  config: classpath:log4j2_test.yml
+#  level: 
+#    root: INFO
+#    org:
+#      apache: 
+#        http: INFO
+#    com: 
+#      zaxxer: 
+#        hikari: INFO
+#      dongkuksystems:
+#        dbox: DEBUG
+#        dbox.daos: INFO
+#    org.hibernate.SQL: INFO
+#    jdbc:
+#      sqltiming: DEBUG
+#      sqlonly: OFF
+#      audit: OFF
+#      resultset: OFF
+#      resultsettable: OFF
+#      connection: OFF
+server:
+  port: 8080
+jwt:
+  token:
+    header: api_key
+    issuer: server
+    clientSecret: Rel3Bjce2MajBo09qgkNgYaTuzvJe8iwnBFhsDS5
+#    expirySeconds: 1800 #30분
+#    expirySeconds: 86400 #24h
+    expirySeconds: 43200 
+    refesh-hour: 3
+kupload:
+  base-path: /WAS/JEUS/raonkuploaddata
+  temp-path: /WAS/JEUS/raonkuploaddata/raontemp
+  garbage-clean-day: 2
+  config-path: kupload/config/raonkupload-test.config.xml
+
+cors:
+  allowed-origins: http://localhost:3000,http://dbox-test.dongkuk.com
+
+linkfile: 
+  doc-key: __DOC_ID__
+  sec-level: __SEC_LEVEL__
+  preserv-flag: __PRESERV_FLAG__
+  text: <meta http-equiv='refresh' content='0.01;url=http://dbox-test.dongkuk.com/#/download/__DOC_ID__'>
+        <meta name="seclevel" content=__SEC_LEVEL__> <!-- S극비, T부서한, C사내, G그룹사내 -->
+        <meta name="preserveflag" content=__PRESERV_FLAG__>
+        <body>
+          <button type='button' onclick="location.href='http://dbox-test.dongkuk.com/#/download/__DOC_ID__'">Link</button>
+        </body>
+
+appr:
+  dir: /appr_temp
+
+drm:
+  dir: /WAS/JEUS/drm_data
+  info: MarkAnyDrmInfo-test.dat
+
+dbox:
+  url: http://dbox-test.dongkuk.com
+  mail:
+    transport-protocol: mail.transport.protocol
+    transport-protocol-value: smtp
+    smtp-host: mail.smtp.host
+    smtp-host-value: 172.31.1.116
+    smtp-port: mail.smtp.port
+    smtp-port-value: 25
+
+synap:
+  viewer:
+    ip: 125.60.95.32,125.60.95.33,125.60.95.34
+
+niris:
+  url: http://niris2.dongkuk.com
+
+auth:
+  ignore-ip: 172.31.5.44,125.60.95.31,172.31.1.34,172.31.1.35,172.31.1.36,125.60.95.28,125.60.95.29,125.60.95.54
+
+dfc.properties.file: dfc-test.properties

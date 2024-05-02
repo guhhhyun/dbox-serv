@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.manager.duplication.DuplicationMapper">
+	               
+	<resultMap id="DuplicationMap" type="com.dongkuksystems.dbox.models.type.manager.duplication.Duplication">
+		<id property="rObjectId" 			column="R_OBJECT_ID" 		/>		
+		<result property="rContentHash" 	column="R_CONTENT_HASH" 	/>
+		<result property="comOrgId" 		column="COM_ORG_ID" 		/>
+		<result property="title" 		column="TITLE" 		/>
+		<result property="rContentSize" 	column="R_CONTENT_SIZE" 	/>
+		<result property="uRegUser" 		column="U_REG_USER" 		/>
+		<result property="uRegUserName"		column="U_REG_USER_NAME" 	/>
+		<result property="uFolderPath"		column="U_FOLDER_PATH" 		/>		
+	</resultMap>
+	
+	<resultMap id="DuplicationListMap" type="com.dongkuksystems.dbox.models.type.manager.duplication.Duplication">
+		<id property="rObjectId" 			column="R_OBJECT_ID" 		/>		
+		<result property="rContentHash" 	column="R_CONTENT_HASH" 	/>
+		<result property="comOrgId" 		column="COM_ORG_ID" 		/>
+		<result property="uFolId" 		column="U_FOL_ID" 		/>
+		<result property="title" 		column="TITLE" 		/>
+		<result property="rContentSize" 	column="R_CONTENT_SIZE" 	/>
+		<result property="uRegUser" 		column="U_REG_USER" 		/>
+		<result property="uRegUserName"		column="U_REG_USER_NAME" 	/>
+		<result property="uFolderPath"		column="U_FOLDER_PATH" 		/>		
+		<result property="uDocStatus"		column="U_DOC_STATUS" 		/>
+		<result property="uDeleteStatus"	column="U_DELETE_STATUS" 	/>
+		<result property="uClosedDate"		column="U_CLOSED_DATE" 		/>
+		<result property="uCloser"			column="U_CLOSER" 			/>
+		<result property="uRecycleDate"		column="U_RECYCLE_DATE" 	/>
+	</resultMap>	
+
+	<select id="selectAll" resultMap="DuplicationMap">
+	/* DBOX-PGM-MNG-017 | 중복 자료 조회 | 김수연 */
+		WITH dup_doc as (
+			SELECT
+				duplication.R_OBJECT_ID as I_CONTENTS_ID,
+				doc.R_OBJECT_ID,
+				doc.U_DOC_KEY,
+				doc.TITLE,
+				doc.R_CONTENT_SIZE,
+				doc.U_CABINET_CODE,
+				doc.U_REG_USER,
+				doc.R_CREATION_DATE,
+				doc.U_FOLDER_PATH,
+				doc.U_PR_TYPE,
+				duplication.R_CONTENT_HASH
+			FROM
+				(
+				SELECT
+					a.R_OBJECT_ID as R_OBJECT_ID,
+					a.R_CONTENT_HASH as R_CONTENT_HASH
+				FROM
+					dmr_content_s a,
+					(
+					SELECT
+						R_CONTENT_HASH,
+						count(*) as CNT
+					FROM
+						dmr_content_s
+					WHERE
+						R_CONTENT_HASH <![CDATA[<>]]> ' ' 
+					GROUP BY
+						R_CONTENT_HASH
+					HAVING
+						count(*) > 1) b
+				WHERE
+					a.R_CONTENT_HASH = b.R_CONTENT_HASH ) duplication,
+				edms_doc_sp doc
+			WHERE
+				duplication.R_OBJECT_ID = doc.I_CONTENTS_ID
+				AND doc.I_HAS_FOLDER = 1
+				AND (doc.U_DELETE_STATUS = ' '
+				OR doc.U_DELETE_STATUS is null)
+				<if test="duplication.title != null and duplication.title != ''">
+					AND doc.TITLE LIKE CONCAT('%', #{duplication.title}, '%')
+				</if> 
+				<if test='duplication.uPrType != null and duplication.uPrType != "" and !duplication.uPrType.equals("A")'>
+					AND doc.U_PR_TYPE = #{duplication.uPrType}
+				</if>
+			ORDER BY
+				doc.R_CREATION_DATE DESC,
+				duplication.R_CONTENT_HASH ),
+			doc as (
+			SELECT
+				a.R_OBJECT_ID ,
+				a.U_DOC_KEY ,
+				a.TITLE ,
+				a.R_CONTENT_SIZE ,
+				E.DISPLAY_NAME || ' ' || E.PSTN_NAME as U_REG_USER_NAME ,
+				a.U_CABINET_CODE ,
+				a.R_CREATION_DATE ,
+				a.U_REG_USER ,
+				a.U_FOLDER_PATH ,
+				a.R_CONTENT_HASH ,
+				V.COM_ORG_ID
+			FROM
+				dup_doc a,
+				EDMS_V_DEPT_INFO v,
+				EDMS_V_USER_INFO E
+			WHERE
+				a.U_CABINET_CODE = V.U_CABINET_CODE
+				AND V.USAGE_STATE = 'A'
+			  <if test="duplication.comOrgId != null and duplication.comOrgId != ''">
+				AND V.COM_ORG_ID = #{duplication.comOrgId}
+			  </if> 
+			  <if test="duplication.orgId != null and duplication.orgId != '' and duplication.deptCodeList.isEmpty()">
+				AND V.ORG_ID = #{duplication.orgId}
+			  </if>
+			  <if test="duplication.deptCodeList != null and !duplication.deptCodeList.isEmpty()">
+				AND V.ORG_ID IN 
+		        <foreach collection="duplication.deptCodeList" item="deptCode" open="(" separator="," close=")">
+					#{deptCode}
+				</foreach>
+			  </if> 
+				AND a.U_REG_USER = E.USER_ID ) ,
+			doc_offset as (
+			SELECT
+				DOC.R_CONTENT_HASH as r_content_hash ,
+				count(*)
+			FROM
+				DOC
+			GROUP BY
+				DOC.R_CONTENT_HASH
+			HAVING
+				count(*) > 1
+			ORDER BY
+				DOC.R_CONTENT_HASH
+			LIMIT #{limit} OFFSET #{offset} )
+			SELECT
+				a.R_CONTENT_HASH ,
+				LISTAGG(b.TITLE,
+				CHR(10)) within group(
+				order by b.R_CREATION_DATE DESC) as TITLE ,
+				LISTAGG(b.U_REG_USER_NAME,
+				CHR(10)) within group(
+				order by b.R_CREATION_DATE DESC) as U_REG_USER_NAME ,
+				LISTAGG(b.U_FOLDER_PATH,
+				CHR(10)) within group(
+				order by b.R_CREATION_DATE DESC) as U_FOLDER_PATH ,
+				LISTAGG(b.R_CONTENT_SIZE,
+				CHR(10)) within group(
+				order by b.R_CREATION_DATE DESC) as R_CONTENT_SIZE
+			FROM
+				doc_offset a,
+				doc b
+			WHERE
+				a.R_CONTENT_HASH = b.R_CONTENT_HASH
+			GROUP BY
+				a.R_CONTENT_HASH
+			ORDER BY
+				a.R_CONTENT_HASH
+	</select>
+	<select id="selectList" resultMap="DuplicationListMap">
+	/* DBOX-PGM-MNG-017 | 중복 자료 detail 조회 | 김수연 */	
+		SELECT 
+			D.R_OBJECT_ID
+			, D.U_DOC_KEY
+			, D.U_FOL_ID
+			, D.TITLE
+			, D.R_CONTENT_SIZE
+			, E.DISPLAY_NAME || ' ' || E.PSTN_NAME AS U_REG_USER_NAME
+			, D.U_CABINET_CODE
+			, D.R_CREATION_DATE
+			, D.U_REG_USER
+			, D.U_FOLDER_PATH
+			, S.R_CONTENT_HASH
+			, V.COM_ORG_ID
+			, D.U_DOC_STATUS
+			, D.U_DELETE_STATUS
+			, D.U_CLOSED_DATE
+			, D.U_CLOSER
+			, D.U_RECYCLE_DATE
+		FROM 
+			EDMS_DOC_SP D, 
+			DMR_CONTENT_S S, 
+			EDMS_V_DEPT_INFO V,
+			EDMS_V_USER_INFO E
+		WHERE 
+			D.I_HAS_FOLDER = 1
+			AND (D.U_DELETE_STATUS = ' ' OR D.U_DELETE_STATUS IS NULL)
+			AND S.R_CONTENT_HASH <![CDATA[<>]]> ' ' 
+			AND D.I_CONTENTS_ID = S.R_OBJECT_ID
+		    AND S.R_CONTENT_HASH = #{duplication.rContentHash}
+			AND D.U_CABINET_CODE = V.U_CABINET_CODE
+			AND D.U_REG_USER = E.USER_ID
+		  <if test="duplication.comOrgId != null and duplication.comOrgId != ''">
+			AND V.COM_ORG_ID = #{duplication.comOrgId}
+		  </if> 
+		  <if test="duplication.orgId != null and duplication.orgId != '' and duplication.deptCodeList.isEmpty()">
+			AND V.ORG_ID = #{duplication.orgId}
+		  </if>
+		  <if test="duplication.deptCodeList != null and !duplication.deptCodeList.isEmpty()">
+			AND V.ORG_ID IN 
+	        <foreach collection="duplication.deptCodeList" item="deptCode" open="(" separator="," close=")">
+				#{deptCode}
+			</foreach>
+		  </if> 
+		  <if test='duplication.uPrType != null and duplication.uPrType != "" and !duplication.uPrType.equals("A")'>
+			AND D.U_PR_TYPE = #{duplication.uPrType}
+		  </if> 
+		ORDER BY D.R_CREATION_DATE DESC, S.R_CONTENT_HASH
+	</select>
+	<select id="selectAllCount" resultType="int">
+	/* DBOX-PGM-MNG-017 | 중복 자료 전체 건수 조회 | 김수연 */
+		WITH dup_doc as (
+			SELECT
+				duplication.R_OBJECT_ID as I_CONTENTS_ID,
+				doc.R_OBJECT_ID,
+				doc.U_DOC_KEY,
+				doc.TITLE,
+				doc.R_CONTENT_SIZE,
+				doc.U_CABINET_CODE,
+				doc.U_REG_USER,
+				doc.R_CREATION_DATE,
+				doc.U_FOLDER_PATH,
+				doc.U_PR_TYPE,
+				duplication.R_CONTENT_HASH
+			FROM
+				(
+				SELECT
+					a.R_OBJECT_ID as R_OBJECT_ID,
+					a.R_CONTENT_HASH as R_CONTENT_HASH
+				FROM
+					dmr_content_s a,
+					(
+					SELECT
+						R_CONTENT_HASH,
+						count(*) as CNT
+					FROM
+						dmr_content_s
+					WHERE
+						R_CONTENT_HASH <![CDATA[<>]]> ' ' 
+					GROUP BY
+						R_CONTENT_HASH
+					HAVING
+						count(*) > 1) b
+				WHERE
+					a.R_CONTENT_HASH = b.R_CONTENT_HASH ) duplication,
+				edms_doc_sp doc
+			WHERE
+				duplication.R_OBJECT_ID = doc.I_CONTENTS_ID
+				AND doc.I_HAS_FOLDER = 1
+				AND (doc.U_DELETE_STATUS = ' '
+				OR doc.U_DELETE_STATUS is null)
+				<if test="duplication.title != null and duplication.title != ''">
+					AND doc.TITLE LIKE CONCAT('%', #{duplication.title}, '%')
+				</if> 
+				<if test='duplication.uPrType != null and duplication.uPrType != "" and !duplication.uPrType.equals("A")'>
+					AND doc.U_PR_TYPE = #{duplication.uPrType}
+				</if>
+			ORDER BY
+				doc.R_CREATION_DATE DESC,
+				duplication.R_CONTENT_HASH ),
+			doc as (
+			SELECT
+				a.R_OBJECT_ID ,
+				a.U_DOC_KEY ,
+				a.TITLE ,
+				a.R_CONTENT_SIZE ,
+				E.DISPLAY_NAME || ' ' || E.PSTN_NAME as U_REG_USER_NAME ,
+				a.U_CABINET_CODE ,
+				a.R_CREATION_DATE ,
+				a.U_REG_USER ,
+				a.U_FOLDER_PATH ,
+				a.R_CONTENT_HASH ,
+				V.COM_ORG_ID
+			FROM
+				dup_doc a,
+				EDMS_V_DEPT_INFO v,
+				EDMS_V_USER_INFO E
+			WHERE
+				a.U_CABINET_CODE = V.U_CABINET_CODE
+				AND V.USAGE_STATE = 'A'
+			  <if test="duplication.comOrgId != null and duplication.comOrgId != ''">
+				AND V.COM_ORG_ID = #{duplication.comOrgId}
+			  </if> 
+			  <if test="duplication.orgId != null and duplication.orgId != '' and duplication.deptCodeList.isEmpty()">
+				AND V.ORG_ID = #{duplication.orgId}
+			  </if>
+			  <if test="duplication.deptCodeList != null and !duplication.deptCodeList.isEmpty()">
+				AND V.ORG_ID IN 
+		        <foreach collection="duplication.deptCodeList" item="deptCode" open="(" separator="," close=")">
+					#{deptCode}
+				</foreach>
+			  </if> 
+				AND a.U_REG_USER = E.USER_ID ) ,
+			doc_offset as (
+				SELECT
+					DOC.R_CONTENT_HASH as r_content_hash
+					, count(*)
+				FROM
+					DOC
+				GROUP BY
+					DOC.R_CONTENT_HASH
+				HAVING
+					count(*) > 1
+				ORDER BY
+					DOC.R_CONTENT_HASH 
+			)
+			SELECT
+				count(*)
+			FROM
+				doc_offset
+	</select>
+</mapper>

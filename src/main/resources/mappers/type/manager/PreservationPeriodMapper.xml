@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.manager.preservationperiod.PreservationPeriodMapper">
+  <resultMap id="PreservationMap" type="com.dongkuksystems.dbox.models.dto.type.manager.preservationperiod.PreservationPeriodDto">
+    <id property="rObjectId" column="R_OBJECT_ID" />
+    <result property="uComCode" column="U_COM_CODE" />
+    
+    <result property="uSecSYear" column="U_SEC_S_YEAR" />
+    <result property="uSecTYear" column="U_SEC_T_YEAR" />
+    <result property="uSecCYear" column="U_SEC_C_YEAR" />
+    <result property="uSecGYear" column="U_SEC_G_YEAR" />
+    <result property="uPjtEverFlag" column="U_PJT_EVER_FLAG" />
+    <result property="uNoExtDept" column="U_NO_EXT_DEPT" />
+    
+    <result property="uAutoExtend" column="U_AUTO_EXTEND" />
+        
+  </resultMap>
+	  <select id="selectOneByComCode" resultMap="PreservationMap">
+	      SELECT
+	        * 
+	      FROM edms_preserve_config_sp
+	            WHERE u_com_code = #{uComCode}
+	  </select>
+  
+    <select id="selectPreservationPeriodByComCode" resultType="hashMap">
+        SELECT * FROM edms_preserve_config_sp
+            WHERE u_com_code = #{comCode}
+    </select>
+
+    <select id="selectDepts" resultType="hashMap">
+        SELECT  r.r_object_id
+             ,  s.u_com_code
+             ,  dept.org_id
+             ,  dept.org_nm
+             ,  to_char(r.u_no_ext_reg_date, 'YYYY-MM-DD HH24:MI:SS') u_no_ext_reg_date
+             ,  to_char(r.u_no_ext_unreg_date, 'YYYY-MM-DD HH24:MI:SS') u_no_ext_unreg_date
+            FROM edms_preserve_config_sp s, edms_preserve_config_rp r, edms_v_dept_info dept
+                WHERE s.r_object_id = r.r_object_id
+                    AND r.u_no_ext_dept = dept.org_id
+                    ORDER BY u_no_ext_reg_date DESC
+    </select>
+
+</mapper>

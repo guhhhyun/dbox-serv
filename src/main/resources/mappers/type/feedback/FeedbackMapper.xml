@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.feedback.FeedbackMapper">
+	<resultMap id="FeedbackMap" type="com.dongkuksystems.dbox.models.type.feedback.Feedback">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uDocKey" column="U_DOC_KEY" />
+		<result property="uFeedback" column="U_FEEDBACK" />
+		<result property="uGroup" column="U_GROUP" />
+		<result property="uLevel" column="U_LEVEL" />
+		<result property="uOrder" column="U_ORDER" />
+		<result property="uOpenFlag" column="U_OPEN_FLAG" />
+		<result property="uCreateUser" column="U_CREATE_USER" />
+		<result property="uCreateDate" column="U_CREATE_DATE" />
+		
+		<association property="userDetail" javaType="VUser">
+			<id property="userId" column="B_USER_ID" />
+			<result property="displayName" column="B_DISPLAY_NAME" />
+			<result property="comOrgId" column="B_COM_ORG_ID" />
+			<result property="orgId" column="B_ORG_ID" />
+			<result property="orgNm" column="B_ORG_NM" />
+			<result property="pstnCode" column="B_PSTN_CODE" />
+			<result property="levelCode" column="B_LEVEL_CODE" />
+			<result property="titleCode" column="B_TITLE_CODE" />
+			<association property="jobTitleDetail" javaType="GwJobTitle">
+				<id property="titleCode" column="B_TITLE_CODE" />
+				<result property="name" column="BA_TITLE_NAME" />
+			</association>
+		</association>
+	</resultMap>
+	
+	<select id="getFeedbackList" resultMap="FeedbackMap">
+	/* DBOX-PGM-DOC-022 | 피드백 관리 | 강구현 */
+		SELECT
+			a.*,
+			b.user_id		AS b_user_id,
+		    b.display_name	AS b_display_name,
+		    b.com_org_id	AS b_com_org_id,
+		    b.org_id		AS b_org_id,
+		    b.org_nm		AS b_org_nm,
+		    b.pstn_code		AS b_pstn_code,
+		    b.level_code	AS b_level_code,
+		    b.title_code	AS b_title_code,
+		    ba.name			AS ba_title_name
+		FROM
+			edms_feedback_sp 	a	LEFT OUTER JOIN
+			edms_v_user_info	b 	ON a.u_create_user = b.user_id LEFT OUTER JOIN
+			edms_gw_job_title 	ba 	ON b.title_code = ba.title_code
+		<where>
+			u_doc_key = #{uDocKey}
+		</where>
+		ORDER BY
+		a.u_group DESC,
+		a.u_order ASC,
+		a.u_create_date ASC,
+		a.u_level ASC
+
+	</select>
+	
+	<select id="getCommentList" resultMap="FeedbackMap">
+	/* DBOX-PGM-DOC-022 | 피드백 관리 | 강구현 */
+		SELECT
+			*
+		FROM
+			edms_feedback_sp
+		<where>
+		  u_doc_key = #{uDocKey} AND
+		  u_group = #{uGroup} AND
+		  u_level = #{uLevel} 
+		
+		</where>
+	</select>
+	
+	<select id="getFeedbackListByLevel" resultMap="FeedbackMap">
+	/* DBOX-PGM-DOC-022 | 피드백 관리 | 강구현 */
+		SELECT
+			*
+		FROM
+			edms_feedback_sp
+		<where>
+		  u_doc_key = #{uDocKey} AND
+		  u_level = #{uLevel} 
+		</where>
+	</select>
+	
+	<select id="getFeedbackListByGroup" resultMap="FeedbackMap">
+	/* DBOX-PGM-DOC-022 | 피드백 관리 | 강구현 */
+		SELECT
+			*
+		FROM
+			edms_feedback_sp
+		<where>
+		  u_doc_key = #{uDocKey} AND
+		  u_group = #{uGroup}
+		</where>
+	</select>
+	
+	<select id="selectOne" resultMap="FeedbackMap">
+	/* DBOX-PGM-DOC-022 | 피드백 관리 | 강구현 */
+		SELECT
+			r_object_id,
+			u_doc_key,
+			u_feedback,
+			u_group,
+			u_level,
+			u_order,
+			u_open_flag,
+			u_create_user,
+			u_create_date
+		FROM
+			edms_feedback_sp 
+		<where>
+			r_object_id = #{objectId}
+		</where>
+	</select>
+
+	<select id="selectList" resultMap="FeedbackMap">
+	/* DBOX-PGM-DOC-022 | 피드백 관리 | 강구현 */
+		select
+			r_object_id,
+			u_doc_key,
+			u_feedback,
+			u_group,
+			u_level,
+			u_order,
+			u_open_flag,
+			u_create_user,
+			u_create_date
+		from edms_feedback_sp
+		<where>
+			<if test="feedback.uDocKey != null">
+				AND U_DOC_KEY = #{feedback.uDocKey}
+			</if>
+			<if test="feedback.uLevel != null">
+				AND U_LEVEL = #{feedback.uLevel}
+			</if>
+		</where>
+		ORDER BY u_order ASC
+	</select>
+
+	<select id="selectCount" resultType="int">
+	/* DBOX-PGM-DOC-022 | 피드백 관리 | 강구현 */
+		select
+			COUNT(*)
+		from edms_feedback_sp
+		<where>
+			<if test="feedback.uDocKey != null">
+				AND U_DOC_KEY = #{feedback.uDocKey}
+			</if>
+		</where>
+	</select>
+</mapper>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.storageperiod.StoragePeriodMapper">
+	<resultMap id="StoragePeriodMap"
+		type="com.dongkuksystems.dbox.models.type.manager.storageperiod.StoragePeriod">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uCodeVal1" column="U_CODE_VAL1" />
+		<result property="uCodeVal2" column="U_CODE_VAL2" />
+		<result property="uCodeVal3" column="U_CODE_VAL3" />
+		<result property="methodName" column="METHOD_NAME" />
+		<result property="startDate" column="START_DATE" />
+		<result property="aNextInvocation" column="A_NEXT_INVOCATION" />
+		<result property="methodArguments" column="METHOD_ARGUMENTS" />
+		<result property="hourtime" column="HOURTIME" />				
+	</resultMap>
+	<resultMap id="StoragePeriodLogListMap"
+		type="com.dongkuksystems.dbox.models.type.manager.storageperiod.StoragePeriodLogList">
+		<id property="uJobCode" column="U_JOB_CODE" />
+		<result property="uDocId" column="U_DOC_ID" />
+		<result property="uDocKey" column="U_DOC_KEY" />
+		<result property="uDocName" column="U_DOC_NAME" />
+		<result property="uFileSize" column="U_FILE_SIZE" />
+		<result property="uJobUser" column="U_JOB_USER" />
+		<result property="uJobDate" column="U_JOB_DATE" />
+		<result property="displayName" column="DISPLAY_NAME" />
+		<result property="orgId" column="ORG_ID" />
+		<result property="name" column="NAME" />
+		<result property="userName" column="USER_NAME" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+	</resultMap>
+	
+	<select id="selectStoragePeriod" resultMap="StoragePeriodMap">
+		/* DBOX-PGM-MNG-007 | 자료 관리 - 자료 보관기간 사별 조회 | 이성현 */	
+		SELECT 
+			r_object_id,
+			u_code_val1,
+			u_code_val2,
+			u_code_val3
+		FROM
+			edms_code_sp
+
+		<where>
+			u_code_type = 'CONFIG_DELETE_PERIOD'
+			AND u_code_val1 = #{uCodeVal1}
+		</where>
+			order by u_code_val2 desc
+	</select>
+	
+	<select id="selectDeleteSchedule" resultMap="StoragePeriodMap">
+		/* DBOX-PGM-MNG-007 | 자료 관리 - 자료 삭제 스케쥴 사별 조회 | 이성현 */
+		SELECT
+			a.r_object_id,
+			a.method_name,
+			a.start_date,
+			a.a_next_invocation,
+			b.method_arguments,
+			(select to_char(a_next_invocation, 'HH24')) as hourtime
+		FROM 
+			dm_job_s a, dm_job_r b 
+
+		<where>
+			(a.method_name = 'EDMS_EraseRecycleDoc' or a.method_name ='EDMS_EraseDeleteDoc') 
+			AND a.r_object_id = b.r_object_id 
+			AND b.method_arguments = #{uCodeVal1}
+		</where>
+			order by a.method_name desc
+	</select>
+		
+	<select id="selectRecycleLog" resultMap="StoragePeriodLogListMap">
+		/* DBOX-PGM-MNG-007 | 자료 관리 - 보관 이력 조회 | 이성현 */	
+		SELECT 
+			a.u_job_code,
+			a.u_doc_id,
+			a.u_doc_key,
+			a.u_doc_name,
+			a.u_file_size,
+			a.u_job_user,
+			split_part(a.u_job_date, ' ', 1) as u_job_date, 
+			b.display_name,
+			b.org_id,
+			c.name,
+			CONCAT(b.display_name,' ', c.name) as user_name, 
+			b.com_org_id,
+			b.org_nm
+		FROM 
+			edms_log_doc a 
+			LEFT OUTER join edms_gw_user b ON
+				a.u_job_user = b.social_per_id 
+			LEFT OUTER join edms_gw_job_pstn c ON
+				b.pstn_code = c.pstn_code
+		
+		<where>
+			(a.u_job_code ='LA' or a.u_job_code ='LP')
+			<if test="storagePeriodLogList.comOrgId != null and storagePeriodLogList.comOrgId != ''">
+				AND b.com_org_id = #{storagePeriodLogList.comOrgId}
+			</if>
+			<if test="storagePeriodLogList.orgId != null and storagePeriodLogList.orgId != ''">
+				AND b.org_id = #{storagePeriodLogList.orgId}
+			</if>
+			<if test="storagePeriodLogList.uDeleteUser != null and storagePeriodLogList.uDeleteUser != ''">
+				AND b.display_name = '%${storagePeriodLogList.uDeleteUser}%'
+			</if>
+			<if test="storagePeriodLogList.objectName != null and storagePeriodLogList.objectName != ''">				
+				AND a.u_doc_name like '%${storagePeriodLogList.objectName}%'							
+			</if>
+			<if test="storagePeriodLogList.overStartDate != null and storagePeriodLogList.overStartDate != '' and storagePeriodLogList.overEndDate != null and storagePeriodLogList.overEndDate != ''">
+				AND u_job_date between #{storagePeriodLogList.overStartDate} and #{storagePeriodLogList.overEndDate}
+			</if>
+			<if test="storagePeriodLogList.deptCodeList != null and !storagePeriodLogList.deptCodeList.isEmpty()">
+				AND b.org_id IN 
+	        <foreach collection="storagePeriodLogList.deptCodeList" item="deptCode" open="(" separator="," close=")">
+						#{deptCode}
+					</foreach>
+			</if>			
+		</where>	
+			order by a.u_job_date desc
+	</select>
+	
+	<select id="selectDeleteLog" resultMap="StoragePeriodLogListMap">
+	/* DBOX-PGM-MNG-007 | 자료 관리 - 삭제 이력 조회 | 이성현 */
+		SELECT 
+			a.u_job_code,
+			a.u_doc_id,
+			a.u_doc_key,
+			a.u_doc_name,
+			a.u_file_size,
+			a.u_job_user,
+			split_part(a.u_job_date, ' ', 1) as u_job_date, 
+			b.display_name,
+			b.org_id,
+			c.name,
+			CONCAT(b.display_name,' ', c.name) as user_name,
+			b.com_org_id,
+			b.org_nm
+		FROM 
+			edms_log_doc a 
+		LEFT OUTER join edms_gw_user b ON 
+			a.u_job_user = b.social_per_id 
+		LEFT OUTER join edms_gw_job_pstn c ON
+			b.pstn_code = c.pstn_code
+		
+		<where>
+			(a.u_job_code ='DA')	
+			<if test="storagePeriodLogList.comOrgId != null and storagePeriodLogList.comOrgId != ''">
+				AND b.com_org_id = #{storagePeriodLogList.comOrgId}
+			</if>
+			<if test="storagePeriodLogList.orgId != null and storagePeriodLogList.orgId != ''">
+				AND b.org_id = #{storagePeriodLogList.orgId}
+			</if>
+			<if test="storagePeriodLogList.uDeleteUser != null and storagePeriodLogList.uDeleteUser != ''">
+				AND b.display_name = '%${storagePeriodLogList.uDeleteUser}%'
+			</if>
+			<if test="storagePeriodLogList.objectName != null and storagePeriodLogList.objectName != ''">				
+				AND a.u_doc_name like '%${storagePeriodLogList.objectName}%'							
+			</if>
+			<if test="storagePeriodLogList.overStartDate != null and storagePeriodLogList.overStartDate != '' and storagePeriodLogList.overEndDate != null and storagePeriodLogList.overEndDate != ''">
+				AND u_job_date between #{storagePeriodLogList.overStartDate} and #{storagePeriodLogList.overEndDate}
+			</if>
+			<if test="storagePeriodLogList.deptCodeList != null and !storagePeriodLogList.deptCodeList.isEmpty()">
+				AND b.org_id IN 
+	        <foreach collection="storagePeriodLogList.deptCodeList" item="deptCode" open="(" separator="," close=")">
+						#{deptCode}
+					</foreach>
+			</if>						
+		</where>	
+			order by a.u_job_date desc
+	</select>	
+
+</mapper>
+

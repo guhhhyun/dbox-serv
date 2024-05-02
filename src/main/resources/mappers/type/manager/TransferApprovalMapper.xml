@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.manager.transferapproval.TransferApprovalMapper">
+
+    <!-- // TODO 서브쿼리 수정하자.    -->
+    <select id="selectTransferApprovals" resultType="hashMap">
+        select r_object_id
+             , u_req_title
+             , u_req_user
+             , to_char(u_req_date, 'yyyy-mm-dd') u_req_date
+             , u_req_status
+             , u_req_reason
+             , u_send_cab_code
+             , u_rcev_cab_code
+             , u_approver
+             , to_char(u_approve_date, 'yyyy-mm-dd') u_approve_date
+             , u_reject_reason
+             , to_char(u_trans_date, 'yyyy-mm-dd') u_trans_date
+             , (SELECT display_name FROM edms_v_user_info WHERE u_req_user = user_id) req_user_name
+             , (select display_name from edms_v_user_info where u_approver = user_id) approver
+             , (SELECT org_nm FROM edms_v_dept_info WHERE u_send_cab_code = u_cabinet_code) send_cab_name
+             , (SELECT org_nm FROM edms_v_dept_info WHERE u_rcev_cab_code = u_cabinet_code ) rcev_cab_name
+            FROM edms_req_trans_user_sp trans
+            <where>
+                <if test="uReqUser != null and uReqUser != ''">
+                    AND u_req_user = #{uReqUser}
+                </if>
+                <if test="uReqTitle != null and uReqTitle != ''">
+                    AND u_req_title LIKE CONCAT('%', #{uReqTitle}, '%')
+                </if>
+                <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+                    AND u_req_date BETWEEN #{startDate} AND #{endDate}
+                </if>
+            </where>
+    </select>
+
+    <select id="selectReqData" resultType="hashMap">
+        SELECT s.r_object_id
+             , s.object_name
+             , s.r_content_size
+             , s.u_reg_user
+             , (SELECT display_name FROM edms_v_user_info WHERE s.u_reg_user = user_id) display_name
+             , r.r_version_label
+            FROM edms_doc_sp s,
+                    (
+                        SELECT r_object_id, max(r_version_label) r_version_label FROM edms_doc_rp
+                            WHERE r_version_label != 'CURRENT'
+                                GROUP BY R_OBJECT_ID
+                    ) r
+                WHERE s.r_object_id = r.r_object_id
+                    AND s.r_object_id IN (
+                        SELECT u_doc_id FROM edms_req_trans_user_doc_sp WHERE u_req_id = #{uReqId}
+                    )
+    </select>
+
+    <select id="selectReqUsers" resultType="hashMap">
+        SELECT u_req_user, user.display_name
+            FROM edms_req_trans_user_sp trans, edms_v_user_info user
+                WHERE trans.u_req_user = user.user_id
+                GROUP BY u_req_user, user.display_name
+    </select>
+
+</mapper>

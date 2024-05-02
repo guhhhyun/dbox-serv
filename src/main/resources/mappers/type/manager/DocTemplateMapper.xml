@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.doctemplate.DocTemplateMapper">
+	<resultMap id="DocTemplateResultMap"
+		type="com.dongkuksystems.dbox.models.type.doc.DocTemplate">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uComCode" column="U_COM_CODE" />
+		<result property="uTemplateType" column="U_TEMPLATE_TYPE" />
+		<result property="uTemplateName" column="U_TEMPLATE_NAME" />
+		<result property="objectName" column="OBJECT_NAME" />
+		<result property="uSortOrder" column="U_SORT_ORDER" />
+		<result property="contentExtension" column="CONTENT_EXTENSION" />
+		<result property="rCreationDate" column="R_CREATION_DATE" />
+		<result property="rModifyDate" column="R_MODIFY_DATE" />
+		<result property="uDeleteStatus" column="U_DELETE_STATUS" />
+	</resultMap>
+	<select id="selectAll" resultMap="DocTemplateResultMap">
+		select all
+		  dm_format.dos_extension as content_extension,
+		  edms_doc_template.r_object_id, 
+		  edms_doc_template.object_name,
+		  edms_doc_template.u_com_code, 
+		  edms_doc_template.u_template_type, 
+		  edms_doc_template.u_template_name, 
+		  edms_doc_template.u_sort_order, 
+		  edms_doc_template.r_object_type, 
+		  edms_doc_template.r_creation_date, 
+	  	  edms_doc_template.r_modify_date, 
+	  	  edms_doc_template.a_content_type
+		from edms_doc_template_sp edms_doc_template
+		inner join dm_format_sp dm_format on edms_doc_template.a_content_type = dm_format."name"
+		where (edms_doc_template.i_has_folder = 1 and edms_doc_template.i_is_deleted = 0)
+	</select>
+
+	<select id="selectOneById" resultMap="DocTemplateResultMap">
+		select all
+		  dm_format.dos_extension as content_extension,
+		  edms_doc_template.r_object_id, 
+		  edms_doc_template.object_name,
+		  edms_doc_template.u_com_code, 
+		  edms_doc_template.u_template_type, 
+		  edms_doc_template.u_template_name, 
+		  edms_doc_template.u_sort_order, 
+		  edms_doc_template.r_object_type, 
+		  edms_doc_template.r_creation_date, 
+	  	  edms_doc_template.r_modify_date, 
+	  	  edms_doc_template.a_content_type
+		from edms_doc_template_sp edms_doc_template
+		inner join dm_format_sp dm_format on edms_doc_template.a_content_type = dm_format."name"
+		<where>
+			(edms_doc_template.i_has_folder = 1 and edms_doc_template.i_is_deleted = 0)
+			AND edms_doc_template.r_object_id = #{docTemplateId}
+		</where>
+	</select>
+	
+	<select id="selectOneByTemplateType" resultMap="DocTemplateResultMap">
+		select all
+		  dm_format.dos_extension as content_extension,
+		  edms_doc_template.r_object_id, 
+		  edms_doc_template.object_name,
+		  edms_doc_template.u_com_code, 
+		  edms_doc_template.u_template_type, 
+		  edms_doc_template.u_template_name, 
+		  edms_doc_template.u_sort_order, 
+		  edms_doc_template.r_object_type, 
+		  edms_doc_template.r_creation_date, 
+	  	  edms_doc_template.r_modify_date, 
+	  	  edms_doc_template.a_content_type
+		from edms_doc_template_sp edms_doc_template
+		inner join dm_format_sp dm_format on edms_doc_template.a_content_type = dm_format."name"
+		<where>
+			(edms_doc_template.i_has_folder = 1 and edms_doc_template.i_is_deleted = 0)
+			AND edms_doc_template.u_template_type = #{templateType}
+		</where>
+	</select>
+				
+	<select id="selectTemplates" resultMap="DocTemplateResultMap">
+	/* DBOX-PGM-MNG-007 | 자료 관리 - 사별 문서 템플릿 조회 | 이성현  */
+	SELECT all
+		  dm_format.dos_extension as content_extension,
+		  edms_doc_template.r_object_id, 
+		  edms_doc_template.object_name,
+		  edms_doc_template.u_com_code, 
+		  edms_doc_template.u_template_type, 
+		  edms_doc_template.u_template_name, 
+		  edms_doc_template.u_sort_order, 
+		  edms_doc_template.r_object_type, 
+		  edms_doc_template.r_creation_date, 
+	  	edms_doc_template.r_modify_date, 
+	  	edms_doc_template.a_content_type,
+	  	edms_doc_template.u_delete_status
+		FROM edms_doc_template_sp edms_doc_template
+		INNER JOIN dm_format_sp dm_format ON edms_doc_template.a_content_type = dm_format."name"
+		<where>
+			(edms_doc_template.i_has_folder = 1 and edms_doc_template.i_is_deleted = 0)
+			AND edms_doc_template.u_com_code = #{comOrgId}
+				<if test="!delStatus.equals('all')">
+					AND edms_doc_template.u_delete_status = 0
+				</if>
+		</where>
+			order by edms_doc_template.u_sort_order
+	</select>
+			
+</mapper>

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.manageid.ManageIdMapper">
+	<resultMap id="ManageIdMap"
+		type="com.dongkuksystems.dbox.models.type.manager.manageid.ManageId">
+		<id property="socialPerId" column="SOCIAL_PER_ID" />
+		<result property="displayName" column="DISPLAY_NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="orgId" column="ORG_ID" />
+		<result property="empType" column="EMP_TYPE" />
+		<result property="name" column="NAME" />
+		<result property="uCodeName1" column="U_CODE_NAME1" />
+		<result property="parentGroup" column="PARENT_GROUP" />
+		<result property="userState" column="USER_STATE" />
+		<result property="uLockStatus" column="U_LOCK_STATUS" />
+		<result property="uUserId" column="U_USER_ID" />
+		<result property="uLoginDate" column="U_LOGIN_DATE" />
+		<result property="uUserIp" column="U_USER_IP" />
+		<result property="uDeptCode" column="U_DEPT_CODE" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />		
+		<result property="rObjectId" column="R_OBJECT_ID" />
+		<result property="localEmpYn" column="LOCAL_EMP_YN" />		
+	</resultMap> 
+	
+	<resultMap id="ManageIdNoPartMap"
+		type="com.dongkuksystems.dbox.models.type.manager.manageid.ManageId">
+		<id property="socialPerId" column="SOCIAL_PER_ID" />
+		<result property="displayName" column="DISPLAY_NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="orgId" column="part_up_org_id" />
+		<result property="empType" column="EMP_TYPE" />
+		<result property="name" column="NAME" />
+		<result property="uCodeName1" column="U_CODE_NAME1" />
+		<result property="parentGroup" column="PARENT_GROUP" />
+		<result property="userState" column="USER_STATE" />
+		<result property="uLockStatus" column="U_LOCK_STATUS" />
+		<result property="uUserId" column="U_USER_ID" />
+		<result property="uLoginDate" column="U_LOGIN_DATE" />
+		<result property="uUserIp" column="U_USER_IP" />
+		<result property="uDeptCode" column="U_DEPT_CODE" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />		
+		<result property="rObjectId" column="R_OBJECT_ID" />
+		<result property="localEmpYn" column="LOCAL_EMP_YN" />		
+	</resultMap> 
+	
+	<select id="selectUserIdByDeptCode" resultMap="ManageIdNoPartMap">
+	/* DBOX-PGM-MNG-008 | 관리 기능 - 부서별 사용자 ID 조직도 조회 | 유두연  */
+	SELECT 
+			a.social_per_id,
+			a.display_name,			
+			a.email,
+			a.com_org_id ,
+			a.part_up_org_id,
+			e.ORG_NM ,
+			a.emp_type,
+			c.name,
+			b.u_code_name1,
+			CASE WHEN e.org_type = 'T'
+			THEN reverse(split_part(reverse(e.unit_full_name), '\', 2)) 
+			ELSE (select reverse(split_part(reverse(unit_full_name), '\', 3)) from edms_gw_dept where org_id = e.org_id)
+			END as parent_group,
+			f.user_state,
+			f.u_dept_code, 
+			g.u_lock_status,
+			h.u_cabinet_code,
+			a.local_emp_yn			
+		FROM
+			(SELECT a.*, CASE WHEN b.ORG_TYPE = 'P' THEN b.UP_ORG_ID ELSE a.ORG_ID END AS part_up_org_id
+				FROM EDMS_GW_USER a
+				LEFT JOIN EDMS_GW_DEPT b ON a.ORG_ID = b.ORG_ID ) a
+		LEFT JOIN edms_code_s b ON
+			a.com_org_id = b.u_code_val1
+		LEFT JOIN edms_gw_job_pstn c ON
+			a.pstn_code = c.pstn_code
+		LEFT JOIN edms_user_sp f ON
+			a.social_per_id = f.user_name
+		LEFT JOIN edms_gw_dept e ON
+			a.part_up_org_id = e.org_id	
+		LEFT JOIN
+			(
+			select
+				u_user_id,
+				u_lock_status
+			from
+				edms_user_lock_s euls
+			where
+				u_lock_status = 'L') g on
+			a.social_per_id = g.u_user_id
+		LEFT JOIN edms_dept_s h on
+			a.part_up_org_id = h.u_dept_code
+
+	<where>
+		b.u_code_type = 'COM_CODE'
+		AND a.usage_state = 'A'
+		and a.part_up_org_id = #{deptCode}
+	</where>
+	</select>
+	
+	<select id="selectUserId" resultMap="ManageIdMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 사용자 ID 목록 조회 | 이성현  */
+		SELECT 
+			a.social_per_id,
+			a.display_name,
+			a.email,
+			a.com_org_id ,
+			CASE WHEN e.org_type = 'P'
+			THEN (select org_nm from edms_gw_dept where org_id = e.up_org_id) 
+			ELSE a.org_nm
+			END as org_nm,			
+			CASE WHEN e.org_type = 'P'
+			THEN e.up_org_id
+			ELSE a.org_id 				
+			END as org_id,
+			a.emp_type,
+			c.name,
+			b.u_code_name1,
+			CASE WHEN e.org_type = 'P'
+			THEN (select reverse(split_part(reverse(unit_full_name), '\', 3)) from edms_gw_dept where org_id = e.org_id)  
+			ELSE reverse(split_part(reverse(e.unit_full_name), '\', 2))
+			END as parent_group,
+			f.user_state,
+			f.u_dept_code, 
+			g.u_lock_status,
+			h.u_cabinet_code,
+			a.local_emp_yn			
+		FROM
+			edms_gw_user a
+		LEFT JOIN edms_code_s b ON
+			a.com_org_id = b.u_code_val1
+		LEFT JOIN edms_gw_job_pstn c ON
+			a.pstn_code = c.pstn_code
+		LEFT JOIN edms_user_sp f ON
+			a.social_per_id = f.user_name
+		LEFT JOIN edms_gw_dept e ON
+			a.org_id = e.org_id	
+		LEFT JOIN
+			(
+			select
+				u_user_id,
+				u_lock_status
+			from
+				edms_user_lock_s euls
+			where
+				u_lock_status = 'L') g on
+			a.social_per_id = g.u_user_id
+		LEFT JOIN edms_dept_s h on
+			a.org_id = h.u_dept_code
+
+	<where>
+		b.u_code_type = 'COM_CODE'
+		AND a.usage_state = 'A'
+		<if test="manageId.orgId != null and manageId.orgId != ''">
+			AND 			
+			CASE WHEN e.org_type = 'P'
+			THEN e.up_org_id = #{manageId.orgId}
+			ELSE a.org_id = #{manageId.orgId}						
+			END
+		</if>
+		<if test="manageId.socialPerId != null and manageId.socialPerId != ''">
+			AND a.social_per_id = #{manageId.socialPerId}
+		</if>
+		<if test="manageId.comOrgId != null and manageId.comOrgId != ''">
+			AND a.com_org_id = #{manageId.comOrgId}
+		</if>
+		<if test="manageId.deptCodeList != null and !manageId.deptCodeList.isEmpty()">
+			AND 
+			CASE WHEN e.org_type = 'P' 
+			THEN e.up_org_id IN
+			  <foreach collection="manageId.deptCodeList" item="deptCode" open="(" separator="," close=")">
+					#{deptCode}
+				</foreach>
+			ELSE a.org_id IN
+        <foreach collection="manageId.deptCodeList" item="deptCode" open="(" separator="," close=")">
+					#{deptCode}
+				</foreach>			
+			END
+		</if>
+	</where>
+		order by a.emp_type, e.org_id, a.level_code desc
+
+	</select>
+	
+	<select id="selectUserIdLog" resultMap="ManageIdMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 사용자 ID 이력 조회 | 이성현  */
+		SELECT 
+			u_user_id, 
+			u_login_date, 
+			u_user_ip	
+		FROM 
+			edms_log_login
+	
+		<where>
+			u_user_id = #{uUserId}
+		</where>
+		order by u_login_date desc 
+		limit #{limit} offset #{offset}
+	</select>
+	
+	<select id="selectUserIdLogCount" resultType="int">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 사용자 ID 이력 갯수 | 이성현  */
+		SELECT 
+			count(*)
+		FROM 
+			edms_log_login	
+		WHERE
+			u_user_id = #{uUserId}				
+	</select>	
+	
+	<select id="selectCabinetCode" resultMap="ManageIdMap">
+	/* DBOX-PGM-MNG-008 | 관리 기능 - 사용자 ID 부서별 부서코드 조회 | 이성현  */
+		SELECT 
+			u_dept_code, 
+			u_cabinet_code
+		FROM
+			edms_dept_s			
+
+		<where>
+			u_dept_code = #{orgId}
+		</where>
+	</select>	
+			
+	<select id="selectComCabinet" resultMap="ManageIdMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 사용자 ID 사별 부서코드 조회 | 이성현  */
+		SELECT 
+			u_dept_code, 
+			u_cabinet_code
+		FROM
+			edms_dept_s			
+
+		<where>
+			u_dept_code = #{comCode}
+		</where>
+	</select>	
+			
+	<select id="selectRObjectId" resultMap="ManageIdMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 해당 사용자 obejct 조회 | 이성현  */
+		SELECT 
+			r_object_id
+		FROM 
+			edms_user_sp
+
+		<where>
+			user_name = #{socialPerId}
+		</where>
+	</select>
+
+	<select id="selectGwUserData" resultMap="ManageIdMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 해당 사용자 그룹웨어정보 조회 | 이성현  */
+		SELECT 
+			a.com_org_id,
+			CASE WHEN b.org_type = 'P'
+			THEN b.up_org_id
+			ELSE a.org_id 				
+			END as org_id,
+			a.social_per_id
+		FROM 
+			edms_gw_user a
+		LEFT JOIN edms_gw_dept b ON
+			a.org_id = b.org_id
+
+		<where>
+			a.social_per_id = #{socialPerId}
+		</where>
+	</select>	
+</mapper>
+

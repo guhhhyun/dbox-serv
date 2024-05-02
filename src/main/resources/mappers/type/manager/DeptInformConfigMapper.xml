@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.deptinformconfig.DeptInformConfigMapper">
+	<resultMap id="DeptInformConfigMap"
+		type="com.dongkuksystems.dbox.models.type.manager.deptinformconfig.DeptInformConfig">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uComCode" column="U_COM_CODE" />
+		<result property="uDeptCode" column="U_DEPT_CODE" />
+		<result property="uCountDownload" column="U_COUNT_DOWNLOAD" />
+		<result property="uCountTakeout" column="U_COUNT_TAKEOUT" />
+		<result property="uCountReqPermit" column="U_COUNT_REQ_PERMIT" />
+		<result property="uCountPrint" column="U_COUNT_PRINT" />
+		<result property="uCountDelete" column="U_COUNT_DELETE" />
+	</resultMap>
+	<select id="selectList" resultMap="DeptInformConfigMap">
+	/* DBOX-PGM-MNG-004 | 특이사용자 기준값 부서별 조회 | 김수연 */
+		select
+			r_object_id,
+			u_com_code,
+			u_dept_code,
+			u_count_download,
+			u_count_takeout,
+			u_count_req_permit,
+			u_count_print,
+			u_count_delete
+		from
+			edms_dept_inform_config_sp 
+		<where>
+		 	u_dept_code = #{uDeptCode}
+		</where>
+	</select>
+	
+	<select id="selectListByOrgId" resultMap="DeptInformConfigMap">
+	/* DBOX-PGM-MNG-004 | 특이사용자 기준값 조회 | 김수연 */
+		select
+			r_object_id,
+			u_count_download,
+			u_count_takeout,
+			u_count_req_permit,
+			u_count_print,
+			u_count_delete
+		from
+			(
+			select
+				1 as AAA,
+				r_object_id,
+				u_count_download,
+				u_count_takeout,
+				u_count_req_permit,
+				u_count_print,
+				u_count_delete
+			from
+				edms_dept_inform_config_s
+			where
+				u_dept_code = #{uDeptCode}
+				and u_com_code = #{uComCode}
+		union all
+			select 
+				2 as AAA,
+				r_object_id,
+				u_count_download,
+				u_count_takeout,
+				u_count_req_permit,
+				u_count_print,
+				u_count_delete
+			from
+				edms_dept_inform_config_s
+			where
+				u_dept_code = #{uComCode}
+				and u_com_code = #{uComCode}
+			order by
+				 AAA ) A
+		<where>
+		 	ROWNUM = 1
+		</where>
+	</select>
+	
+</mapper>

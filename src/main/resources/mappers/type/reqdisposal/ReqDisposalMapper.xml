@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper 
+  namespace="com.dongkuksystems.dbox.daos.table.reqdisposal.ReqDisposalMapper">
+  <resultMap id="ReqClosedMap" 
+	    type="com.dongkuksystems.dbox.models.type.request.ReqDelete">
+	    <id property="rObjectId" column="R_OBJECT_ID"/>
+	    <result property="uReqDocId" column="U_REQ_DOC_ID"/>
+	    <result property="uReqDocKey" column="U_REQ_DOC_KEY"/>
+	    <result property="uReqUser" column="U_REQ_USER"/>
+	    <result property="uReqDeptCode" column="U_REQ_DEPT_CODE"/>
+	    <result property="uReqType" column="U_REQ_TYPE"/>
+	    <result property="uReqDate" column="U_REQ_DATE"/>
+	    <result property="uReqReason" column="U_REQ_REASON"/>
+	    <result property="uReqStatus" column="U_REQ_STATUS"/>
+	    <result property="uOwnDeptCode" column="U_OWN_DEPT_CODE"/>
+	    <result property="uApprover" column="U_APPROVER"/>
+	    <result property="uApproveDate" column="U_APPROVe_DATE"/>
+	    <result property="uDeleteDate" column="U_DELETE_DATE"/>
+	    <result property="uFolderPath" column="U_FOLDER_PATH"/>
+	    <result property="uDocName" column="U_DOC_NAME"/>
+	    <result property="uSecLevel" column="U_SEC_LEVEL"/>
+	    <result property="uCreateYear" column="U_CREATE_YEAR"/>
+	    <result property="uExpiredDate" column="U_EXPIRED_DATE"/>
+	    <result property="uRejectReason" column="U_REJECT_REASON"/>
+   </resultMap>
+  
+  <resultMap id="ReqClosedDetailMap" 
+	    type="com.dongkuksystems.dbox.models.type.request.ReqDelete">
+	    <id property="rObjectId" column="R_OBJECT_ID"/>
+	    <result property="uReqDocId" column="U_REQ_DOC_ID"/>
+	    <result property="uReqDocKey" column="U_REQ_DOC_KEY"/>
+	    <result property="uReqUser" column="U_REQ_USER"/>
+	    <result property="uReqDeptCode" column="U_REQ_DEPT_CODE"/>
+	    <result property="uReqType" column="U_REQ_TYPE"/>
+	    <result property="uReqDate" column="U_REQ_DATE"/>
+	    <result property="uReqReason" column="U_REQ_REASON"/>
+	    <result property="uReqStatus" column="U_REQ_STATUS"/>
+	    <result property="uOwnDeptCode" column="U_OWN_DEPT_CODE"/>
+	    <result property="uApprover" column="U_APPROVER"/>
+	    <result property="uApproveDate" column="U_APPROVe_DATE"/>
+	    <result property="uDeleteDate" column="U_DELETE_DATE"/>
+	    <result property="uFolderPath" column="U_FOLDER_PATH"/>
+	    <result property="uDocName" column="U_DOC_NAME"/>
+	    <result property="uSecLevel" column="U_SEC_LEVEL"/>
+	    <result property="uCreateYear" column="U_CREATE_YEAR"/>
+	    <result property="uExpiredDate" column="U_EXPIRED_DATE"/>
+	    <result property="uRejectReason" column="U_REJECT_REASON"/>
+	    
+	    <association property="reqUserDetail" javaType="VUser">
+	      <id property="userId" column="B_USER_ID" />
+	      <result property="displayName" column="B_DISPLAY_NAME" />
+	      <result property="comOrgId" column="B_COM_ORG_ID" />
+	      <result property="orgId" column="B_ORG_ID" />
+	      <result property="orgNm" column="B_ORG_NM" />
+	      <result property="pstnCode" column="B_PSTN_CODE" />
+	      <result property="levelCode" column="B_LEVEL_CODE" />
+	      <result property="titleCode" column="B_TITLE_CODE" />
+	      <association property="jobTitleDetail" javaType="GwJobTitle">
+	        <id property="titleCode" column="B_TITLE_CODE" />
+	        <result property="name" column="BA_TITLE_NAME" />
+	      </association>
+	      <association property="deptDetail" javaType="VDept">
+	        <association property="companyDetail" javaType="Code">
+	          <id property="uCodeVal1" column="B_COM_ORG_ID" />
+	          <result property="uCodeName1" column="BB_COM_NAME" />
+	        </association>
+	      </association>
+	    </association>
+	    <association property="approverDetail" javaType="VUser">
+	      <id property="userId" column="C_USER_ID" />
+	      <result property="displayName" column="C_DISPLAY_NAME" />
+	      <result property="comOrgId" column="C_COM_ORG_ID" />
+	      <result property="orgId" column="C_ORG_ID" />
+	      <result property="orgNm" column="C_ORG_NM" />
+	      <result property="pstnCode" column="C_PSTN_CODE" />
+	      <result property="levelCode" column="C_LEVEL_CODE" />
+	      <result property="titleCode" column="C_TITLE_CODE" />
+	      <association property="jobTitleDetail" javaType="GwJobTitle">
+	        <id property="titleCode" column="C_TITLE_CODE" />
+	        <result property="name" column="CA_TITLE_NAME" />
+	      </association>
+	      <association property="deptDetail" javaType="VDept">
+	        <association property="companyDetail" javaType="Code">
+	          <id property="uCodeVal1" column="C_COM_ORG_ID" />
+	          <result property="uCodeName1" column="CC_COM_NAME" />
+	        </association>
+	      </association>
+	      
+	    </association>
+	    <association property="docDetail" javaType="Doc">
+	      <id property="rObjectId" column="D_R_OBJECT_ID" />
+	      <result property="objectName" column="D_OBJECT_NAME" />
+	      <result property="rContentSize" column="D_R_CONTENT_SIZE" />
+	      <result property="uDocKey" column="D_U_DOC_KEY" />
+	    </association>
+  </resultMap>
+  <resultMap id="ReqDisposalMap"
+		type="com.dongkuksystems.dbox.models.dto.type.request.ReqDisposalDetailDto">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="title" column="TITLE" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />
+		<result property="uDocKey" column="U_DOC_KEY" />
+		<result property="uFolderPath" column="U_FOLDER_PATH" />
+	    <result property="uRegUser" column="U_REG_USER"/>
+	    <result property="uSecLevel" column="U_SEC_LEVEL"/>
+	    <result property="uRegDate" column="U_REG_DATE"/>
+	    <result property="uExpiredDate" column="U_EXPIRED_DATE"/>
+	    <result property="dRObjectId" column="D_R_OBJECT_ID" />
+	    <result property="uReqDocId" column="U_REQ_DOC_ID"/>
+	    <result property="uReqType" column="U_REQ_TYPE"/>
+	    <result property="uReqUser" column="U_REQ_USER"/>
+	    <result property="uReqDate" column="U_REQ_DATE"/>
+	    <result property="uReqReason" column="U_REQ_REASON"/>
+	    <result property="uReqStatus" column="U_REQ_STATUS"/>
+	    <result property="orgId" column="ORG_ID"/>
+	    <result property="orgNm" column="ORG_NM"/>
+	    <result property="uFolId" column="U_FOL_ID"/>
+	</resultMap>
+  
+  <select id="reqClosedAll" resultMap="ReqClosedMap">
+  
+	  SELECT
+	    *
+	  FROM edms_req_delete_sp	  
+  
+  </select>
+  
+  <select id="reqClosedDelDetailAll" resultMap="ReqClosedDetailMap">
+	  WITH com_code_temp as (
+	        SELECT
+	          u_code_val1,
+	                u_code_name1
+	        FROM
+	          edms_code_s
+	        WHERE
+	          u_code_type = 'COM_CODE'
+	      )
+	      SELECT
+	        a.*,
+	        b.user_id   AS b_user_id,
+	          b.display_name  AS b_display_name,
+	          b.com_org_id  AS b_com_org_id,
+	          bb.u_code_name1 AS bb_com_name,
+	          b.org_id    AS b_org_id,
+	          b.org_nm    AS b_org_nm,
+	          b.pstn_code   AS b_pstn_code,
+	          b.level_code  AS b_level_code,
+	          b.title_code  AS b_title_code,
+	          ba.name     AS ba_title_name,
+	          c.user_id   AS c_user_id,
+	          c.display_name  AS c_display_name,
+	          c.com_org_id  AS c_com_org_id,
+	          cc.u_code_name1 AS cc_com_name,
+	          c.org_id    AS c_org_id,
+	          c.org_nm    AS c_org_nm,
+	          c.pstn_code   AS c_pstn_code,
+	          c.level_code  AS c_level_code,
+	          c.title_code  AS c_title_code,
+	          ca.name     AS ca_title_name,
+	          d.r_object_id   AS d_r_object_id,
+	          d.object_name   AS d_object_name,
+	          d.r_content_size AS d_r_content_size,
+	          d.u_doc_key   AS d_u_doc_key
+	         
+	      FROM 
+	        edms_req_delete_sp      a   LEFT OUTER JOIN
+	        edms_v_user_info      b   ON a.u_req_user = b.user_id LEFT OUTER JOIN
+	        edms_gw_job_title     ba  ON b.title_code = ba.title_code LEFT OUTER JOIN
+	        com_code_temp     bb  ON b.com_org_id = bb.u_code_val1 LEFT OUTER JOIN
+	        edms_v_user_info      c   ON a.u_approver = c.user_id LEFT OUTER JOIN
+	        edms_gw_job_title     ca  ON c.title_code = ca.title_code LEFT OUTER JOIN
+	        com_code_temp     cc  ON c.com_org_id = cc.u_code_val1 LEFT OUTER JOIN
+	        edms_doc_sp           d   ON a.u_req_doc_id = d.r_object_id 
+	        
+	      ORDER BY a.u_req_date DESC
+	</select>
+
+	<select id="dataByObjId" resultMap="ReqClosedMap">
+	  SELECT
+	    *
+	  FROM edms_req_delete_sp
+	  <where>
+	    r_object_id = #{rObjectId}
+	  </where>
+	</select>
+	<select id="selectListByDeptCode" resultMap="ReqDisposalMap">
+	/* DBOX-PGM-MNG-012 | 문서 폐기 리스트 | 김수연 */
+		(
+			SELECT
+				a.r_object_id,
+				a.title,
+				a.u_cabinet_code,
+				a.u_doc_key,
+				a.u_folder_path,
+				a.u_fol_id,
+				(
+				SELECT
+					display_name
+				FROM
+					edms_v_user_info
+				WHERE
+					usage_state = 'A'
+					AND user_id = a.u_reg_user) as u_reg_user,
+				a.u_sec_level,
+				a.u_reg_date,
+				a.u_expired_date,
+				b.r_object_id as d_r_object_id,
+				b.u_req_doc_id,
+				b.u_req_type,
+				(
+				SELECT
+					display_name
+				FROM
+					edms_v_user_info
+				WHERE
+					usage_state = 'A'
+					AND user_id = b.u_req_user) as u_req_user,
+				b.u_req_date,
+				b.u_req_reason,
+				b.u_req_status,
+				c.org_id,
+				c.org_nm
+			FROM
+				edms_doc_sp as a
+			RIGHT JOIN edms_req_delete_sp as b 
+			on a.r_object_id = b.u_req_doc_id
+			INNER JOIN edms_v_dept_info as c 
+			on c.u_cabinet_code = b.u_cabinet_code
+			WHERE
+				1=1
+			<if test='reqDisposal.type != "C"'>
+				AND c.usage_state = 'A'
+				AND b.u_req_status = 'R'
+				<if test="reqDisposal.deptCode != null and reqDisposal.deptCode != ''">
+					AND c.org_id = #{deptCode}
+				</if>
+				<if test="reqDisposal.uReqType != null and reqDisposal.uReqType != ''">
+					AND b.u_req_type = #{reqDisposal.uReqType}
+				</if>
+				<if test='reqDisposal.userType == "T" and reqDisposal.uRegUser != null and reqDisposal.uRegUser != ""'>
+					AND (a.u_reg_user = #{reqDisposal.uRegUser} OR b.u_req_user = #{reqDisposal.uReqUser})
+				</if>
+				<if test='reqDisposal.userType != "T" and reqDisposal.uRegUser != null and reqDisposal.uRegUser != ""'>
+					AND a.u_reg_user = #{reqDisposal.uRegUser} 
+				</if>
+				<if test='reqDisposal.userType != "T" and reqDisposal.uReqUser != null and reqDisposal.uReqUser != ""'>
+					AND b.u_req_user = #{reqDisposal.uReqUser} 
+				</if>
+				<if test="reqDisposal.title != null and reqDisposal.title != ''">
+					AND a.title LIKE CONCAT('%', #{reqDisposal.title}, '%')
+				</if>
+				<if test="reqDisposal.reqStartDate != null and reqDisposal.reqStartDate != '' and reqDisposal.reqEndDate != null and reqDisposal.reqEndDate != ''">
+	                AND b.u_req_date BETWEEN #{reqDisposal.reqStartDate} AND #{reqDisposal.reqEndDate}
+	            </if>	
+			</if>
+			<if test='reqDisposal.type == "C"'>
+				AND TRUE AND FALSE
+			</if>
+		)
+		UNION 
+		(
+			SELECT
+			a.r_object_id,
+			a.title,
+			a.u_cabinet_code,
+			a.u_doc_key,
+			a.u_folder_path,
+			a.u_fol_id,
+			(
+			SELECT
+				display_name
+			FROM
+				edms_v_user_info
+			WHERE
+				usage_state = 'A'
+				AND user_id = a.u_reg_user) as u_reg_user,
+			a.u_sec_level,
+			a.u_reg_date,
+			a.u_expired_date,
+			null as d_r_object_id,
+			null as u_req_doc_id,
+			null as u_req_type,
+			null as u_req_user,
+			null as u_req_date,
+			null as u_req_reason,
+			null as u_req_status,
+			b.org_id,
+			b.org_nm
+			FROM
+			edms_doc_sp as a
+			INNER JOIN edms_v_dept_info as b 
+			on b.u_cabinet_code = a.u_cabinet_code
+			WHERE
+				1=1
+			<if test='reqDisposal.type != "S"'>
+				AND b.usage_state = 'A'
+				AND (a.u_delete_status is null OR a.u_delete_status = ' ') 
+				AND a.u_expired_date <![CDATA[<]]> NOW()
+				AND a.u_expired_date != '1753-01-01 00:00:00'
+				<if test="reqDisposal.deptCode != null and reqDisposal.deptCode != ''">
+					AND b.org_id = #{deptCode}
+				</if>
+				<if test="reqDisposal.uRegUser != null and reqDisposal.uRegUser != ''">
+					AND a.u_reg_user = #{reqDisposal.uRegUser} 
+				</if>
+				<if test="reqDisposal.title != null and reqDisposal.title != ''">
+					AND a.title LIKE CONCAT('%', #{reqDisposal.title}, '%')
+				</if>
+			</if>
+			<if test='reqDisposal.type == "S"'>
+				AND TRUE AND FALSE
+			</if>
+		)
+		ORDER BY u_req_date DESC nulls last, u_reg_date DESC
+	</select>
+</mapper>

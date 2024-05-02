@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.table.mobile.device.MobileDeviceMapper">
+	<resultMap id="MobileDeviceMap"
+		type="com.dongkuksystems.dbox.models.table.mobile.MobileDevice">
+		<id property="userId" column="USER_ID" />
+		<result property="deviceUuid" column="DEVICE_UUID" />
+		<result property="deviceType" column="DEVICE_TYPE" />
+		<result property="pushKey" column="PUSH_KEY" />
+		<result property="modelNm" column="MODEL_NM" />
+		<result property="createDate" column="CREATE_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+
+	<select id="selectList" resultMap="MobileDeviceMap">
+		SELECT
+			*
+		FROM
+			edms_mobile_device
+		<where>
+			user_id IN
+			<foreach collection="userIds" item="userId" open="(" separator="," close=")">
+				#{userId}
+			</foreach>
+		</where>
+	</select>
+	
+	<update id="updateOne">
+		UPDATE
+			edms_mobile_device
+		<set>
+			<if test="mobileDevice.assignParameters.contains('deviceUuid')">
+				, device_uuid = #{mobileDevice.deviceUuid}
+			</if>
+			<if test="mobileDevice.assignParameters.contains('deviceType')">
+				, device_type = #{mobileDevice.deviceType}
+			</if>
+			<if test="mobileDevice.assignParameters.contains('pushKey')">
+				, push_key = #{mobileDevice.pushKey}
+			</if>
+			<if test="mobileDevice.assignParameters.contains('modelNm')">
+				, model_nm = #{mobileDevice.modelNm}
+			</if>
+			, update_date = now()
+		</set>
+		<where>
+			user_id = #{userId}
+		</where>
+	</update>
+	
+	<update id="mergeOne">
+		WITH upsert AS (
+			UPDATE
+				edms_mobile_device
+			<set>
+				<if test="mobileDevice.assignParameters.contains('deviceUuid')">
+					, device_uuid = #{mobileDevice.deviceUuid}
+				</if>
+				<if test="mobileDevice.assignParameters.contains('deviceType')">
+					, device_type = #{mobileDevice.deviceType}
+				</if>
+				<if test="mobileDevice.assignParameters.contains('pushKey')">
+					, push_key = #{mobileDevice.pushKey}
+				</if>
+				<if test="mobileDevice.assignParameters.contains('modelNm')">
+					, model_nm = #{mobileDevice.modelNm}
+				</if>
+				, update_date = now()
+			</set>
+			<where>
+				user_id = #{userId}
+			</where>
+			RETURNING *
+		)
+		INSERT INTO edms_mobile_device (
+			<trim prefix="" prefixOverrides=",">
+				<if test="mobileDevice.assignParameters.contains('userId')">
+					, user_id
+				</if>
+				<if test="mobileDevice.assignParameters.contains('deviceUuid')">
+					, device_uuid
+				</if>
+				<if test="mobileDevice.assignParameters.contains('deviceType')">
+					, device_type
+				</if>
+				<if test="mobileDevice.assignParameters.contains('pushKey')">
+					, push_key
+				</if>
+				<if test="mobileDevice.assignParameters.contains('modelNm')">
+					, model_nm
+				</if>
+			</trim>
+		)
+		SELECT
+			<trim prefix="" prefixOverrides=",">
+				<if test="mobileDevice.assignParameters.contains('userId')">
+					, #{mobileDevice.userId}
+				</if>
+				<if test="mobileDevice.assignParameters.contains('deviceUuid')">
+					, #{mobileDevice.deviceUuid}
+				</if>
+				<if test="mobileDevice.assignParameters.contains('deviceType')">
+					, #{mobileDevice.deviceType}
+				</if>
+				<if test="mobileDevice.assignParameters.contains('pushKey')">
+					, #{mobileDevice.pushKey}
+				</if>
+				<if test="mobileDevice.assignParameters.contains('modelNm')">
+					, #{mobileDevice.modelNm}
+				</if>
+			</trim>
+		WHERE NOT EXISTS (SELECT * FROM upsert)
+	</update>
+</mapper>

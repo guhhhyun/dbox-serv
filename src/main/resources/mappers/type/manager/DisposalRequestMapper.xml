@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.disposalrequest.DisposalRequestMapper">
+	<resultMap id="DisposalRequestMap"
+		type="com.dongkuksystems.dbox.models.type.manager.disposalrequest.DisposalRequest">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />		
+		<result property="uReqDocId" column="U_REQ_DOC_ID" />
+		<result property="uReqDocKey" column="U_REQ_DOC_KEY" />
+		<result property="uReqType" column="U_REQ_TYPE" />
+		<result property="uReqStatus" column="U_REQ_STATUS" />
+		<result property="uReqUser" column="U_REQ_USER" />
+		<result property="uReqDate" column="U_REQ_DATE" />
+		<result property="uReqReason" column="U_REQ_REASON" />
+		<result property="uApprover" column="U_APPROVER" />
+		<result property="uApproveDate" column="U_APPROVE_DATE" />
+		<result property="uDeleteDate" column="U_DELETE_DATE" />
+		<result property="uFolderPath" column="U_FOLDER_PATH" />
+		<result property="uDocName" column="U_DOC_NAME" />
+		<result property="uSecLevel" column="U_SEC_LEVEL" />
+		<result property="uCreateYear" column="U_CREATE_YEAR" />
+		<result property="uExpiredDate" column="U_EXPIRED_DATE" />
+		<result property="displayName" column="DISPLAY_NAME" />
+		<result property="orgId" column="ORG_ID" />
+		<result property="approverName" column="APPROVER_NAME" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="uFolId" column="U_FOL_ID" />
+		<result property="title" column="TITLE" />
+	</resultMap>
+	
+	<select id="selectDisposalRequest" resultMap="DisposalRequestMap">
+	/* DBOX-PGM-MNG-012 | 휴지통/폐기/보존연한 관리 - 폐기 문서 조회 | 이성현 */
+		SELECT
+			a.r_object_id,
+			a.u_cabinet_code,
+			a.u_req_doc_id,
+			a.u_req_doc_key,
+			a.u_req_type, 
+			a.u_req_status,
+			a.u_req_user,
+			split_part(a.u_req_date, ' ', 1) as u_req_date,
+			a.u_req_reason,
+			a.u_approver,
+			split_part(a.u_approve_date, ' ', 1) as u_approve_date,		
+			split_part(a.u_delete_date, ' ', 1) as u_delete_date,
+			a.u_folder_path,
+			a.u_doc_name,
+			a.u_sec_level,
+			split_part(a.u_create_year, '-', 1) as u_create_year ,
+			split_part(a.u_expired_date, '-', 1)as u_expired_date,
+			b.display_name,
+			c.display_name as approver_name,
+			b.com_org_id,
+			d.org_nm,
+			d.org_id,
+			e.u_fol_id,
+			e.title
+		FROM
+			edms_req_delete_sp a
+		LEFT OUTER JOIN
+		  edms_gw_user b on
+			a.u_req_user = b.social_per_id
+		LEFT OUTER JOIN
+		  edms_gw_user c on
+			a.u_approver = c.social_per_id
+		LEFT OUTER JOIN
+			edms_v_dept_info d on
+			a.u_cabinet_code = d.u_cabinet_code
+		LEFT OUTER JOIN
+			edms_doc_sp e on
+			a.u_req_doc_id = e.r_object_id
+							
+		<where>
+			a.u_req_status = #{disposalRequest.uReqStatus}			
+			AND a.u_delete_date = '1753-01-01'				
+			<if test="disposalRequest.uReqType != null and disposalRequest.uReqType != ''">
+				AND a.u_req_type = #{disposalRequest.uReqType}
+			</if>
+			<if test="disposalRequest.comOrgId != null and disposalRequest.comOrgId != ''">
+				AND b.com_org_id = #{disposalRequest.comOrgId}
+			</if>
+			<if test="disposalRequest.orgId != null and disposalRequest.orgId != ''">
+				AND d.org_id = #{disposalRequest.orgId}
+			</if>
+			<if test="disposalRequest.displayName != null and disposalRequest.displayName != ''">
+				AND b.display_name like '%${disposalRequest.displayName}%'
+			</if>
+			<if test="disposalRequest.uDocName != null and disposalRequest.uDocName != ''">			
+				AND a.u_doc_name like '%${disposalRequest.uDocName}%'							
+			</if>
+			<if test="disposalRequest.overStartDate != null and disposalRequest.overStartDate != '' and disposalRequest.overEndDate != null and disposalRequest.overEndDate != ''">
+				AND u_req_date between #{disposalRequest.overStartDate} and #{disposalRequest.overEndDate}
+			</if>
+			<if test="disposalRequest.deptCodeList != null and !disposalRequest.deptCodeList.isEmpty()">
+				AND d.org_id IN 
+	        <foreach collection="disposalRequest.deptCodeList" item="deptCode" open="(" separator="," close=")">
+						#{deptCode}
+					</foreach>
+			</if>			
+		</where>	
+		order by a.u_req_date desc
+	</select>
+	
+</mapper>
+

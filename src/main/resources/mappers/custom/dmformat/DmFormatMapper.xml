@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.custom.dmformat.DmFormatMapper">
+	<resultMap id="DmFormatMap" type="com.dongkuksystems.dbox.models.dto.custom.dmformat.DmFormat">
+		<id property="objectId" column="R_OBJECT_ID"/>
+		<result property="name" column="NAME"/>
+		<result property="description" column="DESCRIPTION"/>
+		<result property="macCreator" column="MAC_CREATOR"/>
+		<result property="macType" column="MAC_TYPE"/>
+		<result property="dosExtension" column="DOS_EXTENSION"/>
+		<result property="assetClass" column="ASSET_CLASS"/>
+		<result property="mimeType" column="MIME_TYPE"/>
+	</resultMap>
+
+	<select id="selectAll" resultMap="DmFormatMap">
+		select dm_format.r_object_id, dm_format.name,  
+               dm_format.description, dm_format.mac_creator,
+               LOWER(dm_format.mac_type) as MAC_TYPE,    LOWER(dm_format.dos_extension) as DOS_EXTENSION,
+               dm_format.asset_class, LOWER(dm_format.mime_type) as MIME_TYPE
+          from dm_format_sp  dm_format ;
+	</select>
+</mapper>

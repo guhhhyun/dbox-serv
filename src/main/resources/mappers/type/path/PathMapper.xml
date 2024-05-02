@@ -1,0 +1,842 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper	namespace="com.dongkuksystems.dbox.daos.type.path.PathMapper">
+	
+	<resultMap id="pathMap"
+		type="com.dongkuksystems.dbox.models.dto.path.DPath">
+		<id     property="rObjectId"  column="R_OBJECT_ID" />
+		<result property="uFolId"     column="U_FOL_ID"    />
+		<result property="listType"   column="LIST_TYPE"   />
+		<result property="docTypeGbn" column="DOC_TYPE_GUN"/>
+		<result property="orgNm"      column="ORG_NM"   />
+		
+        <result property="uAlarmYn"   column="U_ALARM_YN"   />
+        <result property="uEmailYn"   column="U_EMAIL_YN"   />
+        <result property="uMmsYn"     column="U_MMS_YN"   />
+        <result property="uComCode"   column="U_COM_CODE"   />
+        
+        <result property="uObjStatus"   column="U_OBJ_STATUS"   />
+		
+	</resultMap>
+	
+	<!-- 이관시 대상폴더의 CABINET_CODE로 ORG_NM을 가져다가 타겟폴더에 [이관함] 밑에 ORG_NM으로 폴더를 만듬 -->
+	<select id="selectOrgNmbyCabinetCode" resultMap="pathMap">
+	             /* PathMapper.xml | 이관시 대상폴더의 CABINET_CODE로 ORG_NM을 가져다가 타겟폴더에 [이관함] 밑에 ORG_NM으로 폴더를 만듬 | 정정교 */
+                SELECT	ORG_NM 
+                  FROM EDMS_V_DEPT_INFO 
+                  WHERE U_CABINET_CODE=#{psCabinetcode}
+	</select>
+	<!-- 중요문서함이 있는지 확인할때는 cabinetCode랑 folType="DI"-->
+    <select id="selectFolTypeList" resultType="String">
+                       /* PathMapper.xml | 중요문서함이 있는지 확인할때 사용 | 정정교 */
+					    SELECT 'FOL' AS LIST_TYPE,
+					            ''   AS DOC_TYPE_GUN,
+					            R_OBJECT_ID
+					      FROM EDMS_FOLDER_S
+					     WHERE U_CABINET_CODE = #{psCabinetcode}
+					     AND U_FOL_TYPE LIKE #{psFolType}||'%'
+					     AND (U_DELETE_STATUS =' ' || U_DELETE_STATUS ='')
+		 
+	</select>	
+
+	<select id="selectEOList" resultType="String">
+                     /* PathMapper.xml | 하위에 폴더나 문서가 있는지 체크 | 정정교 */
+				       SELECT 'DOC' AS LIST_TYPE,
+				              ''   AS DOC_TYPE_GUN,
+					           R_OBJECT_ID
+					      FROM EDMS_DOC_SP
+						<where>
+					        I_HAS_FOLDER = 1
+							<if test="psFolId != null">
+					          and U_FOL_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  and U_PR_CODE = #{psPrCode}
+							</if>
+						</where>
+					       
+					    UNION
+				       SELECT 'DOC' AS LIST_TYPE,
+				              'IMP'   AS DOC_TYPE_GUN,
+					           R_OBJECT_ID
+					      FROM EDMS_DOC_IMP_SP
+						<where>
+					        I_HAS_FOLDER = 1
+							<if test="psFolId != null">
+					          AND U_FOL_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  AND U_PR_CODE = #{psPrCode}
+							</if>
+						</where>
+					    UNION
+					    SELECT 'FOL' AS LIST_TYPE,
+					            ''   AS DOC_TYPE_GUN,
+					            R_OBJECT_ID
+					      FROM EDMS_FOLDER_S
+						<where>
+							<if test="psFolId != null">
+					          R_OBJECT_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  U_PR_CODE = #{psPrCode}
+							</if>
+						</where>
+		 
+	</select>
+
+	<select id="selectLFList" resultMap="pathMap">
+	            /* PathMapper.xml | 하위(전체)에 잠긴 폴더가 있는지 체크 | 정정교 */
+				WITH RECURSIVE FOL_TREE AS
+						(
+							SELECT R_OBJECT_ID AS FOL_ID,
+							       U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S
+						<where>
+							<if test="psFolId != null">
+					          R_OBJECT_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  U_PR_CODE = #{psPrCode}
+							</if>
+						</where>
+							 UNION
+							SELECT F.R_OBJECT_ID AS FOL_ID,
+							       F.U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S F
+							     , FOL_TREE FT
+							 WHERE F.U_UP_FOL_ID = FT.FOL_ID
+						)
+						SELECT FOL_ID as R_OBJECT_ID
+						  FROM FOL_TREE
+						 WHERE STATUS = 'C'
+	</select>
+	
+		<select id="selectUpLFList" resultMap="pathMap">
+		        /* PathMapper.xml | 상위(전체)에 잠긴 폴더가 있는지 체크 | 정정교 */
+				WITH RECURSIVE FOL_TREE AS
+						(
+							SELECT U_UP_FOL_ID AS FOL_ID,
+							       U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S
+						<where>
+							<if test="psFolId != null">
+					          R_OBJECT_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  U_PR_CODE = #{psPrCode}
+							</if>
+						</where>
+							 UNION
+							SELECT U_UP_FOL_ID AS FOL_ID,
+							       F.U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S F
+							     , FOL_TREE FT
+							 WHERE (F.U_UP_FOL_ID = FT.FOL_ID or f.r_object_id=ft.fol_id)
+						)
+						SELECT FOL_ID as R_OBJECT_ID
+						  FROM FOL_TREE
+						 WHERE STATUS = 'C'
+						  AND FOL_ID !=' '
+	</select>
+
+	<select id="selectLDList" resultMap="pathMap">
+	          /* PathMapper.xml | (하위에)잠긴(편집중인) 문서가 있는지 체크 | 정정교 */
+				   WITH RECURSIVE FOL_TREE AS
+						(
+							SELECT R_OBJECT_ID AS FOL_ID,
+							       U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S
+						<where>
+							<if test="psFolId != null">
+					          R_OBJECT_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  U_PR_CODE = #{psPrCode}
+							</if>
+						</where>
+							 UNION
+							SELECT F.R_OBJECT_ID AS FOL_ID,
+							       F.U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S F
+							     , FOL_TREE FT
+							 WHERE F.U_UP_FOL_ID = FT.FOL_ID
+						)
+						SELECT R_OBJECT_ID
+						  FROM EDMS_DOC_SP
+						 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+						   AND R_LOCK_OWNER <![CDATA[<>]]> ' '
+						   AND U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+						UNION ALL
+						SELECT R_OBJECT_ID
+						  FROM EDMS_DOC_IMP_SP
+						 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+						   AND R_LOCK_OWNER <![CDATA[<>]]> ' '
+						   AND U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+	</select>
+	
+	<!--closed문서가 있는지-->
+	<select id="selectCDList" resultMap="pathMap">
+	             /* PathMapper.xml | closed문서가 있는지 체크 | 정정교 */
+				    WITH RECURSIVE FOL_TREE AS
+						(
+							SELECT R_OBJECT_ID AS FOL_ID,
+							       U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S
+						<where>
+							<if test="psFolId != null">
+					          R_OBJECT_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  U_PR_CODE = #{psPrCode}
+							</if>
+						</where>
+							 UNION
+							SELECT F.R_OBJECT_ID AS FOL_ID,
+							       F.U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S F
+							     , FOL_TREE FT
+							 WHERE F.U_UP_FOL_ID = FT.FOL_ID
+						)
+						SELECT R_OBJECT_ID
+						  FROM EDMS_DOC_SP
+						 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+						   AND U_DOC_STATUS='C' /* closed문서일 경우  사내, 그룹사내 문서만 이동 가능한지라, 체크용도 */
+						   AND U_SEC_LEVEL NOT IN('C','G') /* Closed문서는 사내, 그룹사내 문서만 이동 가능함 (아닌게 있는지 확인용)*/
+						   AND R_LOCK_OWNER <![CDATA[<>]]> ' '
+						   AND U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+						UNION ALL
+						SELECT R_OBJECT_ID
+						  FROM EDMS_DOC_IMP_SP
+						 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+						   AND U_DOC_STATUS='C' /* closed문서일 경우  사내, 그룹사내 문서만 이동 가능한지라, 체크용도 */
+						   AND U_SEC_LEVEL NOT IN('C','G') /* Closed문서는 사내, 그룹사내 문서만 이동 가능함 (아닌게 있는지 확인용)*/
+						   AND R_LOCK_OWNER <![CDATA[<>]]> ' '
+						   AND U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+						
+	</select>	
+	<!-- 하위(전체)에 삭제 상태(문서는 요청중 포함)인 폴더나 문서가 있는지 체크 -->
+	<select id="selectDDList" resultMap="pathMap">
+	                /* PathMapper.xml | 하위(전체)에 삭제 상태(문서는 요청중 포함)인 폴더나 문서가 있는지 체크 | 정정교 */
+				         WITH RECURSIVE FOL_TREE AS
+						(
+							SELECT R_OBJECT_ID AS FOL_ID,
+							       U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S
+						<where>
+							<if test="psFolId != null">
+					          R_OBJECT_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  U_PR_CODE = #{psPrCode}
+							</if>
+						</where>
+							 UNION
+							SELECT F.R_OBJECT_ID AS FOL_ID,
+							       F.U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S F
+							     , FOL_TREE FT
+							 WHERE F.U_UP_FOL_ID = FT.FOL_ID
+						)
+						SELECT R_OBJECT_ID
+						  FROM EDMS_DOC_SP
+						 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+						   AND U_DELETE_STATUS <![CDATA[<>]]>' '
+						   AND U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+					   UNION
+						SELECT R_OBJECT_ID
+						  FROM EDMS_DOC_IMP_SP
+						 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+						   AND U_DELETE_STATUS <![CDATA[<>]]>' '
+						   AND U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+					   UNION
+						SELECT R_OBJECT_ID
+						  FROM EDMS_FOLDER_S
+						 WHERE U_DELETE_STATUS <![CDATA[<>]]> ' '
+						   AND U_UP_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+	</select>		
+
+	<select id="selectNAList" resultMap="pathMap">
+	               /* PathMapper.xml | 이동-복사-삭제 대상 폴더나 문서리스트를 조회/체크용으로 사용 | 정정교 */
+				         WITH RECURSIVE FOL_TREE AS
+						(
+							SELECT R_OBJECT_ID AS FOL_ID, U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S
+						<where>
+						     1=1
+							<if test="psFolId != null">
+					          AND R_OBJECT_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  AND U_PR_CODE = #{psPrCode}
+							</if>
+							<if test="psDel != null">
+							  AND U_DELETE_STATUS =' '
+							</if>
+						</where>
+							 UNION
+							SELECT F.R_OBJECT_ID, F.U_FOL_STATUS
+							  FROM EDMS_FOLDER_S F
+							     , FOL_TREE FT
+							 WHERE F.U_UP_FOL_ID = FT.FOL_ID
+							<if test="psDel != null">
+							  AND f.U_DELETE_STATUS =' '
+							</if>
+							 
+						),
+						UG AS
+						(
+							SELECT DISTINCT GS.GROUP_NAME
+							  FROM DM_GROUP_SP GS,
+								   (SELECT DISTINCT GR1.USERS_NAMES AS I_ALL_USERS_NAMES,
+									       GR2.I_SUPERGROUPS_NAMES AS GROUP_NAME
+								      FROM DM_GROUP_R GR1, DM_GROUP_R GR2
+								     WHERE 1=1
+								       AND GR1.R_OBJECT_ID = GR2.R_OBJECT_ID
+							           AND GR1.USERS_NAMES IS NOT NULL
+							       ) GR3
+							 WHERE 1=1
+							   AND GR3.GROUP_NAME = GS.GROUP_NAME
+							   AND GR3.I_ALL_USERS_NAMES = #{userId}
+						)
+						SELECT ORDER_KEY, LIST_TYPE, R_OBJECT_ID, decode(R_OBJECT_ID, #{psFolId}, R_OBJECT_ID, U_FOL_ID) U_FOL_ID, U_OBJ_STATUS 
+						FROM
+						/* 하위 전체 문서/폴더 */
+						(
+							SELECT 1 AS ORDER_KEY, 'FOL' AS LIST_TYPE, R_OBJECT_ID, U_UP_FOL_ID as U_FOL_ID, '-'   AS DOC_TYPE_GUN, U_FOL_STATUS as U_OBJ_STATUS
+							  FROM EDMS_FOLDER_SP
+							 WHERE R_OBJECT_ID IN (SELECT FOL_ID FROM FOL_TREE)
+							UNION
+							/* 하위 문서 목록 전체 */
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, nvl(U_DOC_KEY,R_OBJECT_ID) AS R_OBJECT_ID, U_FOL_ID,'-'   AS DOC_TYPE_GUN, U_DOC_STATUS as U_OBJ_STATUS
+							  FROM EDMS_DOC_SP
+							 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+							   AND U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+							<if test="psStatus != null">
+							  AND U_DOC_STATUS =#{psStatus}
+							 </if>
+							<if test="psDel != null">
+							  AND U_DELETE_STATUS =' '
+							</if>
+							   
+							UNION
+							/* 하위 (중요)문서 목록 전체 */
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, nvl(U_DOC_KEY,R_OBJECT_ID) AS R_OBJECT_ID, U_FOL_ID,'IMP'   AS DOC_TYPE_GUN, U_DOC_STATUS as U_OBJ_STATUS
+							  FROM EDMS_DOC_IMP_SP
+							 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+							   AND U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+							<if test="psStatus != null">
+							  AND U_DOC_STATUS =#{psStatus}
+							 </if>
+							<if test="psDel != null">
+							  AND U_DELETE_STATUS =' '
+							</if>
+							   
+						)
+						where length(u_fol_id) >= 1						
+					<if test="authExclusive != 'NO'">
+						MINUS
+						SELECT ORDER_KEY, LIST_TYPE, R_OBJECT_ID, decode(R_OBJECT_ID, #{psFolId}, R_OBJECT_ID, U_FOL_ID) U_FOL_ID, U_OBJ_STATUS
+						from
+						/* 하위 전체 권한 있는 문서/폴더 */
+						(
+							SELECT 1 AS ORDER_KEY, 'FOL' AS LIST_TYPE, F.R_OBJECT_ID, F.U_UP_FOL_ID as U_FOL_ID,'-'   AS DOC_TYPE_GUN, U_FOL_STATUS as U_OBJ_STATUS
+							  FROM EDMS_FOLDER_SP F, EDMS_AUTH_BASE_S A
+							 WHERE F.R_OBJECT_ID = A.U_OBJ_ID
+							   AND F.R_OBJECT_ID IN (SELECT FOL_ID FROM FOL_TREE)
+							   AND A.U_PERMIT_TYPE = 'D'
+							   AND (A.U_AUTHOR_ID = #{userId}
+							        OR A.U_AUTHOR_ID IN (SELECT GROUP_NAME FROM UG))
+							UNION
+							/* 하위 문서 목록 전체 */
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, nvl(D.U_DOC_KEY,D.R_OBJECT_ID) AS R_OBJECT_ID, D.U_FOL_ID,'-'   AS DOC_TYPE_GUN, U_DOC_STATUS as U_OBJ_STATUS
+							  FROM EDMS_DOC_SP D
+							 WHERE D.I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+							<if test="psStatus != null">
+							  AND U_DOC_STATUS =#{psStatus}
+							 </if>
+							<if test="psDel != null">
+							  AND D.U_DELETE_STATUS =' '
+							</if>
+							   AND D.U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+							   /* 권한 조건 */
+							   AND EXISTS (SELECT 1
+									 FROM DM_ACL_S ACS, DM_ACL_R ACR
+									WHERE ACS.R_OBJECT_ID = ACR.R_OBJECT_ID
+									  AND D.ACL_DOMAIN = ACS.OWNER_NAME
+									  AND D.ACL_NAME = ACS.OBJECT_NAME
+									  AND (ACR.R_ACCESSOR_NAME = #{userId}
+									       OR ACR.R_ACCESSOR_NAME IN (SELECT GROUP_NAME FROM UG))
+									<if test='psJobGubun !="C" '>
+									  AND ((ACR.R_ACCESSOR_PERMIT = 7 ) OR (ACR.R_ACCESSOR_PERMIT = 3 AND D.U_DOC_STATUS='C'))
+									 </if>
+									<if test='psJobGubun =="C" '>
+									  AND ACR.R_ACCESSOR_PERMIT >=3   /**읽기 이상이면 복사 가능**/
+									 </if>
+								  )
+						    UNION
+							/* 하위 (중요)문서 목록 전체 */
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, nvl(D.U_DOC_KEY,D.R_OBJECT_ID) AS R_OBJECT_ID, D.U_FOL_ID,'IMP'   AS DOC_TYPE_GUN, U_DOC_STATUS as U_OBJ_STATUS
+							  FROM EDMS_DOC_IMP_SP D
+							 WHERE D.I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+							<if test="psStatus != null">
+							  AND U_DOC_STATUS =#{psStatus}
+							 </if>
+							<if test="psDel != null">
+							  AND D.U_DELETE_STATUS =' '
+							</if>
+							   AND D.U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+							   /* 권한 조건 */
+							   AND EXISTS (SELECT 1
+									 FROM DM_ACL_S ACS, DM_ACL_R ACR
+									WHERE ACS.R_OBJECT_ID = ACR.R_OBJECT_ID
+									  AND D.ACL_DOMAIN = ACS.OWNER_NAME
+									  AND D.ACL_NAME = ACS.OBJECT_NAME
+									  AND (ACR.R_ACCESSOR_NAME = #{userId}
+									       OR ACR.R_ACCESSOR_NAME IN (SELECT GROUP_NAME FROM UG))
+									<if test='psJobGubun != "C" '>
+									  AND ((ACR.R_ACCESSOR_PERMIT = 7 ) OR (ACR.R_ACCESSOR_PERMIT = 3 AND D.U_DOC_STATUS='C'))
+									 </if>
+									<if test='psJobGubun =="C" '>
+									  AND ACR.R_ACCESSOR_PERMIT >=3   /**읽기 이상이면 복사 가능**/
+									 </if>
+								  )
+						    UNION
+							/* 하위 링크문서 목록 전체 */
+							SELECT 3 AS ORDER_KEY, 'LNK' AS LIST_TYPE, D.U_DOC_ID AS R_OBJECT_ID, D.U_FOL_ID,'-'   AS DOC_TYPE_GUN, 'K' AS U_OBJ_STATUS
+							  FROM EDMS_DOC_LINK_SP D
+							 WHERE D.U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+						)
+					</if>
+					<if test='authExclusive == "NO" and psJobGubun =="C" '>
+					    intersect
+						--SELECT ORDER_KEY, LIST_TYPE, R_OBJECT_ID, U_FOL_ID
+						SELECT ORDER_KEY, LIST_TYPE, R_OBJECT_ID, decode(R_OBJECT_ID, #{psFolId}, R_OBJECT_ID, U_FOL_ID) U_FOL_ID, U_OBJ_STATUS
+						from
+						/* 하위 전체 권한 있는 문서/폴더 */
+						(
+							SELECT 1 AS ORDER_KEY, 'FOL' AS LIST_TYPE, F.R_OBJECT_ID, F.U_UP_FOL_ID as U_FOL_ID,'-'   AS DOC_TYPE_GUN, U_FOL_STATUS as U_OBJ_STATUS
+							  FROM EDMS_FOLDER_SP F, EDMS_AUTH_BASE_S A
+							 WHERE F.R_OBJECT_ID = A.U_OBJ_ID
+							   AND F.R_OBJECT_ID IN (SELECT FOL_ID FROM FOL_TREE)
+							   AND A.U_PERMIT_TYPE = 'D'
+							   AND (A.U_AUTHOR_ID = #{userId}
+							        OR A.U_AUTHOR_ID IN (SELECT GROUP_NAME FROM UG))
+							UNION
+							/* 하위 문서 목록 전체 */
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, nvl(D.U_DOC_KEY,D.R_OBJECT_ID) AS R_OBJECT_ID, D.U_FOL_ID,'-'   AS DOC_TYPE_GUN, U_DOC_STATUS as U_OBJ_STATUS
+							  FROM EDMS_DOC_SP D
+							 WHERE D.I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+							<if test="psStatus != null">
+							  AND U_DOC_STATUS =#{psStatus}
+							 </if>
+							<if test="psDel != null">
+							  AND D.U_DELETE_STATUS =' '
+							</if>
+							   AND D.U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+							   /* 권한 조건 */
+							   AND EXISTS (SELECT 1
+									 FROM DM_ACL_S ACS, DM_ACL_R ACR
+									WHERE ACS.R_OBJECT_ID = ACR.R_OBJECT_ID
+									  AND D.ACL_DOMAIN = ACS.OWNER_NAME
+									  AND D.ACL_NAME = ACS.OBJECT_NAME
+									  AND (ACR.R_ACCESSOR_NAME = #{userId}
+									       OR ACR.R_ACCESSOR_NAME IN (SELECT GROUP_NAME FROM UG))
+									<if test='psJobGubun !="C" '>
+									  AND ((ACR.R_ACCESSOR_PERMIT = 7 ) OR (ACR.R_ACCESSOR_PERMIT = 3 AND D.U_DOC_STATUS='C'))
+									 </if>
+									<if test='psJobGubun =="C" '>
+									  AND ACR.R_ACCESSOR_PERMIT >=3   /**읽기 이상이면 복사 가능**/
+									 </if>
+								  )
+						    UNION
+							/* 하위 (중요)문서 목록 전체 */
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, nvl(D.U_DOC_KEY,D.R_OBJECT_ID) AS R_OBJECT_ID, D.U_FOL_ID,'IMP'   AS DOC_TYPE_GUN, U_DOC_STATUS as U_OBJ_STATUS
+							  FROM EDMS_DOC_IMP_SP D
+							 WHERE D.I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+							<if test="psStatus != null">
+							  AND U_DOC_STATUS =#{psStatus}
+							 </if>
+							<if test="psDel != null">
+							  AND D.U_DELETE_STATUS =' '
+							</if>
+							   AND D.U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+							   /* 권한 조건 */
+							   AND EXISTS (SELECT 1
+									 FROM DM_ACL_S ACS, DM_ACL_R ACR
+									WHERE ACS.R_OBJECT_ID = ACR.R_OBJECT_ID
+									  AND D.ACL_DOMAIN = ACS.OWNER_NAME
+									  AND D.ACL_NAME = ACS.OBJECT_NAME
+									  AND (ACR.R_ACCESSOR_NAME = #{userId}
+									       OR ACR.R_ACCESSOR_NAME IN (SELECT GROUP_NAME FROM UG))
+									<if test='psJobGubun != "C" '>
+									  AND ((ACR.R_ACCESSOR_PERMIT = 7 ) OR (ACR.R_ACCESSOR_PERMIT = 3 AND D.U_DOC_STATUS='C'))
+									 </if>
+									<if test='psJobGubun =="C" '>
+									  AND ACR.R_ACCESSOR_PERMIT >=3   /**읽기 이상이면 복사 가능**/
+									 </if>
+								  )
+						    UNION
+							/* 하위 링크문서 목록 전체 */
+							SELECT 3 AS ORDER_KEY, 'LNK' AS LIST_TYPE, D.U_DOC_ID AS R_OBJECT_ID, D.U_FOL_ID,'-'   AS DOC_TYPE_GUN, 'K' AS U_OBJ_STATUS
+							  FROM EDMS_DOC_LINK_SP D
+							 WHERE D.U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+						)
+					    </if>
+						union 
+                        SELECT ORDER_KEY, LIST_TYPE, R_OBJECT_ID,  decode(R_OBJECT_ID, null, R_OBJECT_ID, U_FOL_ID) U_FOL_ID, U_OBJ_STATUS
+						from
+						/* 하위 전체 문서/폴더 */
+						(
+							/* 하위 문서 목록 전체 */
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, nvl(U_DOC_KEY,R_OBJECT_ID) AS R_OBJECT_ID, U_FOL_ID,'-'   AS DOC_TYPE_GUN, U_DOC_STATUS AS U_OBJ_STATUS
+							  FROM EDMS_DOC_SP
+							 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+							<if test="psStatus != null">
+							  AND U_DOC_STATUS =#{psStatus}
+							 </if>
+							<if test="psDel != null">
+							  AND U_DELETE_STATUS =' '
+							</if>
+							<if test="psFolId != null">
+					          AND U_FOL_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  AND U_PR_CODE = #{psPrCode}
+							</if>
+						    union 
+							/* 하위 (중요)문서 목록 전체 */
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, nvl(U_DOC_KEY,R_OBJECT_ID) AS R_OBJECT_ID, U_FOL_ID,'IMP'   AS DOC_TYPE_GUN, U_DOC_STATUS AS U_OBJ_STATUS
+							  FROM EDMS_DOC_IMP_SP
+							 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+							<if test="psStatus != null">
+							  AND U_DOC_STATUS =#{psStatus}
+							 </if>
+							<if test="psDel != null">
+							  AND U_DELETE_STATUS =' '
+							</if>
+							<if test="psFolId != null">
+					          AND U_FOL_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  AND U_PR_CODE = #{psPrCode}
+							</if>
+						)
+						<if test="authExclusive != 'NO'">
+					      MINUS
+                        SELECT ORDER_KEY, LIST_TYPE, R_OBJECT_ID,  decode(R_OBJECT_ID, null, R_OBJECT_ID, U_FOL_ID) U_FOL_ID, U_OBJ_STATUS
+						from
+						/* 하위 전체 문서/폴더 */
+						(
+							/* 하위 문서 목록 전체 */
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, nvl(U_DOC_KEY,R_OBJECT_ID) AS R_OBJECT_ID, U_FOL_ID,'-'   AS DOC_TYPE_GUN, U_DOC_STATUS AS U_OBJ_STATUS
+							  FROM EDMS_DOC_SP d
+							 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+							   /* 권한 조건 */
+							   AND EXISTS (SELECT 1
+									 FROM DM_ACL_S ACS, DM_ACL_R ACR
+									WHERE ACS.R_OBJECT_ID = ACR.R_OBJECT_ID
+									  AND D.ACL_DOMAIN = ACS.OWNER_NAME
+									  AND D.ACL_NAME = ACS.OBJECT_NAME
+									  AND (ACR.R_ACCESSOR_NAME = #{userId}
+									       OR ACR.R_ACCESSOR_NAME IN (SELECT GROUP_NAME FROM UG))
+									<if test='psJobGubun !="C" '>
+									  AND ((ACR.R_ACCESSOR_PERMIT = 7 ) OR (ACR.R_ACCESSOR_PERMIT = 3 AND D.U_DOC_STATUS='C'))
+									 </if>
+									<if test='psJobGubun =="C" '>
+									  AND ACR.R_ACCESSOR_PERMIT >=3   /**읽기 이상이면 복사 가능**/
+									 </if>
+									  
+								  )
+							<if test="psStatus != null">
+							  AND U_DOC_STATUS =#{psStatus}
+							 </if>
+							<if test="psDel != null">
+							  AND U_DELETE_STATUS =' '
+							</if>
+							<if test="psFolId != null">
+					          AND U_FOL_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  AND U_PR_CODE = #{psPrCode}
+							</if>
+						    union 
+							/* 하위 (중요)문서 목록 전체 */
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, nvl(U_DOC_KEY,R_OBJECT_ID) AS R_OBJECT_ID, U_FOL_ID,'IMP'   AS DOC_TYPE_GUN, U_DOC_STATUS AS U_OBJ_STATUS
+							  FROM EDMS_DOC_IMP_SP d
+							 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+							   /* 권한 조건 */
+							   AND EXISTS (SELECT 1
+									 FROM DM_ACL_S ACS, DM_ACL_R ACR
+									WHERE ACS.R_OBJECT_ID = ACR.R_OBJECT_ID
+									  AND D.ACL_DOMAIN = ACS.OWNER_NAME
+									  AND D.ACL_NAME = ACS.OBJECT_NAME
+									  AND (ACR.R_ACCESSOR_NAME = #{userId}
+									       OR ACR.R_ACCESSOR_NAME IN (SELECT GROUP_NAME FROM UG))
+									<if test='psJobGubun !="C" '>
+									  AND ((ACR.R_ACCESSOR_PERMIT = 7 ) OR (ACR.R_ACCESSOR_PERMIT = 3 AND D.U_DOC_STATUS='C'))
+									 </if>
+									<if test='psJobGubun =="C" '>
+									  AND ACR.R_ACCESSOR_PERMIT >=3   /**읽기 이상이면 복사 가능**/
+									 </if>
+								  )
+							<if test="psStatus != null">
+							  AND U_DOC_STATUS =#{psStatus}
+							 </if>
+							<if test="psDel != null">
+							  AND U_DELETE_STATUS =' '
+							</if>
+							<if test="psFolId != null">
+					          AND U_FOL_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  AND U_PR_CODE = #{psPrCode}
+							</if>
+						)
+				     </if> 
+				     <if test='authExclusive == "NO" and psJobGubun =="C" '>
+				        intersect
+ 
+                        SELECT ORDER_KEY, LIST_TYPE, R_OBJECT_ID,  decode(R_OBJECT_ID, null, R_OBJECT_ID, U_FOL_ID) U_FOL_ID, U_OBJ_STATUS
+						from
+						/* 하위 전체 문서/폴더 */
+						(
+							/* 하위 문서 목록 전체 */
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, nvl(U_DOC_KEY,R_OBJECT_ID) AS R_OBJECT_ID, U_FOL_ID,'-'   AS DOC_TYPE_GUN, U_DOC_STATUS AS U_OBJ_STATUS
+							  FROM EDMS_DOC_SP d
+							 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+							   /* 권한 조건 */
+							   AND EXISTS (SELECT 1
+									 FROM DM_ACL_S ACS, DM_ACL_R ACR
+									WHERE ACS.R_OBJECT_ID = ACR.R_OBJECT_ID
+									  AND D.ACL_DOMAIN = ACS.OWNER_NAME
+									  AND D.ACL_NAME = ACS.OBJECT_NAME
+									  AND (ACR.R_ACCESSOR_NAME = #{userId}
+									       OR ACR.R_ACCESSOR_NAME IN (SELECT GROUP_NAME FROM UG))
+									<if test='psJobGubun !="C" '>
+									  AND ((ACR.R_ACCESSOR_PERMIT = 7 ) OR (ACR.R_ACCESSOR_PERMIT = 3 AND D.U_DOC_STATUS='C'))
+									 </if>
+									<if test='psJobGubun =="C" '>
+									  AND ACR.R_ACCESSOR_PERMIT >=3   /**읽기 이상이면 복사 가능**/
+									 </if>
+									  
+								  )
+							<if test="psStatus != null">
+							  AND U_DOC_STATUS =#{psStatus}
+							 </if>
+							<if test="psDel != null">
+							  AND U_DELETE_STATUS =' '
+							</if>
+							<if test="psFolId != null">
+					          AND U_FOL_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  AND U_PR_CODE = #{psPrCode}
+							</if>
+						    union 
+							/* 하위 (중요)문서 목록 전체 */
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, nvl(U_DOC_KEY,R_OBJECT_ID) AS R_OBJECT_ID, U_FOL_ID,'IMP'   AS DOC_TYPE_GUN, U_DOC_STATUS AS U_OBJ_STATUS
+							  FROM EDMS_DOC_IMP_SP d
+							 WHERE I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+							   /* 권한 조건 */
+							   AND EXISTS (SELECT 1
+									 FROM DM_ACL_S ACS, DM_ACL_R ACR
+									WHERE ACS.R_OBJECT_ID = ACR.R_OBJECT_ID
+									  AND D.ACL_DOMAIN = ACS.OWNER_NAME
+									  AND D.ACL_NAME = ACS.OBJECT_NAME
+									  AND (ACR.R_ACCESSOR_NAME = #{userId}
+									       OR ACR.R_ACCESSOR_NAME IN (SELECT GROUP_NAME FROM UG))
+									<if test='psJobGubun !="C" '>
+									  AND ((ACR.R_ACCESSOR_PERMIT = 7 ) OR (ACR.R_ACCESSOR_PERMIT = 3 AND D.U_DOC_STATUS='C'))
+									 </if>
+									<if test='psJobGubun =="C" '>
+									  AND ACR.R_ACCESSOR_PERMIT >=3   /**읽기 이상이면 복사 가능**/
+									 </if>
+								  )
+							<if test="psStatus != null">
+							  AND U_DOC_STATUS =#{psStatus}
+							 </if>
+							<if test="psDel != null">
+							  AND U_DELETE_STATUS =' '
+							</if>
+							<if test="psFolId != null">
+					          AND U_FOL_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  AND U_PR_CODE = #{psPrCode}
+							</if>
+						)
+						</if>
+
+	</select>
+	<select id="selectATList" resultMap="pathMap">
+	        /* PathMapper.xml | 하위(전체)에 타시스템 첨부(원문)한 문서가 있는지 체크 | 정정교 */
+                        WITH RECURSIVE FOL_TREE AS
+						(
+							SELECT R_OBJECT_ID AS FOL_ID,
+							       U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S
+						<where>
+							<if test="psFolId != null">
+					          R_OBJECT_ID = #{psFolId}
+							</if>
+							<if test="psPrCode != null">
+							  U_PR_CODE = #{psPrCode}
+							</if>
+						</where>
+							 UNION
+							SELECT F.R_OBJECT_ID AS FOL_ID,
+							       F.U_FOL_STATUS AS STATUS
+							  FROM EDMS_FOLDER_S F, FOL_TREE FT
+							 WHERE F.U_UP_FOL_ID = FT.FOL_ID
+						)
+						SELECT D.R_OBJECT_ID
+						  FROM EDMS_DOC_SP D
+						 WHERE D.I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+						   AND D.U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+						   AND EXISTS (SELECT 1 FROM EDMS_LOG_DOC L
+						                WHERE D.U_DOC_KEY = L.U_DOC_KEY
+						                  AND L.U_JOB_CODE = 'AT'
+						                  AND L.U_JOB_GUBUN = 'O'
+						              )
+						UNION ALL	
+						SELECT D.R_OBJECT_ID
+						  FROM EDMS_DOC_IMP_SP D
+						 WHERE D.I_HAS_FOLDER = 1	/* 현재 버전만 가져오기 위한 필수 조건 */
+						   AND D.U_FOL_ID IN (SELECT FOL_ID FROM FOL_TREE)
+						   AND EXISTS (SELECT 1 FROM EDMS_LOG_DOC L
+						                WHERE D.U_DOC_KEY = L.U_DOC_KEY
+						                  AND L.U_JOB_CODE = 'AT'
+						                  AND L.U_JOB_GUBUN = 'O'
+						              )	
+	</select>	
+	<!-- 문서관점 : 타시스템 첨부한 문서 -->
+	<select id="selectDTList" resultMap="pathMap">
+	     /* PathMapper.xml | 문서관점 : 타시스템 첨부한 문서 | 정정교 */
+                         SELECT '1' as R_OBJECT_ID
+                          FROM EDMS_LOG_DOC L
+				       WHERE L.U_DOC_KEY =  #{psFolId} 
+				         AND L.U_JOB_CODE = 'AT'
+				         AND L.U_JOB_GUBUN = 'O'
+	</select>
+	
+	<!-- 파일 한 건에 대해서 권한이 있는지 확인 -->
+	<select id="selectDocAuthCheck" resultMap="pathMap">
+	          /* PathMapper.xml | 파일 한 건에 대해서 권한이 있는지 확인 | 정정교 */
+	                WITH RECURSIVE 
+						UG AS
+						(
+							SELECT DISTINCT GS.GROUP_NAME
+							  FROM DM_GROUP_SP GS,
+								   (SELECT DISTINCT GR1.USERS_NAMES AS I_ALL_USERS_NAMES,
+									       GR2.I_SUPERGROUPS_NAMES AS GROUP_NAME
+								      FROM DM_GROUP_R GR1, DM_GROUP_R GR2
+								     WHERE 1=1
+								       AND GR1.R_OBJECT_ID = GR2.R_OBJECT_ID
+							           AND GR1.USERS_NAMES IS NOT NULL
+							       ) GR3
+							 WHERE 1=1
+							   AND GR3.GROUP_NAME = GS.GROUP_NAME
+							   AND GR3.I_ALL_USERS_NAMES  =#{userId}
+						)
+						(
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, D.R_OBJECT_ID
+							  FROM EDMS_DOC_SP D
+							 WHERE D.I_HAS_FOLDER = 1	
+							   AND D.r_object_id=#{docKey}
+							   AND EXISTS (SELECT 1
+									 FROM DM_ACL_S ACS, DM_ACL_R ACR
+									WHERE ACS.R_OBJECT_ID = ACR.R_OBJECT_ID
+									  AND D.ACL_DOMAIN = ACS.OWNER_NAME
+									  AND D.ACL_NAME = ACS.OBJECT_NAME
+									  AND (ACR.R_ACCESSOR_NAME  =#{userId}
+									       OR ACR.R_ACCESSOR_NAME IN (SELECT GROUP_NAME FROM UG))
+									  AND ACR.R_ACCESSOR_PERMIT >= DECODE(D.U_DOC_STATUS,'C',3, #{authLevel})
+								  )
+						    UNION
+							SELECT 2 AS ORDER_KEY, 'DOC' AS LIST_TYPE, D.R_OBJECT_ID
+							  FROM EDMS_DOC_IMP_SP D
+							 WHERE D.I_HAS_FOLDER = 1	
+							   AND D.r_object_id=#{docKey}
+							   AND EXISTS (SELECT 1
+									 FROM DM_ACL_S ACS, DM_ACL_R ACR
+									WHERE ACS.R_OBJECT_ID = ACR.R_OBJECT_ID
+									  AND D.ACL_DOMAIN = ACS.OWNER_NAME
+									  AND D.ACL_NAME = ACS.OBJECT_NAME
+									  AND (ACR.R_ACCESSOR_NAME  =#{userId}
+									       OR ACR.R_ACCESSOR_NAME IN (SELECT GROUP_NAME FROM UG))
+									  AND ACR.R_ACCESSOR_PERMIT >= DECODE(D.U_DOC_STATUS,'C',3, #{authLevel})
+								  )
+						)
+	
+	</select>
+	<!-- 경로 조회(u_folder_path)-->
+	<select id="selectFolderPath" resultType="String">
+	    /* PathMapper.xml | 경로 조회(u_folder_path) | 정정교 */
+			WITH RECURSIVE PARENTS AS
+			(	
+				SELECT U_UP_FOL_ID, U_FOL_NAME, 1 LVL
+				  FROM EDMS_FOLDER_S                      
+				 WHERE R_OBJECT_ID = #{psFolId}
+				UNION ALL
+				SELECT C.U_UP_FOL_ID, C.U_FOL_NAME, LVL+1                 
+				  FROM EDMS_FOLDER_S C JOIN PARENTS AS P ON C.R_OBJECT_ID = P.U_UP_FOL_ID
+			)
+			SELECT '/' || COALESCE(ARRAY_TO_STRING(ARRAY_AGG(U_FOL_NAME), '/'), ' ') as FOLDER_PATH
+			  FROM (SELECT * FROM PARENTS ORDER BY LVL DESC)
+  </select>
+  
+	<!--이벤트별 알림대상 확인 -->
+	<select id="selectAlermType" resultMap="pathMap">
+	   /* PathMapper.xml | 이벤트별 알림대상 확인 | 정정교 */
+		  select u_alarm_yn
+		       , u_email_yn
+		       , u_mms_yn
+		       , u_com_code
+		    from edms_noti_config_sp
+		   where u_event_code=#{psEventCode} 
+		     and u_com_code=(select com_org_id 
+		                        from edms_v_dept_info 
+		                     where u_cabinet_code=#{psCabinet}
+		                     )
+    </select>
+    
+    <!-- 반출함 삭제건 -->
+    <select id="selectTakeoutDocsRobjectIdByDocId" resultType="String">
+    /* PathMapper.xml | 반출함 삭제건 | 정정교 */
+        SELECT
+            min(a.r_object_id) as r_object_id
+        FROM
+            edms_req_takeout_doc_s  a INNER JOIN
+            edms_req_takeout_s      b ON a.u_req_id = b.r_object_id 
+        WHERE
+            u_req_doc_id = #{docId}
+        AND u_limit_date > now()
+        AND u_action_date <![CDATA[<]]> now()
+        AND ((nvl(u_status,'') ='' or a.u_status='') or a.u_status=' ')
+        and b.u_approver !=''
+     </select>         
+	
+	<!-- 승인자 ID : 임시 -->
+	<select id="selectTemporaryRelManagerId" resultType="String">
+	  /* PathMapper.xml | 승인자 ID 조회 : 임시 | 정정교 */	
+		select distinct manager_per_id
+		from(
+			select substring(a.org_id,0,4)||'C'||substring(a.org_id,4) as t_org_id 
+			      , a.org_id, b.org_id as b_org_id
+			      , a.org_nm, b.org_nm as b_org_nm
+			      , a.u_cabinet_code, b.u_cabinet_code as b_u_cabinet_code
+			      , a.manager_per_id
+			      , a.com_org_id
+			     -- , (select manager_per_id from edms_v_dept_info c where c.u_cabinet_code = b.u_cabinet_code) as b_manager_id
+			    from edms_v_dept_info a 
+			        left join edms_v_dept_info b on b.org_id like substring(a.org_id,0,4)||'%'||substring(a.org_id,4) and b.usage_state='A'
+			where a.org_id !=a.com_org_id 
+		       and b.org_id is not null
+		       and (a.org_id= #{psOrgId} or b.org_id=#{psOrgId} )
+			   and a.usage_state='A'
+		 ) c
+		 where manager_per_id is not null
+    </select>		
+</mapper>

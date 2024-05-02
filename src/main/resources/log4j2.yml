@@ -1,0 +1,95 @@
+Configutation:
+  name: Default
+#  status: warn
+
+  Properties:
+    Property:
+      name: dbox_logPath
+      value: ${sys:dbox_logPath}
+#      name: dbox_logLevelHTTP
+#      value: ${sys:dbox_logLevelHTTP}
+#      name: dbox_logLevel
+#      value: ${sys:dbox_logLevel}
+       
+  Appenders:
+    Console:
+      name: Console_Appender
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t][%F] %c{1} - %msg%n"
+  Loggers:
+    Root:
+      level: info
+      additivity: false
+      AppenderRef:
+        - ref: Console_Appender 
+    Logger: 
+      - name: com.dongkuksystems.dbox
+        additivity: false
+        level: ${sys:dbox_logLevel}
+        AppenderRef:
+          - ref: Console_Appender
+          
+      # BaseJdbcLogger
+      - name: com.dongkuksystems.dbox.daos
+        additivity: false
+        level: error
+        AppenderRef:
+          - ref: Console_Appender 
+          
+      # log4jdbc
+      - name: jdbc
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef:
+          - ref: Console_Appender
+      # for connection "open" or "close"
+      - name: jdbc.connection
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef:
+          - ref: Console_Appender
+      # for sql
+      - name: jdbc.sqlonly
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef:
+          - ref: Console_Appender
+      # for query time(ms)
+      - name: jdbc.sqltiming
+        additivity: false
+        includeLocation: TRUE
+        level: debug
+        AppenderRef:
+          - ref: Console_Appender
+      # alls except for resultset
+      - name: jdbc.audit
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef:
+          - ref: Console_Appender
+      # with resultset
+      - name: jdbc.resultset
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef:
+          - ref: Console_Appender
+      # with connection   
+      - name: jdbc.connection 
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef: 
+          - ref: Console_Appender
+      # with resultset table
+      - name: jdbc.resultsettable
+        additivity: false
+        includeLocation: TRUE
+        level: error
+        AppenderRef: 
+          - ref: Console_Appender

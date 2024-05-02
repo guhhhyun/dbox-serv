@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.docbox.project.ProjectMapper">
+	<resultMap id="ProjectMap"
+	    type="com.dongkuksystems.dbox.models.type.docbox.Project">
+		<id property="rObjectId"        column="R_OBJECT_ID"     />
+		<result property="uCabinetCode" column="U_CABINET_CODE"  />
+		<result property="uPjtCode"     column="U_PJT_CODE"      />
+		<result property="uPjtName"     column="U_PJT_NAME"      />
+		<result property="uOwnDept"     column="U_OWN_DEPT"      />
+		<result property="uChief"       column="U_CHIEF_ID"      />
+		<result property="uFolId"       column="U_FOL_ID"      />
+		<result property="uSecLevel"    column="U_SEC_LEVEL"     />
+		<result property="uFinishYn"    column="U_FINISH_YN"     />
+		<result property="uStartYear"   column="U_START_YEAR"    />
+		<result property="uListOpenYn"  column="U_LIST_OPEN_YN"  />
+		<result property="uCreateUser"  column="U_CREATE_USER"   />
+		<result property="uCreateDate"  column="U_CREATE_DATE"   />
+		<result property="uUpdateUser"  column="U_UPDATE_USER"   />
+		<result property="uUpdateDate"  column="U_UPDATE_DATE"   />
+		<result property="comOrgId"     column="COM_ORG_ID"      />
+		<result property="uDeleteStatus" column="U_DELETE_STATUS"      />
+		
+		<collection property="projectRepeatings"
+		    column="{rObjectId=r_object_id}" ofType="ProjectRepeating" select="selectRepeatingList"/>
+	</resultMap>
+	
+	<resultMap id="ProjectRepeatingMap" 
+	    type="com.dongkuksystems.dbox.models.type.docbox.ProjectRepeating">
+		<result property="rObjectId"     column="R_OBJECT_ID"      />
+		<result property="iPosition"     column="I_POSITION"       />
+		<result property="uJoinDeptRead" column="U_JOIN_DEPT_READ" />
+		<result property="uJoinDeptDel"  column="U_JOIN_DEPT_DEL"  />
+		<result property="uJoinDeptReadOrgId" column="u_join_dept_read_org_id" />
+		<result property="uJoinDeptDelOrgId"  column="u_join_dept_del_org_id"  />
+		<result property="uFolId"        column="U_FOL_ID"         />
+	</resultMap>
+	
+	<resultMap id="ProjectDetailMap" type="com.dongkuksystems.dbox.models.type.docbox.Project">
+		<id property="rObjectId"        column="R_OBJECT_ID"     />
+		<result property="uCabinetCode" column="U_CABINET_CODE"  />
+		<result property="uPjtCode"     column="U_PJT_CODE"      />
+		<result property="uPjtName"     column="U_PJT_NAME"      />
+		<result property="uOwnDept"     column="U_OWN_DEPT"      />
+		<result property="uChief"       column="U_CHIEF_ID"      />
+		<result property="uFolId"       column="U_FOL_ID"      />
+		<result property="uSecLevel"    column="U_SEC_LEVEL"     />
+		<result property="uFinishYn"    column="U_FINISH_YN"     />
+		<result property="uStartYear"   column="U_START_YEAR"    />
+		<result property="uListOpenYn"  column="U_LIST_OPEN_YN"  />
+		<result property="uCreateUser"  column="U_CREATE_USER"   />
+		<result property="uCreateDate"  column="U_CREATE_DATE"   />
+		<result property="uUpdateUser"  column="U_UPDATE_USER"   />
+		<result property="uUpdateDate"  column="U_UPDATE_DATE"   />
+		<result property="hasFolderChildren" column="HAS_FOLDER_CHILDREN" />
+		<result property="hasDocChildren" column="HAS_DOC_CHILDREN" />
+
+		<association property="ownDeptDetail" javaType="VDept">
+			<id property="orgId" column="B_ORG_ID" />
+			<result property="orgNm" column="B_ORG_NM" />
+			<result property="comOrgId" column="B_COM_ORG_ID" />
+		</association>
+
+		<association property="chiefDetail" javaType="VUser">
+			<id property="userId" column="C_USER_ID" />
+			<result property="displayName" column="C_DISPLAY_NAME" />
+			<result property="comOrgId" column="C_COM_ORG_ID" />
+			<result property="orgId" column="C_ORG_ID" />
+			<result property="orgNm" column="C_ORG_NM" />
+			<result property="pstnCode" column="C_PSTN_CODE" />
+			<result property="pstnName" column="C_PSTN_NAME" />
+			<result property="levelCode" column="C_LEVEL_CODE" />
+			<result property="levelName" column="C_LEVEL_NAME" />
+			<result property="titleCode" column="C_TITLE_CODE" />
+			<result property="titleName" column="C_TITLE_NAME" />
+		</association>
+		
+		<collection property="projectRepeatings" column="{rObjectId=r_object_id}" ofType="ProjectRepeating" select="selectRepeatingDetailList"/>
+	</resultMap>
+	
+	<resultMap id="ProjectRepeatingDetailMap" 
+	    type="com.dongkuksystems.dbox.models.type.docbox.ProjectRepeating">
+		<result property="rObjectId"     column="R_OBJECT_ID"      />
+		<result property="iPosition"     column="I_POSITION"       />
+		<result property="uJoinDeptRead" column="U_JOIN_DEPT_READ" />
+		<result property="uJoinDeptDel"  column="U_JOIN_DEPT_DEL"  />
+		<result property="uFolId"        column="U_FOL_ID"         />
+		
+		<association property="joinDeptReadDetail" javaType="VDept">
+			<id property="orgId" column="B_ORG_ID" />
+			<result property="orgNm" column="B_ORG_NM" />
+			<result property="comOrgId" column="B_COM_ORG_ID" />
+		</association>
+		
+		<association property="joinDeptDelDetail" javaType="VDept">
+			<id property="orgId" column="C_ORG_ID" />
+			<result property="orgNm" column="C_ORG_NM" />
+			<result property="comOrgId" column="C_COM_ORG_ID" />
+		</association>
+	</resultMap>
+	
+	<resultMap id="ProjectRepeatMap" type="com.dongkuksystems.dbox.models.dto.type.docbox.project.ProjectRepeatDto">
+		<result property="uPjtCode"     column="PJT_CODE"      />
+		<result property="rObjectId"     column="R_OBJECT_ID"      />
+		<result property="uJoinDeptRead"     column="U_Join_Dept_Read"       />
+		<result property="uJoinDeptReadCabinet" column="dept_read_cabinet" />
+		<result property="uJoinDeptDel"  column="U_JOIN_DEPT_DEL"  />
+		<result property="uJoinDeptDelCabinet"        column="dept_del_cabinet"         />
+	</resultMap>
+	
+	<select id="selectOne" resultMap="ProjectMap">
+		select
+			a.r_object_id,
+			a.u_cabinet_code,
+			a.u_pjt_code,
+			a.u_pjt_name,
+			a.u_own_dept,
+			a.u_chief_id,
+			a.U_FOL_ID,
+			a.u_sec_level,
+			a.u_finish_yn,
+			a.u_start_year,
+			a.u_list_open_yn,
+			a.u_create_user,
+			a.u_create_date,
+			a.u_update_user,
+			a.u_update_date,
+			b.com_org_id 
+		from
+			edms_project_sp a
+		left join edms_v_dept_info b on a.u_own_dept = b.org_id
+		<where>
+			a.r_object_id = #{rObjectId}
+		</where>
+	</select>
+
+	<select id="selectDetailOne" resultMap="ProjectDetailMap">
+        /* DBOX-PGM-DOC-011 | 지정한 권한있는 프로젝트/투자 상세정보 조회 | 차소익 */
+		select
+			a.r_object_id,
+			a.u_cabinet_code,
+			a.u_pjt_code,
+			a.u_pjt_name,
+			a.u_own_dept,
+			a.u_chief_id,
+			a.u_sec_level,
+			a.U_FOL_ID,
+			a.u_finish_yn,
+			a.u_start_year,
+			a.u_list_open_yn,
+			a.u_create_user,
+			a.u_create_date,
+			a.u_update_user,
+			a.u_update_date,
+			b.org_id			AS b_org_id,
+			b.org_nm			AS b_org_nm,
+			b.com_org_id		AS b_com_org_id,
+		    c.user_id			AS c_user_id,
+		    c.display_name		AS c_display_name,
+		    c.com_org_id		AS c_com_org_id,
+		    c.org_id			AS c_org_id,
+		    c.org_nm			AS c_org_nm,
+		    c.pstn_code			AS c_pstn_code,
+		    c.pstn_name			AS c_pstn_name,
+		    c.level_code		AS c_level_code,
+		    c.level_name		AS c_level_name,
+		    c.title_code		AS c_title_code,
+		    c.title_name		AS c_title_name
+		FROM
+                        edms_project_s			a
+        LEFT OUTER JOIN edms_v_dept_info		b ON a.u_own_dept = b.org_id
+		LEFT OUTER JOIN	edms_v_user_info		c ON a.u_chief_id = c.user_id
+		<where>
+            a.u_delete_status = ' '
+        AND a.u_pjt_code = #{uPjtCode}
+		AND	(
+                a.u_own_dept = #{orgId}
+            OR  a.r_object_id IN (SELECT r_object_id FROM edms_project_r WHERE u_join_dept_read = #{orgId} OR u_join_dept_del = #{orgId})
+            OR  a.u_chief_id = #{userId}
+            OR  #{userId} IN (SELECT u_code_val1 FROM edms_code_s where u_code_type = 'ALL_ACCESS_USER')
+            OR  #{userId} IN (
+                SELECT
+                    y.users_names
+                FROM
+                    dm_group_s  z
+                ,   dm_group_r  y
+                WHERE
+                    z.r_object_id = y.r_object_id
+                AND z.group_name = CONCAT('g_', LOWER(b.com_org_id) , '_pjtmgr')
+            )
+            OR  a.u_list_open_yn = 'Y'
+	   )
+		</where>
+	</select>
+
+	<select id="selectOneByUPjtCode" resultMap="ProjectMap">
+		SELECT
+			a.r_object_id,
+			a.u_cabinet_code,
+			a.u_pjt_code,
+			a.u_pjt_name,
+			a.u_own_dept,
+			a.u_chief_id,
+			a.U_FOL_ID,
+			a.u_sec_level,
+			a.u_finish_yn,
+			a.u_start_year,
+			a.u_list_open_yn,
+			a.u_create_user,
+			a.u_create_date,
+			a.u_update_user,
+			a.u_update_date,
+			a.u_delete_status
+		FROM
+			edms_project_sp a
+		<where>
+			a.u_pjt_code = #{uPjtCode}
+		</where>
+	</select>
+
+	<select id="selectOneByCabinetCode" resultMap="ProjectMap">
+		select
+			a.r_object_id,
+			a.u_cabinet_code,
+			a.u_pjt_code,
+			a.u_pjt_name,
+			a.u_own_dept,
+			a.u_chief_id,
+			a.U_FOL_ID,
+			a.u_sec_level,
+			a.u_finish_yn,
+			a.u_start_year,
+			a.u_list_open_yn,
+			a.u_create_user,
+			a.u_create_date,
+			a.u_update_user,
+			a.u_update_date,
+			b.com_org_id 
+		from
+			edms_project_sp a
+		left join edms_v_dept_info b on a.u_own_dept = b.org_id
+		<where>
+			a.u_cabinet_code = #{cabinetCode}
+		</where>
+	</select>
+	
+	<select id="selectRepeatListByCode" resultMap="ProjectRepeatMap">
+		SELECT #{pjtCode} AS PJT_CODE, a.*, b.U_CABINET_CODE AS dept_read_cabinet, c.U_CABINET_CODE AS dept_del_cabinet
+		FROM edms_project_r a
+		LEFT OUTER JOIN EDMS_V_DEPT_INFO b ON a.U_JOIN_DEPT_READ = b.ORG_ID 
+		LEFT OUTER JOIN EDMS_V_DEPT_INFO c ON a.U_JOIN_DEPT_DEL = c.ORG_ID 
+		WHERE a.R_OBJECT_ID = (
+			SELECT R_OBJECT_ID 
+			FROM edms_project_s
+			WHERE U_PJT_CODE = #{pjtCode}) 
+	</select>
+	
+	<select id="selectRepeatingList" resultMap="ProjectRepeatingMap">
+		SELECT
+			a.r_object_id,
+			a.i_position,
+			a.u_join_dept_read,
+			a.u_join_dept_del
+		FROM
+			edms_project_rp a
+		<where>
+			a.r_object_id = #{rObjectId}
+		</where>
+	</select>
+	
+	<select id="selectRepeatingListByCode" resultMap="ProjectRepeatingMap">
+		WITH dept_cabinet as (
+			SELECT
+				U_CABINET_CODE,
+				ORG_ID 
+			FROM
+				edms_v_dept_info 
+		)
+ 	SELECT
+			a.r_object_id,
+			a.i_position,
+			a.u_join_dept_read,
+			a.u_join_dept_del,
+			b.U_CABINET_CODE AS u_join_dept_read_org_id,
+			bb.U_CABINET_CODE AS u_join_dept_del_org_id
+		FROM
+			edms_project_rp    a   LEFT OUTER JOIN
+ 			edms_project_sp    d   ON a.r_object_id = d.r_object_id LEFT OUTER JOIN 
+ 		    dept_cabinet        b   ON a.U_JOIN_DEPT_READ = b.org_id LEFT OUTER JOIN 
+ 		    dept_cabinet        bb  ON a.U_JOIN_DEPT_DEL  = bb.org_id
+		<where>
+			d.u_pjt_code = #{pjtCode}
+		</where>
+	</select>
+	
+	<select id="selectRepeatingDetailList" resultMap="ProjectRepeatingDetailMap">
+		SELECT
+			a.r_object_id,
+			a.i_position,
+			a.u_join_dept_read,
+			a.u_join_dept_del,
+			b.org_id			AS b_org_id,
+			b.org_nm			AS b_org_nm,
+			b.com_org_id		AS b_com_org_id,
+			c.org_id			AS c_org_id,
+			c.org_nm			AS c_org_nm,
+			c.com_org_id		AS c_com_org_id
+		FROM
+			edms_project_rp		a LEFT OUTER JOIN
+			edms_v_dept_info	b ON a.u_join_dept_read = b.org_id LEFT OUTER JOIN
+			edms_v_dept_info	c ON a.u_join_dept_del = c.org_id
+		<where>
+			a.r_object_id = #{rObjectId}
+		</where>
+	</select>
+	 
+
+	<select id="selectList" resultMap="ProjectMap">
+		SELECT
+			a.r_object_id,
+			a.u_cabinet_code,
+			a.u_pjt_code,
+			a.u_pjt_name,
+			a.u_own_dept,
+			a.u_chief_id,
+			a.u_sec_level,
+			a.U_FOL_ID,
+			a.u_finish_yn,
+			a.u_start_year,
+			a.u_list_open_yn,
+			a.u_create_user,
+			a.u_create_date,
+			a.u_update_user,
+			a.u_update_date
+		FROM
+			edms_project_s a
+		<where>
+			(
+				<trim prefix="(" prefixOverrides="AND|OR" suffix=")">
+					<if test='project.ownJoin == null or project.ownJoin == "O"'>
+						a.u_own_dept = #{project.rDeptCode}
+					</if>
+					<if test='project.ownJoin == null or project.ownJoin == "J"'>
+					OR	a.r_object_id IN (SELECT r_object_id FROM edms_project_r WHERE u_join_dept_read = #{project.rDeptCode} OR u_join_dept_del = #{project.rDeptCode})
+					</if>
+				</trim>
+				AND
+				(
+					a.u_own_dept = #{orgId}
+					OR	a.r_object_id IN (SELECT r_object_id FROM edms_project_r WHERE u_join_dept_read = #{orgId} OR u_join_dept_del = #{orgId})
+					<if test='project.withListOpen'>
+					OR	a.u_list_open_yn = 'Y'
+					</if>
+				)
+			)
+			<if test="project.uFinishYn != null">
+			AND	a.u_finish_yn = #{project.uFinishYn}
+			</if>
+			<if test="project.uPjtName != null">
+			AND	a.u_pjt_name = #{project.uPjtName}
+			</if>
+			<if test="project.uFolId != null">
+			AND	a.u_fol_id = #{project.uFolId}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectDetailList" resultMap="ProjectDetailMap">
+        /* DBOX-PGM-DOC-002 | 지정한 권한있는 프로젝트/투자 리스트 조회 | 차소익 */
+        /* DBOX-PGM-DOC-003 */
+		SELECT
+			a.r_object_id
+		,	a.u_cabinet_code
+		,	a.u_pjt_code
+		,	a.u_pjt_name
+		,	a.u_own_dept
+		,	a.u_chief_id
+		,	a.U_FOL_ID
+		,	a.u_sec_level
+		,	a.u_finish_yn
+		,	a.u_start_year
+		,	a.u_list_open_yn
+		,	a.u_create_user
+		,	a.u_create_date
+		,	a.u_update_user
+		,	a.u_update_date
+		,	b.org_id			AS b_org_id
+		,	b.org_nm			AS b_org_nm
+		,	b.com_org_id		AS b_com_org_id
+		,	c.user_id			AS c_user_id
+		,   c.display_name		AS c_display_name
+		,   c.com_org_id		AS c_com_org_id
+		,   c.org_id			AS c_org_id
+		,   c.org_nm			AS c_org_nm
+		,   c.pstn_code			AS c_pstn_code
+		,   c.pstn_name			AS c_pstn_name
+		,   c.level_code		AS c_level_code
+		,   c.level_name		AS c_level_name
+		,   c.title_code		AS c_title_code
+		,   c.title_name		AS c_title_name
+		FROM
+		                 edms_project_s			a
+		LEFT OUTER JOIN  edms_v_dept_info		b ON a.u_own_dept = b.org_id
+		LEFT OUTER JOIN  edms_v_user_info		c ON a.u_chief_id = c.user_id
+		<where>
+		    a.u_delete_status = ' '
+		AND (
+				<trim prefix="(" prefixOverrides="AND|OR" suffix=")">
+					<if test='project.ownJoin == null or project.ownJoin == "O"'>
+						a.u_own_dept = #{project.rDeptCode}
+					</if>
+					<if test='project.ownJoin == null or project.ownJoin == "J"'>
+					OR	a.r_object_id IN (SELECT r_object_id FROM edms_project_r WHERE u_join_dept_read = #{project.rDeptCode} OR u_join_dept_del = #{project.rDeptCode})
+					</if>
+				</trim>
+				AND
+				(
+					a.u_own_dept = #{orgId}
+                    OR  a.r_object_id IN (SELECT r_object_id FROM edms_project_r WHERE u_join_dept_read = #{orgId} OR u_join_dept_del = #{orgId})
+                    OR  a.u_chief_id = #{userId}
+                    OR  #{userId} IN (SELECT u_code_val1 FROM edms_code_s where u_code_type = 'ALL_ACCESS_USER')
+                    OR  #{userId} IN (
+	                    SELECT
+						    y.users_names
+						FROM
+						    dm_group_s  z
+						,   dm_group_r  y
+						WHERE
+						    z.r_object_id = y.r_object_id
+						AND z.group_name = CONCAT('g_', LOWER(b.com_org_id) , '_pjtmgr')
+                    )
+					<if test='project.withListOpen'>
+					OR	a.u_list_open_yn = 'Y'
+					</if>
+				)
+			)
+			<if test="project.uFinishYn != null">
+			AND	a.u_finish_yn = #{project.uFinishYn}
+			</if>
+			<if test="project.uPjtName != null">
+			AND	a.u_pjt_name = #{project.uPjtName}
+			</if>
+			<if test="project.uFolId != null">
+			AND	a.u_fol_id = #{project.uFolId}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectCount" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM
+                            edms_project_s      a
+        LEFT OUTER JOIN     edms_v_dept_info    b ON a.u_own_dept = b.org_id
+		<where>
+            a.u_delete_status = ' '
+        AND (
+				<trim prefix="(" prefixOverrides="AND|OR" suffix=")">
+					<if test='project.ownJoin == null or project.ownJoin == "O"'>
+						a.u_own_dept = #{project.rDeptCode}
+					</if>
+					<if test='project.ownJoin == null or project.ownJoin == "J"'>
+					OR	a.r_object_id IN (SELECT r_object_id FROM edms_project_r WHERE u_join_dept_read = #{project.rDeptCode} OR u_join_dept_del = #{project.rDeptCode})
+					</if>
+				</trim>
+				AND
+				(
+					a.u_own_dept = #{orgId}
+					OR	a.r_object_id IN (SELECT r_object_id FROM edms_project_r WHERE u_join_dept_read = #{orgId} OR u_join_dept_del = #{orgId})
+                    OR  a.u_chief_id = #{userId}
+                    OR  #{userId} IN (SELECT u_code_val1 FROM edms_code_s where u_code_type = 'ALL_ACCESS_USER')
+                    OR  #{userId} IN (
+                        SELECT
+                            y.users_names
+                        FROM
+                            dm_group_s  z
+                        ,   dm_group_r  y
+                        WHERE
+                            z.r_object_id = y.r_object_id
+                        AND z.group_name = CONCAT('g_', LOWER(b.com_org_id) , '_pjtmgr')
+                    )
+					<if test='project.withListOpen'>
+					OR	a.u_list_open_yn = 'Y'
+					</if>
+				)
+			)
+			<if test="project.uFinishYn != null">
+			AND	a.u_finish_yn = #{project.uFinishYn}
+			</if>
+			<if test="project.uPjtName != null">
+			AND	a.u_pjt_name = #{project.uPjtName}
+			</if>
+			<if test="project.uFolId != null">
+			AND	a.u_fol_id = #{project.uFolId}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectDeptCodeListByPjtCode" resultType="String">
+        SELECT
+            u_own_dept          AS dept_code
+        FROM
+            edms_project_s
+        WHERE u_pjt_code = #{pjtCode}
+            
+        UNION
+        
+        SELECT
+            u_join_dept_del     AS dept_code
+        FROM
+            edms_project_s  a INNER JOIN
+            edms_project_r  b ON a.r_object_id = b.r_object_id
+        WHERE
+            a.u_pjt_code = #{pjtCode}
+        AND b.u_join_dept_del IS NOT NULL
+        
+        <if test='permitType == "R"'>
+	        UNION
+	           
+	        SELECT
+	            u_join_dept_read    AS dept_code
+	        FROM
+	            edms_project_s  a INNER JOIN
+	            edms_project_r  b ON a.r_object_id = b.r_object_id
+	        WHERE
+	            a.u_pjt_code = #{pjtCode}
+	        AND b.u_join_dept_read IS NOT NULL
+		</if>
+	</select>
+    
+    <select id="checkProjectChief" resultType="boolean">
+        SELECT
+            COUNT(*) > 0
+        FROM
+            edms_project_s
+        WHERE
+            u_pjt_code = #{pjtCode}
+        AND u_chief_id = #{userId}
+    </select>
+
+    <!--NEXT 프로젝트 코드 조회    -->	
+	<select id="selectNextPjtNo" resultType="string">
+		SELECT CASE WHEN MAX_CODE IS NOT NULL THEN 'p' || REPLACE(FORMAT('%5s', (SUBSTRING(MAX_CODE, 2)::INTEGER+1)::VARCHAR), ' ', '0' )
+		            ELSE 'p00001'
+		       END AS NEXT_CODE
+		  FROM (SELECT MAX(U_PJT_CODE) AS MAX_CODE FROM EDMS_project_S
+		 WHERE U_PJT_CODE > 'p00000'
+		   AND U_PJT_CODE <![CDATA[<]]> 'p99999'
+		) A
+    </select>
+</mapper>

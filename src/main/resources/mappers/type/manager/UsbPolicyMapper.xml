@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.usbpolicy.UsbPolicyMapper">	           
+	<resultMap id="UsbPolicyMap"
+		type="com.dongkuksystems.dbox.models.type.manager.usbpolicy.UsbPolicyType">
+		<id property="rObjectId" column="R_OBJECT_ID" />		
+		<result property="uCodeType" column="u_code_type" />
+		<result property="uCodeVal1" column="u_code_val1" />
+		<result property="uCodeVal2" column="u_code_val2" />
+		<result property="uTargetType" column="u_target_type" />		
+		<result property="uTargetId" column="u_target_id" />
+		<result property="uPolicy" column="u_policy" />
+		<result property="uPolicyDate" column="u_policy_date" />
+		<result property="uStartDate" column="u_start_date" />
+		<result property="uEndDate" column="u_end_date" />
+		<result property="uComCode" column="u_com_code" />
+		<result property="uDeptNm" column="u_dept_nm" />
+		<result property="uPolicyNm" column="u_policy_nm" />
+		<result property="uDisplayName" column="u_display_name" />
+		<result property="uPstnName" column="u_pstn_name" />				
+	</resultMap>
+		
+	<select id="selectUsbPolicyComp" resultMap="UsbPolicyMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 외부저장매체 기본정책 사별 조회 | 이성현(DMES) */
+		SELECT
+			r_object_id,
+			u_code_type,
+			u_code_val1,
+			u_code_val2
+		FROM 
+			edms_code_s
+		<where>
+			u_code_type = 'CONFIG_USB_BASE_POLICY'
+			AND u_code_val1 = #{uComCode}
+		</where>
+	</select>
+		
+	<select id="selectUsbPolicyDept" resultMap="UsbPolicyMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 외부저장매체 기본정책 부서별 조회 | 이성현(DMES) */
+		SELECT 
+			r_object_id,
+      u_target_type,
+			u_target_id,
+      (
+      select
+      	org_nm
+      from
+      	edms_gw_dept a
+      where
+      	a.org_id = u_target_id
+      ) as u_dept_nm,		           
+			u_policy,
+      decode(u_policy,'RO','Read-Only','RW','Read/Write') as u_policy_nm,
+			to_char(u_start_date,'YYYY-MM-DD') as u_start_date,
+			to_char(u_end_date,'YYYY-MM-DD') as u_end_date,
+      to_char(u_start_date,'YYYY-MM-DD')|| ' ~ ' ||to_char(u_end_date,'YYYY-MM-DD') as u_policy_date,
+      u_com_code
+    FROM
+    	edms_usb_policy_sp
+		<where>
+			u_target_type ='D'
+			AND u_com_code = #{uComCode}
+			AND to_char(now(), 'YYYY-MM-DD') &lt;= to_char(u_end_date, 'YYYY-MM-DD')			
+		</where>
+			order by u_start_date
+	</select>
+		
+	<select id="selectUsbPolicyUser" resultMap="UsbPolicyMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 외부저장매체 기본정책 사용자별 조회 | 이성현(DMES) */
+		SELECT 
+			r_object_id,
+      u_target_type,
+      u_target_id,
+      (
+      select 
+      	display_name
+      from
+      	edms_gw_user nm
+			where 
+				nm.social_per_id = u_target_id
+			) as u_display_name,
+      (
+			select
+				name
+			from
+				edms_gw_job_pstn egjp
+			where 
+				egjp.pstn_code = ( select 
+									pstn_code 
+								   from 
+								    edms_gw_user nm
+								   where 
+							  		nm.social_per_id = u_target_id)) as u_pstn_name,			
+      (
+      select
+      	org_nm
+      from 
+      	edms_gw_user nm
+			where
+				nm.social_per_id = u_target_id
+			) as u_dept_nm,
+			u_policy,
+			decode(u_policy,'RO','Read-Only','RW','Read/Write') as u_policy_nm,
+			to_char(u_start_date,'YYYY-MM-DD') as u_start_date,
+			to_char(u_end_date,'YYYY-MM-DD') as u_end_date,
+      to_char(u_start_date,'YYYY-MM-DD')|| ' ~ ' ||to_char(u_end_date,'YYYY-MM-DD') as u_policy_date,
+			u_com_code
+    FROM
+    	edms_usb_policy_sp
+		<where>
+			u_target_type ='U'
+			AND u_com_code = #{uComCode}
+			AND to_char(now(), 'YYYY-MM-DD') &lt;= to_char(u_end_date, 'YYYY-MM-DD')
+		</where>
+			order by u_start_date
+	</select>
+		
+	<select id="selectCheckUsbPolicy" resultMap="UsbPolicyMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 외부저장매체 정책 조회 | 이성현(DMES) */
+		SELECT 
+			r_object_id,
+      u_target_type,
+      u_target_id,           
+      u_policy,           
+      u_com_code
+    FROM
+    	edms_usb_policy_sp
+		<where>
+			u_target_id = #{uTargetId}
+		</where>
+	</select>
+		
+	<select id="selectEndDeptList" resultMap="UsbPolicyMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 외부저장매체 기간 지난 부서 조회 | 이성현(DMES) */	
+		SELECT
+			r_object_id,
+			u_target_id,
+			u_target_type			
+		FROM 
+			edms_usb_policy_sp
+		<where>
+			to_char(now(), 'YYYY-MM-DD') &gt; to_char(u_end_date, 'YYYY-MM-DD') 
+			AND u_target_type ='D' 
+		</where>
+	</select>
+		
+	<select id="selectEndUserList" resultMap="UsbPolicyMap">
+		/* DBOX-PGM-MNG-008 | 관리 기능 - 외부저장매체 기간 지난 사용자 조회 | 이성현(DMES) */
+		SELECT
+			r_object_id,
+			u_target_id,
+			u_target_type			
+		FROM 
+			edms_usb_policy_sp
+		<where>
+			to_char(now(), 'YYYY-MM-DD') &gt; to_char(u_end_date, 'YYYY-MM-DD') 
+			AND u_target_type ='U' 
+		</where>
+	</select>
+		
+</mapper>

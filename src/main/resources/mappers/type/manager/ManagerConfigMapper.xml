@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.managerconfig.ManagerConfigMapper">
+	<resultMap id="ManagerConfigMap"
+		type="com.dongkuksystems.dbox.models.type.manager.Mgr">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uMgrType" column="U_MGR_TYPE" />
+		<result property="uUserId" column="U_USER_ID" />
+		<result property="uComCode" column="U_COM_CODE" />
+		<result property="uDeptCode" column="U_DEPT_CODE" />
+		<result property="deptName" column="DEPT_NAME" />
+	</resultMap>
+	<select id="selectManagerConfig" resultMap="ManagerConfigMap">
+		select u_mgr_type, u_com_code
+		from edms_mgr_sp
+		<where>
+			u_user_id = #{uUserId}
+		</where>	
+	</select>
+	
+	<select id="selectDeptManagerConfig" resultMap="ManagerConfigMap">
+	/* DBOX-PGM-MNG-018 | 부서문서관리자 겸직 포함 조회  | 김수연 */
+		SELECT 
+			u_mgr_type, 
+			u_com_code, 
+			u_dept_code,
+			(
+			SELECT
+				org_nm
+			FROM
+				edms_v_dept_info
+			WHERE
+				usage_state = 'A'
+				AND org_id = u_dept_code ) as dept_name
+		FROM edms_dept_mgr_sp
+		<where>
+			u_user_id = #{uUserId}
+		</where>
+	</select>
+	
+	<select id="selectMgrList" resultMap="ManagerConfigMap">
+	/* DBOX-PGM-MNG-018 | 그룹 전사 문서 관리자 조회  | 김수연 */
+    SELECT 
+      *
+    FROM 
+      edms_mgr_sp
+    <where>
+      u_mgr_type = #{uMgrType} 
+      AND u_com_code = #{uComCode}
+    </where>  
+  </select>
+</mapper>

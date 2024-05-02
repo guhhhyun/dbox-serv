@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.table.etc.gwaddjob.GwAddJobMapper">
+	<resultMap id="GwAddJobMap"
+		type="com.dongkuksystems.dbox.models.table.etc.GwAddJob">
+		<id property="ajId" column="AJ_ID" />
+		<result property="titleCode" column="TITLE_CODE" />
+		<result property="pstnCode" column="PSTN_CODE" />
+		<result property="pstnName" column="PSTN_NAME" />
+		<result property="personCode" column="PERSON_CODE" />
+		<result property="titleName" column="TITLE_NAME" />
+		<result property="unitCode" column="UNIT_CODE" />
+		<result property="unitName" column="UNIT_NAME" />
+		<result property="unitCabinetCode" column="U_CABINET_CODE" />
+	</resultMap>
+	
+	<resultMap id="DetailedGwAddJobMap" type="com.dongkuksystems.dbox.models.dto.etc.GwAddJobDetail">
+		<result property="personCode" column="PERSON_CODE" />
+		<result property="unitCode" column="UNIT_CODE" />
+		<result property="unitName" column="unit_name" />
+		<result property="unitTitleCode" column="unit_title_code" />
+		<result property="unitPstnCode" column="unit_pstn_code" />
+		<result property="unitCabinetCode" column="U_CABINET_CODE" />
+		
+		<result property="userId" column="USER_ID" />
+		<result property="userState" column="user_state" />
+		<result property="displayName" column="DISPLAY_NAME" />
+		<result property="usageState" column="USAGE_STATE" />
+		<result property="sabun" column="SABUN" />
+		<result property="rObjectId" column="R_OBJECT_ID" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="comOrgNm" column="com_org_nm" />
+		<result property="orgId" column="ORG_ID" />
+		<result property="gwOrgId" column="GW_ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="pstnCode" column="PSTN_CODE" />
+		<result property="pstnName" column="PSTN_NAME" />
+		<result property="levelCode" column="LEVEL_CODE" />
+		<result property="levelName" column="LEVEL_NAME" />
+		<result property="titleCode" column="TITLE_CODE" />
+		<result property="titleName" column="TITLE_NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="enterDt" column="ENTER_DT" />
+		<result property="exitDate" column="EXIT_DATE" />
+		<result property="insertReserveDate" column="INSERT_RESERVE_DATE" />
+		<result property="exitReserverDate" column="EXIT_RESERVE_DATE" />
+		<result property="receivemailUsage" column="RECEIVEMAIL_USAGE" />
+		<result property="autosignonUsage" column="AUTOSIGNON_USAGE" />
+		<result property="chiefFlag" column="CHEIF_FLAG" />
+		<result property="inoutType" column="INOUT_TYPE" />
+		<result property="langCd" column="LANG_CD" />
+		<result property="sortKey" column="SORT_KEY" />
+		<result property="displayNameEng" column="DISPLAY_NAME_ENG" />
+		<result property="memTypeCd" column="MEM_TYPE_CD" />
+		<result property="workArea" column="WORK_AREA" />
+		<result property="workAreaNm" column="WORK_AREA_NM" />
+		<result property="empType" column="EMP_TYPE" />
+		<result property="idStatus" column="ID_STATUS" />
+		<result property="shareYn" column="SHARE_YN" />
+		<result property="localEmpYn" column="LOCAL_EMP_YN" />
+		<result property="mobileTel" column="MOBILE_TEL" />
+		<result property="deptCabinetcode" column="U_CABINET_CODE" />
+	</resultMap>
+	
+	<select id="selectDetailedListByAjId" resultMap="DetailedGwAddJobMap">
+		SELECT a.PERSON_CODE, a.UNIT_CODE, c.ORG_NM AS unit_name, a.TITLE_CODE AS unit_title_code, a.PSTN_CODE AS unit_pstn_code, c.U_CABINET_CODE AS unit_cabinet_code, f.USER_STATE, d.u_cabinet_code, e.org_nm as com_org_nm, b.*
+		FROM (SELECT a.PERSON_CODE, a.TITLE_CODE, a.PSTN_CODE, CASE WHEN b.ORG_TYPE = 'P' THEN b.UP_ORG_ID ELSE a.UNIT_CODE END AS UNIT_CODE 
+FROM EDMS_GW_ADDJOB a 
+LEFT JOIN EDMS_GW_DEPT b ON a.UNIT_CODE = b.ORG_ID) a 
+		LEFT OUTER JOIN edms_v_user_info b ON a.PERSON_CODE = b.USER_ID
+		LEFT OUTER JOIN EDMS_V_DEPT_INFO c ON a.UNIT_CODE = c.ORG_ID 
+		LEFT OUTER JOIN edms_v_dept_info d ON b.org_id = d.org_id
+		LEFT OUTER JOIN edms_v_dept_info e ON b.com_org_id = e.org_id
+		LEFT OUTER JOIN edms_user_sp f ON b.USER_ID = f.USER_NAME
+		<where>
+			a.UNIT_CODE = #{unitCode}
+		</where>
+		ORDER BY  
+        b.TITLE_CODE 
+        , b.PSTN_CODE 
+	</select>
+	
+	<select id="selectListByAjId" resultMap="GwAddJobMap">
+		SELECT 
+		a.*,
+		b.U_CABINET_CODE 
+		FROM 
+			EDMS_GW_ADDJOB a
+		INNER JOIN EDMS_V_DEPT_INFO b
+		ON
+		a.UNIT_CODE = b.ORG_ID
+		<where>
+			UNIT_CODE = #{unitCode}
+		</where>
+		ORDER BY 
+		 SORT_KEY 
+        ,TITLE_CODE 
+        ,PSTN_CODE 
+	</select>
+	
+	<select id="selectListByUserId" resultMap="GwAddJobMap">
+		SELECT 
+		a.*,
+		b.U_CABINET_CODE,
+		b.ORG_NM AS UNIT_NAME
+		FROM 
+			EDMS_GW_ADDJOB a
+		INNER JOIN EDMS_V_DEPT_INFO b
+		ON
+		a.UNIT_CODE = b.ORG_ID
+		<where>
+			PERSON_CODE = #{userId}
+		</where>
+		ORDER BY 
+		 SORT_KEY 
+        ,TITLE_CODE 
+        ,PSTN_CODE 
+	</select>
+	
+	
+	
+	</mapper>

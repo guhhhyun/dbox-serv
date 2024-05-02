@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.table.etc.gwuser.GwUserMapper">
+	<resultMap id="UserMap"
+		type="com.dongkuksystems.dbox.models.table.etc.VUser">
+		<id property="userId" column="USER_ID" />
+		<result property="userState" column="user_state" />
+		<result property="displayName" column="DISPLAY_NAME" />
+		<result property="usageState" column="USAGE_STATE" />
+		<result property="sabun" column="SABUN" />
+		<result property="rObjectId" column="R_OBJECT_ID" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="orgId" column="ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="pstnCode" column="PSTN_CODE" />
+		<result property="pstnName" column="PSTN_NAME" />
+		<result property="levelCode" column="LEVEL_CODE" />
+		<result property="levelName" column="LEVEL_NAME" />
+		<result property="titleCode" column="TITLE_CODE" />
+		<result property="titleName" column="TITLE_NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="enterDate" column="ENTER_DATE" />
+		<result property="exitDate" column="EXIT_DATE" />
+		<result property="insertReserveDate" column="INSERT_RESERVE_DATE" />
+		<result property="exitReserverDate" column="EXIT_RESERVE_DATE" />
+		<result property="receivemailUsage" column="RECEIVEMAIL_USAGE" />
+		<result property="autosignonUsage" column="AUTOSIGNON_USAGE" />
+		<result property="chiefFlag" column="CHEIF_FLAG" />
+		<result property="inoutType" column="INOUT_TYPE" />
+		<result property="langCd" column="LANG_CD" />
+		<result property="sortKey" column="SORT_KEY" />
+		<result property="displayNameEng" column="DISPLAY_NAME_ENG" />
+		<result property="memTypeCd" column="MEM_TYPE_CD" />
+		<result property="workArea" column="WORK_AREA" />
+		<result property="workAreaNm" column="WORK_AREA_NM" />
+		<result property="empType" column="EMP_TYPE" />
+		<result property="idStatus" column="ID_STATUS" />
+		<result property="shareYn" column="SHARE_YN" />
+		<result property="mobileTel" column="MOBILE_TEL" />
+		<result property="localEmpYn" column="LOCAL_EMP_YN" />
+	</resultMap>
+
+	<resultMap id="CustomUserMap"
+		type="com.dongkuksystems.dbox.models.table.etc.VUser">
+		<id property="userId" column="USER_ID" />
+		<result property="userState" column="user_state" />
+		<result property="displayName" column="DISPLAY_NAME" />
+		<result property="usageState" column="USAGE_STATE" />
+		<result property="sabun" column="SABUN" />
+		<result property="rObjectId" column="R_OBJECT_ID" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="comOrgNm" column="com_org_nm" />
+		<result property="orgId" column="ORG_ID" />
+		<result property="gwOrgId" column="GW_ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="pstnCode" column="PSTN_CODE" />
+		<result property="pstnName" column="PSTN_NAME" />
+		<result property="levelCode" column="LEVEL_CODE" />
+		<result property="levelName" column="LEVEL_NAME" />
+		<result property="titleCode" column="TITLE_CODE" />
+		<result property="titleName" column="TITLE_NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="enterDt" column="ENTER_DT" />
+		<result property="exitDate" column="EXIT_DATE" />
+		<result property="insertReserveDate"
+			column="INSERT_RESERVE_DATE" />
+		<result property="exitReserverDate" column="EXIT_RESERVE_DATE" />
+		<result property="receivemailUsage" column="RECEIVEMAIL_USAGE" />
+		<result property="autosignonUsage" column="AUTOSIGNON_USAGE" />
+		<result property="chiefFlag" column="CHEIF_FLAG" />
+		<result property="inoutType" column="INOUT_TYPE" />
+		<result property="langCd" column="LANG_CD" />
+		<result property="sortKey" column="SORT_KEY" />
+		<result property="displayNameEng" column="DISPLAY_NAME_ENG" />
+		<result property="memTypeCd" column="MEM_TYPE_CD" />
+		<result property="workArea" column="WORK_AREA" />
+		<result property="workAreaNm" column="WORK_AREA_NM" />
+		<result property="empType" column="EMP_TYPE" />
+		<result property="idStatus" column="ID_STATUS" />
+		<result property="shareYn" column="SHARE_YN" />
+		<result property="localEmpYn" column="LOCAL_EMP_YN" />
+		<result property="mobileTel" column="MOBILE_TEL" />
+		<result property="deptCabinetcode" column="U_CABINET_CODE" />
+	</resultMap>
+	
+	<resultMap id="CustomOtherGwUserMap"
+		type="com.dongkuksystems.dbox.models.table.etc.GwUser">
+		<id property="socialPerId" 				column="SOCIAL_PER_ID" 	/>
+		<result property="userState" column="user_state" />
+  		<result property="displayName" 		column="DISPLAY_NAME" 	/>
+  		<result property="usageState" 		column="USAGE_STATE" 	/>
+  		<result property="sabun" 			column="SABUN" 			/>
+  		<result property="comOrgId" 		column="COM_ORG_ID" 	/>
+  		<result property="orgId" 			column="ORG_ID" 		/>
+  		<result property="orgNm" 			column="ORG_NM" 		/>
+		<result property="pstnCode" column="PSTN_CODE" />
+		<result property="pstnName" column="PSTN_NAME" />
+		<result property="levelCode" column="LEVEL_CODE" />
+		<result property="levelName" column="LEVEL_NAME" />
+		<result property="titleCode" column="TITLE_CODE" />
+		<result property="titleName" column="TITLE_NAME" />
+  		<result property="empType" 			column="EMP_TYPE" 		/>
+  		<result property="deptCabinetcode" 	column="U_CABINET_CODE" />
+	</resultMap>
+    
+    <select id="login" resultType="boolean">
+        SELECT
+            COUNT(*) > 0
+        FROM
+            edms_v_user_info
+        <where>
+            usage_state = 'A' 
+        AND user_id = #{userId}
+        AND login_pwd = #{password}
+        </where>
+    </select>
+	
+	<select id="selectOneByUserId" resultMap="CustomUserMap">
+		SELECT
+		  c.USER_STATE, a.*, b.u_cabinet_code, d.org_nm as com_org_nm
+		FROM edms_v_user_info a
+		LEFT OUTER JOIN edms_v_dept_info b ON a.org_id = b.org_id
+		LEFT OUTER JOIN edms_v_dept_info d ON a.com_org_id = d.org_id
+		LEFT OUTER JOIN edms_user_sp c ON a.USER_ID = c.USER_NAME
+		<where>
+			a.USAGE_STATE = 'A' 
+			and a.USER_ID = #{userId}
+		</where>
+	</select>
+ 
+	<select id="selectOneBySabun" resultMap="CustomUserMap">
+		SELECT
+		  c.USER_STATE, a.*, b.u_cabinet_code, d.org_nm as com_org_nm
+		FROM edms_v_user_info a
+		LEFT OUTER JOIN edms_v_dept_info b ON a.org_id = b.org_id 
+		LEFT OUTER JOIN edms_v_dept_info d ON a.com_org_id = d.org_id
+		INNER JOIN edms_user_sp c ON a.USER_ID = c.USER_NAME
+		<where>
+			SABUN = #{sabun}
+		</where>
+	</select>
+
+	<select id="selectListByOrgId" resultMap="CustomUserMap">
+		SELECT 
+		  c.USER_STATE, a.*, b.u_cabinet_code, d.org_nm as com_org_nm
+		FROM edms_v_user_info a
+		LEFT OUTER JOIN edms_v_dept_info b ON a.org_id = b.org_id 
+		LEFT OUTER JOIN edms_v_dept_info d ON a.com_org_id = d.org_id
+		INNER JOIN edms_user_sp c ON a.USER_ID = c.USER_NAME
+		<where>
+			a.USAGE_STATE = #{usageState}
+			AND a.ORG_ID = #{orgId}
+		</where>
+		order by CASE
+       WHEN ASCII(SUBSTRING(a.DISPLAY_NAME, 1)) BETWEEN 48 AND 57 THEN 3
+       WHEN ASCII(SUBSTRING(a.DISPLAY_NAME, 1)) &lt; 128 THEN 2
+       ELSE 1
+      END
+      ,SORT_KEY 
+      ,TITLE_CODE 
+      ,PSTN_CODE 
+      ,PROMOTION_DT
+      ,ENTER_DT
+      ,a.DISPLAY_NAME
+      <if test="direction == 'asc'">ASC</if>
+      <if test="direction == 'desc'">DESC</if>
+	</select>
+	
+	<select id="selectUserIdListByTitleCodesForSpecialUser" resultType="String">
+		SELECT
+		  user_id
+		FROM
+			edms_v_user_info
+		<where>
+			title_code IN
+			<foreach collection="titleCodes" item="titleCode" open="(" separator="," close=")">
+				#{titleCode}
+			</foreach>
+		</where>
+	</select>
+	
+	<select id="selectUserListByCabinetCodes" resultMap="UserMap">
+		SELECT
+		  a.*
+		FROM
+			edms_v_user_info a
+			INNER JOIN EDMS_V_DEPT_INFO b ON a.ORG_ID = b.ORG_ID 
+		<where>
+			b.U_CABINET_CODE IN
+			<foreach collection="deptCodes" item="deptCode" open="(" separator="," close=")">
+				#{deptCode}
+			</foreach>
+		</where>
+	</select>
+	
+	<select id="selectUserListByDeptCodes" resultMap="UserMap">
+		SELECT
+		  *
+		FROM
+			edms_v_user_info
+		<where>
+            usage_state = 'A'
+        AND org_id IN
+			<foreach collection="deptCodes" item="deptCode" open="(" separator="," close=")">
+				#{deptCode}
+			</foreach>
+		</where>
+	</select>
+	
+	<select id="selectOtherGwUserOneByUserId" resultMap="CustomOtherGwUserMap">
+		SELECT
+		  a.*, b.u_cabinet_code
+		FROM edms_gw_user a
+		LEFT OUTER JOIN edms_v_dept_info b ON a.org_id = b.org_id
+		<where>
+			social_per_id = #{userId}
+		</where>
+	</select>
+	
+	<select id="selectUserListByUserIds" resultMap="CustomUserMap">
+		SELECT
+		  c.USER_STATE, a.*, b.u_cabinet_code, d.org_nm as com_org_nm
+		FROM edms_v_user_info a
+		LEFT OUTER JOIN edms_v_dept_info b ON a.org_id = b.org_id 
+		LEFT OUTER JOIN edms_v_dept_info d ON a.com_org_id = d.org_id
+		LEFT OUTER JOIN edms_user_sp c ON a.USER_ID = c.USER_NAME
+		<where>
+			a.USER_ID IN
+			<foreach collection="userIds" item="userId" open="(" separator="," close=")">
+				#{userId}
+			</foreach>
+		</where>
+	</select>
+	
+	<!-- 
+	<select id="updateUserPw" resultType="int">
+		SELECT count(*)
+		from edms_gw_user
+		<where>
+			social_per_id  = #{userId} 
+			and login_pwd = #{oldPw} 
+		</where>
+	</select>
+	 -->
+	<update id="updateUserPw">
+		UPDATE edms_gw_user
+		<set>
+			login_pwd = #{newPw} 
+		</set>
+		<where>
+			social_per_id  = #{userId} 
+			and login_pwd = #{oldPw} 
+		</where>
+	</update> 
+</mapper>

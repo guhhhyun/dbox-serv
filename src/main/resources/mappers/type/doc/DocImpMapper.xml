@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.doc.DocImpMapper">
+	<resultMap id="DocImpMap" type="com.dongkuksystems.dbox.models.type.doc.DocImp">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="objectName" column="OBJECT_NAME" />
+		<result property="rLockOwner" column="R_LOCK_OWNER" />
+		<result property="rContentSize" column="R_CONTENT_SIZE" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />
+		<result property="uDocKey" column="U_DOC_KEY" />
+		<result property="uFolId" column="U_FOL_ID" />
+		<result property="uSecLevel" column="U_SEC_LEVEL" />
+		<result property="uDocStatus" column="U_DOC_STATUS" />
+		<result property="uDocFlag" column="U_DOC_FLAG" />
+		<result property="uDeleteStatus" column="U_DELETE_STATUS" />
+		<result property="uClosedDate" column="U_CLOSED_DATE" />
+		<result property="uCloser" column="U_CLOSER" />
+		<result property="uPrivacyFlag" column="U_PRIVACY_FLAG" />
+		<result property="uPreserverFlag" column="U_PRESERVE_FLAG" />
+		<result property="uExpiredDate" column="U_EXPIRED_DATE" />
+		<result property="uCopyOrgId" column="U_COPY_ORG_ID" />
+		<result property="uFileExt" column="U_FILE_EXT" />
+		<result property="uDocTag" column="U_DOC_TAG" />
+		<result property="uDocClass" column="U_DOC_CLASS" />
+		<result property="uRegSource" column="U_REG_SOURCE" />
+		<result property="uRegUser" column="U_REG_USER" />
+		<result property="uRegDate" column="U_REG_DATE" />
+		<result property="uEditorNames" column="U_EDITOR_NAMES" />
+		<result property="uFolderPath" column="U_FOLDER_PATH" />
+		<result property="uUpdateDate" column="U_UPDATE_DATE" />
+	</resultMap>
+
+	<select id="selectOne" resultMap="DocImpMap">
+		SELECT
+			r_object_id,
+			object_name,
+			r_lock_owner,
+			r_content_size,
+			u_cabinet_code,
+			u_doc_key,
+			u_fol_id,
+			u_sec_level,
+			u_doc_status,
+			u_doc_flag,
+			u_delete_status,
+			u_closed_date,
+			u_closer,
+			u_open_flag,
+			u_privacy_flag,
+			u_preserve_flag,
+			u_expired_date,
+			u_copy_org_id,
+			u_file_ext,
+			u_doc_tag,
+			u_doc_class,
+			u_reg_source,
+			u_reg_user,
+			u_reg_date,
+			u_editor_names,
+			u_folder_path,
+			u_update_date
+		FROM
+			edms_doc_imp_sp 
+		<where>
+			r_object_id = #{rObjectId}
+		</where>
+	</select>
+</mapper>

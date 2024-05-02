@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.table.stat.statodd.StatOddMapper">
+	<resultMap id="StatOddMap"
+		type="com.dongkuksystems.dbox.models.table.stat.StatOdd">
+		<result property="uComCode" column="U_COM_CODE" />
+		<result property="uDeptCode" column="U_DEPT_CODE" />
+		<result property="uUserId" column="U_USER_ID" />
+		<result property="uDownloadCntOver" column="U_DOWNLOAD_CNT_OVER" />
+		<result property="uDownloadCntWarn" column="U_DOWNLOAD_CNT_WARN" />
+		<result property="uDownloadCntLmonUser" column="U_DOWNLOAD_CNT_LMON_USER" />
+		<result property="uDownloadCntLmonDept" column="U_DOWNLOAD_CNT_LMON_DEPT" />
+		<result property="uTakeoutCntOver" column="U_TAKEOUT_CNT_OVER" />
+		<result property="uTakeoutCntWarn" column="U_TAKEOUT_CNT_WARN" />
+		<result property="uTakeoutCntLmonUser" column="U_TAKEOUT_CNT_LMON_USER" />		
+		<result property="uTakeoutCntLmonDept" column="U_TAKEOUT_CNT_LMON_DEPT" />
+		<result property="uAuthreqCntOver" column="U_AUTHREQ_CNT_OVER" />
+		<result property="uAuthreqCntWarn" column="U_AUTHREQ_CNT_WARN" />		
+		<result property="uAuthreqCntLmonUser" column="U_AUTHREQ_CNT_LMON_USER" />	
+		<result property="uAuthreqCntLmonDept" column="U_AUTHREQ_CNT_LMON_DEPT" />	
+		<result property="uPrintCntOver" column="U_PRINT_CNT_OVER" />
+		<result property="uPrintCntWarn" column="U_PRINT_CNT_WARN" />
+		<result property="uPrintCntLmonUser" column="U_PRINT_CNT_LMON_USER" />
+		<result property="uPrintCntLmonDept" column="U_PRINT_CNT_LMON_DEPT" />
+		<result property="uDeleteCntOver" column="U_DELETE_CNT_OVER" />
+		<result property="uDeleteCntLmonUser" column="U_DELETE_CNT_LMON_USER" />
+		<result property="uDeleteCntLmonDept" column="U_DELETE_CNT_LMON_DEPT" />
+		<result property="uDesigDate" column="U_DESIG_DATE" />
+		<result property="uDesigStatus" column="U_DESIG_STATUS" />
+		<result property="uLogDate" column="U_LOG_DATE" />
+		<result property="comName" column="COM_NAME" />
+		<result property="deptName" column="DEPT_NAME" />
+		<result property="userName" column="USER_NAME" />
+	</resultMap>
+	<select id="selectAll" resultMap="StatOddMap">
+	/* DBOX-PGM-MNG-004 | 특이사용 이력 조회 | 김수연 */
+		select
+			a.*,
+			(
+			select
+				b.u_code_name1
+			from
+				edms_code_sp as b
+			where
+				b.u_code_type = 'COM_CODE'
+				and b.u_code_val1 = a.u_com_code) as com_name,
+			(
+			select
+				c.org_nm
+			from
+				edms_gw_dept as c
+			where
+				c.org_id = a.u_dept_code ) as dept_name,
+			(
+			select
+				d.display_name
+			from
+				edms_gw_user as d
+			where
+				d.social_per_id = a.u_user_id ) as user_name
+		from
+			edms_stat_odd  as a
+		<where>
+		 	a.u_log_date <![CDATA[>]]> to_date(#{statOdd.statStartDate},'YYYYMMDD') AND a.u_log_date <![CDATA[<]]> to_date(#{statOdd.statEndDate},'YYYYMMDD')
+		</where>
+		<if test="statOdd.uComCode != null and statOdd.uComCode != ''">
+			AND a.u_com_code = #{statOdd.uComCode}
+		</if>
+		<if test="statOdd.uDeptCode != null and statOdd.uDeptCode != ''">
+			AND a.u_dept_code = #{statOdd.uDeptCode}
+		</if>
+		<if test="statOdd.deptCodeList != null and !statOdd.deptCodeList.isEmpty()">
+			AND a.u_dept_code IN 
+	        <foreach collection="statOdd.deptCodeList" item="deptCode" open="(" separator="," close=")">
+				#{deptCode}
+			</foreach>
+		</if>
+		<if test="statOdd.uUserId != null and statOdd.uUserId != ''">
+			AND a.u_user_id = #{statOdd.uUserId}
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.sysobject.SysObjectMapper">
+	<select id="selectObjectTypeOne" resultType="String">
+		SELECT
+			r_object_type
+		FROM
+			dm_sysobject_sp 
+		<where>
+			r_object_id = #{rObjectId}
+		</where>
+	</select>
+</mapper>

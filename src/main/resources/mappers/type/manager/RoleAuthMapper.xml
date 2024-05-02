@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.roleauth.RoleAuthMapper">
+	<resultMap id="RoleAuthMap"
+		type="com.dongkuksystems.dbox.models.type.manager.roleauth.RoleAuth">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uAuthGroup" column="U_AUTH_GROUP" />
+		<result property="uConfigFlag" column="U_CONFIG_FLAG" />
+		<result property="uComCode" column="U_COM_CODE" />
+		<result property="uAuthName" column="U_AUTH_NAME" />
+		<result property="uAuthDesc" column="U_AUTH_DESC" />
+		<result property="uCodeName1" column="U_CODE_NAME1" />
+
+		<result property="userName" column="USER_NAME" />
+		<result property="displayName" column="DISPLAY_NAME" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="orgId" column="ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="userId" column="USER_ID" />
+		<result property="name" column="NAME" />
+		<result property="uConfigFlag" column="U_CONFIG_FLAG" />
+		<result property="groupName" column="GROUP_NAME" />
+		<result property="groupName2" column="GROUP_NAME2" />
+		<result property="groupNameG" column="GROUP_NAME_G" />
+		<result property="groupNameP" column="GROUP_NAME_P" />
+		<result property="uGroupScope" column="U_GROUP_SCOPE" />
+		<result property="usersNames" column="USERS_NAMES" />
+					
+	</resultMap>
+	
+	<select id="selectRoleAuthGroups" resultMap="RoleAuthMap">
+		/* DBOX-PGM-MNG-010 | 관리 권한 - 업무역할그룹 조회 | 이성현 */	 
+		SELECT
+			a.r_object_id,
+			a.u_auth_group,
+			a.u_config_flag,
+			a.u_com_code,
+			a.u_auth_name,
+			a.u_auth_desc,
+			a.u_group_scope,
+			b.u_code_name1,
+			(
+			case when u_config_flag = '1'
+			then case when u_group_scope = 'C'
+			then 
+				(
+					SELECT
+						CONCAT(a.u_auth_group, '_', LOWER(eaps.u_doc_flag), '_', LOWER(eaps.u_option_val)) as gn 
+					FROM
+						edms_auth_policy_s eaps 
+					WHERE
+						eaps.u_doc_flag = 'P' 
+						and eaps.u_auth_type = 'COM_MGR' 
+						and eaps.u_selected = 1
+				)
+			else 
+				(
+					SELECT 
+						CONCAT(a.u_auth_group, '_', LOWER(eaps.u_doc_flag), '_', LOWER(eaps.u_option_val)) as gn 
+					FROM
+						edms_auth_policy_s eaps 
+					WHERE
+						eaps.u_doc_flag = 'P' 
+						and eaps.u_auth_type = 'AUDIT_WF' 
+						and eaps.u_selected = 1
+				)
+			end
+			else
+			a.u_auth_group
+			end
+			) as GROUP_NAME,
+			(
+			case when u_config_flag = '1'
+			then case when u_group_scope = 'C'
+			then 
+				(
+					SELECT
+						CONCAT(a.u_auth_group, '_', LOWER(eaps.u_doc_flag), '_', LOWER(eaps.u_option_val)) as gn 
+					FROM
+						edms_auth_policy_s eaps 
+					WHERE
+						eaps.u_doc_flag = 'G' 
+						and eaps.u_auth_type = 'COM_MGR' and eaps.u_selected = 1
+				)
+			else
+			a.u_auth_group
+			end
+			else a.u_auth_group
+			end
+			) as GROUP_NAME2
+		FROM
+			edms_auth_group_s a
+		LEFT JOIN edms_code_s b ON 
+			a.u_com_code = b.u_code_val1
+		
+		<where>
+			b.u_code_type = 'COM_CODE'
+			<if test='type.equals("G")'>
+				AND a.u_config_flag = #{roleManagement.uConfigFlag}
+				AND a.u_group_scope = #{roleManagement.uGroupScope}
+			</if>
+		</where>
+			ORDER BY a.u_group_scope DESC, a.r_object_id ASC
+	</select>
+	
+	<select id="selectRoleAuthGroupUsers" resultMap="RoleAuthMap">
+		/* DBOX-PGM-MNG-010 | 관리 권한 - 업무역할그룹 사용자 조회 | 이성현 */	
+		SELECT
+			S.R_OBJECT_ID,
+			R.USERS_NAMES,
+			U.DISPLAY_NAME,
+			U.COM_ORG_ID,
+			U.ORG_ID,
+			U.ORG_NM,
+			U.USER_ID,
+			T.NAME,
+			C.U_CODE_NAME1,
+			S.GROUP_NAME
+		FROM
+			DM_GROUP_S S,
+			DM_GROUP_R R,
+			EDMS_V_USER_INFO U,
+			EDMS_GW_JOB_PSTN T,
+			EDMS_CODE_S C
+		<where>
+			S.R_OBJECT_ID = R.R_OBJECT_ID
+			AND U.PSTN_CODE = T.PSTN_CODE
+			AND R.USERS_NAMES = U.USER_ID
+			AND C.U_CODE_TYPE = 'COM_CODE'
+			AND U.COM_ORG_ID = C.U_CODE_VAL1			
+			<if test='uGroupScope.equals("C") and uConfigFlag.equals("1")'>
+				AND S.GROUP_NAME = 
+					( 
+					SELECT 
+						CONCAT(#{uAuthGroup}, '_', LOWER(u_doc_flag), '_', LOWER(u_option_val)) as gn 
+					FROM
+						edms_auth_policy_s eaps 
+					WHERE
+						u_doc_flag = 'G' and u_auth_type = 'COM_MGR' and u_selected = 1 
+					)
+			</if>
+			<if test='uGroupScope.equals("G") and uConfigFlag.equals("1")'>
+				AND S.GROUP_NAME = 
+					( 
+					SELECT 
+						CONCAT(#{uAuthGroup}, '_',LOWER(u_doc_flag), '_', LOWER(u_option_val)) as gn 
+					FROM
+						edms_auth_policy_s eaps 
+					WHERE
+						u_doc_flag = 'P' and u_auth_type = 'AUDIT_WF' and u_selected = 1 
+					)
+			</if>
+			<if test='uConfigFlag == "0"'>
+				AND S.GROUP_NAME = #{uAuthGroup}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectMgrUsers" resultMap="RoleAuthMap">
+		/* DBOX-PGM-MNG-010 | 관리 권한 - 업무역할그룹 관리자 조회 | 이성현 */		
+	  SELECT 
+	  	a.r_object_id, 
+	  	a.u_mgr_type,
+	  	a.u_user_id as user_id,
+	  	a.u_com_code,
+	  	b.display_name,
+	  	b.org_nm,
+	  	b.pstn_name as name,
+	  	c.u_code_name1
+	  FROM 			
+			edms_mgr_sp a,
+			EDMS_V_USER_INFO b,			
+			EDMS_CODE_S c 
+		<where>
+			a.u_user_id  = b.user_id	              
+			and	b.com_org_id = c.u_code_val1 
+			AND C.U_CODE_TYPE = 'COM_CODE'
+		 	and a.u_mgr_type = #{uGroupScope}
+		 	and a.u_com_code = #{uComCode}
+		</where>
+	</select>	
+	
+	<select id="selectRoleAuthGroupUser2" resultMap="RoleAuthMap">
+		/* DBOX-PGM-MNG-010 | 관리 권한 - 업무역할그룹 사용자 조회 | 이성현 */	
+		SELECT
+			S.R_OBJECT_ID,
+			R.USERS_NAMES,
+			U.DISPLAY_NAME,
+			U.COM_ORG_ID,
+			U.ORG_ID,
+			U.ORG_NM,
+			U.USER_ID,
+			T.NAME,
+			C.U_CODE_NAME1,
+			S.GROUP_NAME
+
+		FROM
+			DM_GROUP_S S,
+			DM_GROUP_R R,
+			EDMS_V_USER_INFO U,
+			EDMS_GW_JOB_PSTN T,
+			EDMS_CODE_S C
+
+
+		<where>
+			S.R_OBJECT_ID = R.R_OBJECT_ID
+			AND U.PSTN_CODE = T.PSTN_CODE
+			AND R.USERS_NAMES = U.USER_ID
+			AND C.U_CODE_TYPE = 'COM_CODE'
+			AND U.COM_ORG_ID = C.U_CODE_VAL1
+			<if test='uGroupScope.equals("C") and uConfigFlag.equals("1") and uDocFlag.equals("G")'>
+				AND S.GROUP_NAME = 
+					( 
+					SELECT 
+						CONCAT(#{uAuthGroup}, '_', LOWER(u_doc_flag), '_', LOWER(u_option_val)) as gn 
+					FROM 
+						edms_auth_policy_s eaps 
+					WHERE
+						u_doc_flag = 'G' 
+						AND u_auth_type = 'COM_MGR' and u_selected = 1 
+					)
+			</if>
+			<if test='uGroupScope.equals("C") and uConfigFlag.equals("1") and uDocFlag.equals("P")'>
+				AND S.GROUP_NAME = 
+					( 
+					SELECT 
+						CONCAT(#{uAuthGroup}, '_', LOWER(u_doc_flag), '_', LOWER(u_option_val)) as gn 
+					FROM 
+						edms_auth_policy_s eaps 
+					WHERE 
+						u_doc_flag = 'P' 
+						AND u_auth_type = 'COM_MGR' and u_selected = 1 
+					)
+			</if>
+			<if test='uGroupScope.equals("G") and uConfigFlag.equals("1")'>
+				AND S.GROUP_NAME = 
+					(
+					SELECT 
+						CONCAT(#{uAuthGroup}, '_',LOWER(u_doc_flag), '_', LOWER(u_option_val)) as gn 
+					FROM 
+						edms_auth_policy_s eaps 
+					WHERE
+						u_doc_flag = 'P' 
+						AND u_auth_type = 'AUDIT_WF' and u_selected = 1 
+					)
+			</if>
+			<if test='uConfigFlag == "0"'>
+				AND S.GROUP_NAME = #{uAuthGroup}
+			</if>
+		</where>
+	</select>
+
+	<select id="selectEntMgrUsers" resultMap="RoleAuthMap">
+		/* DBOX-PGM-MNG-010 | 관리 권한 - 업무역할그룹 그룹관리자 조회 | 이성현 */		
+		SELECT
+			a.r_object_id,
+			b.user_id,
+			d.u_code_name1,
+			b.org_nm,
+			c.name,
+			b.display_name
+		FROM
+			edms_mgr_s a,
+			edms_v_user_info b,
+			edms_gw_job_pstn c,
+			edms_code_s d
+
+		<where>
+			a.u_mgr_type = 'G'
+			AND a.u_user_id = b.user_id
+			AND d.u_code_type = 'COM_CODE'
+			AND b.com_org_id = d.u_code_val1
+			AND b.pstn_code = c.pstn_code
+		</where>
+	</select>
+
+	<select id="selectCompanyMgrUsers" resultMap="RoleAuthMap">
+		/* DBOX-PGM-MNG-010 | 관리 권한 - 업무역할그룹 전사관리자 조회 | 이성현 */		
+		SELECT
+			r_object_id
+		FROM
+			edms_mgr_s
+
+		<where>
+			u_mgr_type = 'C'
+			AND u_user_id = #{userId}
+		</where>
+	</select>
+
+	<select id="selectDeptMgrGroup" resultMap="RoleAuthMap">
+		/* DBOX-PGM-MNG-010 | 관리 권한 - 업무역할그룹 부서역할 조회 | 이성현 */		
+		SELECT
+			r_object_id,
+			group_name
+		FROM
+			dm_group_s
+
+		<where>
+			group_name like CONCAT('%','g\_d_____\_mgr\_',LOWER(#{uDocFlag}),'\_',LOWER(#{uOptionVal}),'%') escape '\'
+		</where>
+			ORDER BY group_name asc
+	</select>
+
+	<select id="selectDeptMgrUser" resultMap="RoleAuthMap">
+		/* DBOX-PGM-MNG-010 | 관리 권한 - 업무역할그룹 부서장 조회 | 이성현 */		
+		SELECT
+			a.r_object_id,
+			a.group_name,
+			b.users_names
+		FROM
+			dm_group_s a,
+			dm_group_r b
+
+		<where>
+			a.r_object_id = b.r_object_id 
+			AND a.group_name = #{groupName}
+		</where>
+			ORDER BY group_name asc
+	</select>
+
+	<select id="selectCompanyAclName" resultMap="RoleAuthMap">
+		/* DBOX-PGM-MNG-010 | 관리 권한 - 업무역할그룹 사별 ACL 조회 | 이성현 */		
+		SELECT
+			a.r_object_id,						
+			a.u_com_code,
+			a.u_auth_name,
+			a.u_auth_desc,
+			a.u_group_scope,
+			b.u_code_name1,
+			(
+			case when u_config_flag = '1'
+			then case when u_group_scope = 'C'
+			then 
+				(
+					SELECT
+						CONCAT(a.u_auth_group, '_', LOWER(eaps.u_doc_flag), '_', LOWER(eaps.u_option_val)) as gn 
+					FROM
+						edms_auth_policy_s eaps 
+					WHERE
+						eaps.u_doc_flag = 'P' 
+						and eaps.u_auth_type = 'COM_MGR' 
+						and eaps.u_selected = 1
+				)			
+			end
+			else
+			a.u_auth_group
+			end
+			) as GROUP_NAME,
+			(
+			case when u_config_flag = '1'
+			then case when u_group_scope = 'C'
+			then 
+				(
+					SELECT
+						CONCAT(a.u_auth_group, '_', LOWER(eaps.u_doc_flag), '_', LOWER(eaps.u_option_val)) as gn 
+					FROM
+						edms_auth_policy_s eaps 
+					WHERE
+						eaps.u_doc_flag = 'G' 
+						and eaps.u_auth_type = 'COM_MGR' and eaps.u_selected = 1
+				)
+			else
+			a.u_auth_group
+			end
+			else a.u_auth_group
+			end
+			) as GROUP_NAME2
+		FROM
+			edms_auth_group_s a
+		LEFT JOIN edms_code_s b ON 
+			a.u_com_code = b.u_code_val1
+
+		<where>
+			b.u_code_type = 'COM_CODE'
+			and u_auth_name ='전사 문서관리자'
+			<if test='uComCode != "" and uComCode != null'>
+				AND a.u_com_code != #{uComCode}					
+			</if>			
+		</where>			
+	</select>
+	
+	<select id="selectDeleteMgrUser" resultMap="RoleAuthMap">
+		/* DBOX-PGM-MNG-010 | 관리 권한 - 업무역할그룹 관리자 조회 | 이성현 */		
+		SELECT
+			r_object_id,
+			u_user_id,
+			u_com_code
+		FROM
+			edms_mgr_sp
+
+		<where>
+			u_mgr_type = #{mgrType}
+			AND u_user_id = #{userId}
+		</where>			
+	</select>
+				
+
+</mapper>
+
+

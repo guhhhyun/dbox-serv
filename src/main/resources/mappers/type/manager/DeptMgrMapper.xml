@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper 
+	namespace="com.dongkuksystems.dbox.daos.type.manager.deptMgr.DeptMgrMapper">
+	<resultMap id="DeptMgrMap" type="com.dongkuksystems.dbox.models.type.manager.deptMgr.DeptMgrs">
+		<id property="uDeptCode" column="U_Dept_Code" />
+		<result property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uUserId" column="U_USER_ID" />
+		<result property="uMgrType" column="U_MGR_TYPE" />
+		<result property="uAssignUser" column="U_ASSIGN_USER" />
+		<result property="uAssignDate" column="U_ASSIGN_DATE" />
+		<result property="uAssignUserType" column="U_ASSIGN_USER_TYPE" />
+	</resultMap>
+
+	<select id="selectByDeptCode" resultMap="DeptMgrMap">
+	
+		SELECT
+			*
+		FROM
+			edms_dept_mgr_sp
+	<where>
+		u_dept_code = #{uDeptCode}
+	</where>
+	
+	</select>
+	
+	<select id="kingByDeptCode" resultMap="DeptMgrMap">
+  
+    SELECT
+      *
+    FROM
+      edms_dept_mgr_sp
+  <where>
+    u_dept_code = #{uDeptCode} AND
+    u_mgr_type IN ('D')
+  </where>
+  
+  </select>
+		
+		
+
+</mapper>

@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.table.etc.gwdept.GwDeptMapper">
+	<resultMap id="GwDeptMap"
+		type="com.dongkuksystems.dbox.models.table.etc.GwDept">
+		<id property="orgId" column="ORG_ID" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="regionCode" column="REGION_CODE" />
+		<result property="upOrgId" column="UP_ORG_ID" />
+		<result property="managerPerId" column="MANAGER_PER_ID" />
+		<result property="sortKey" column="SORT_KEY" />
+		<result property="usageState" column="USAGE_STATE" />
+		<result property="unitFullId" column="UNIT_FULL_ID" />
+		<result property="unitFullName" column="UNIT_FULL_NAME" />
+		<result property="unitFullsortKey" column="UNIT_FULL_SORT_KEY" />
+		<result property="siteId" column="SITE_ID" />
+		<result property="unitTypeCd" column="UNIT_TYPE_CD" />
+		<result property="overseaWork" column="OVERSEA_WORK" />
+		<result property="orgType" column="ORG_TYPE" />
+		<result property="communityId" column="community_id" />
+	</resultMap>
+
+	<resultMap id="VDeptMap"
+		type="com.dongkuksystems.dbox.models.table.etc.VDept">
+		<id property="orgId" column="ORG_ID" />
+		<result property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />
+		<result property="uCloseState" column="U_CLOSE_STATE" />
+		<result property="uCreateDate" column="U_CREATE_DATE" />
+		<result property="uUpdateDate" column="U_UPDATE_DATE" />
+		<result property="shortName" column="SHORT_NAME" />
+		<result property="insertDate" column="INSERT_DATE" />
+		<result property="sortNo" column="SORT_NO" />
+		<result property="bandYn" column="BAND_YN" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="regionCode" column="REGION_CODE" />
+		<result property="upOrgId" column="UP_ORG_ID" />
+		<result property="managerPerId" column="MANAGER_PER_ID" />
+		<result property="sortKey" column="SORT_KEY" />
+		<result property="usageState" column="USAGE_STATE" />
+		<result property="unitFullId" column="UNIT_FULL_ID" />
+		<result property="unitFullName" column="UNIT_FULL_NAME" />
+		<result property="unitFullsortKey" column="UNIT_FULL_SORT_KEY" />
+		<result property="siteId" column="SITE_ID" />
+		<result property="unitTypeCd" column="UNIT_TYPE_CD" />
+		<result property="overseaWork" column="OVERSEA_WORK" />
+		<result property="orgType" column="ORG_TYPE" />
+		<result property="communityId" column="community_id" />
+	</resultMap>
+
+	<resultMap id="GwDeptPathMap"
+		type="com.dongkuksystems.dbox.models.dto.table.gwdept.GwDeptPathDto">
+		<result property="deptPath" column="DEPT_PATH" />
+		<result property="deptIdPath" column="DEPT_ID_PATH" />
+	</resultMap>
+	
+	<resultMap id="GwDeptListManagerDto" 
+		type="com.dongkuksystems.dbox.models.dto.table.gwdept.GwDeptListManagerDto">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="deptId" column="ORG_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="disPlayName" column="DISPLAY_NAME" />
+		<result property="saBun" column="SABUN" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="orgId" column="ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="titleName" column="TITLE_NAME" />
+		<result property="uMgrType" column="U_MGR_TYPE" />
+		<result property="uAssignUser" column="U_ASSIGN_USER" />
+		<result property="uAssignDate" column="U_ASSIGN_DATE" />
+		<result property="uAssignUserType" column="U_ASSIGN_USER_TYPE" />
+		<result property="assignUserName" column="ASSIGN_USER_NAME" />
+	</resultMap>
+	
+	<resultMap id="GwSelectDeptManagerDto" 
+		type="com.dongkuksystems.dbox.models.dto.table.gwdept.GwSelectDeptManagerDto">
+		<result property="orgId" column="ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="managerPerId" column="MANAGER_PER_ID" />
+		<result property="usageState" column="USAGE_STATE" />
+		<result property="unitFullId" column="UNIT_FULL_ID" />
+		<result property="unitFullName" column="UNIT_FULL_NAME" /> 
+	</resultMap>
+	
+	<resultMap id="GwManagerListDto" 
+		type="com.dongkuksystems.dbox.models.dto.table.gwdept.GwManagerListDto">
+		<result property="userId" column="USER_ID" />
+		<result property="displayName" column="DISPLAY_NAME" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="ordId" column="ORG_ID" />
+		<result property="gwOrgId" column="GW_ORG_ID" />
+		<result property="pstnCode" column="PSTN_CODE" /> 
+		<result property="pstnName" column="PSTN_NAME" /> 
+	</resultMap>
+
+	<select id="selectAll" resultMap="VDeptMap">
+		SELECT
+			*
+		FROM edms_v_dept_info b
+		<where>
+			USAGE_STATE = 'A'
+			AND unit_type_cd = 'EMP'
+			AND b.ORG_TYPE != 'P'
+		</where>
+		ORDER BY 
+       CASE WHEN b.ORG_ID = 'DKG' THEN 0
+	      WHEN b.ORG_ID = 'DKS' THEN 1
+	      WHEN b.ORG_ID = 'ITG' THEN 2
+	      WHEN b.ORG_ID = 'UNC' THEN 3
+	      WHEN b.ORG_ID = 'FEI' THEN 4
+	      ELSE 5 END,
+ 		CASE WHEN ASCII(SUBSTRING(b.COM_ORG_ID, 1, 1)) &lt; 68 THEN 0
+	      WHEN ASCII(SUBSTRING(b.COM_ORG_ID, 1, 1)) &lt; 73 THEN 1
+	      WHEN ASCII(SUBSTRING(b.COM_ORG_ID, 1, 1)) &lt; 85 THEN 2
+	      ELSE 3
+	      END,
+     array_length(string_to_array(b.UNIT_FULL_ID , '\'), 1) - 1,
+      SUBSTRING(b.UNIT_FULL_ID, 0, POSITION(b.ORG_ID IN b.UNIT_FULL_ID)-1) desc, 
+      b.SORT_KEY,
+       b.ORG_NM 
+      <if test="direction == 'asc'">ASC</if>
+      <if test="direction == 'desc'">DESC</if> 
+      
+   
+	</select>
+
+	<select id="selectOrgIdByCabinetcode" resultType="string">
+		SELECT
+		ORG_ID 
+		FROM edms_v_dept_info
+		<where>
+			U_CABINET_CODE = #{cabinetCode}
+			AND unit_type_cd = 'EMP'
+		</where>
+	</select>
+	
+	<select id="selectComCodeByCabinetCode" resultType="string">
+		SELECT
+		COM_ORG_ID 
+		FROM edms_v_dept_info
+		<where>
+			U_CABINET_CODE = #{cabinetCode}
+			AND unit_type_cd = 'EMP'
+		</where>
+	</select>
+
+	<select id="selectOneByOrgId" resultMap="VDeptMap">
+		SELECT
+            d.r_object_id
+        ,   d.u_cabinet_code
+        ,   d.u_close_state
+        ,   d.u_create_date
+        ,   d.u_update_date
+        ,   g.org_id
+        ,   g.org_nm
+        ,   g.com_org_id
+        ,   g.up_org_id
+        ,   g.manager_per_id
+        ,   g.sort_key
+        ,   g.usage_state
+        ,   g.unit_full_id
+        ,   g.unit_full_name
+        ,   g.unit_type_cd
+        ,   g.org_type
+        ,   g.community_id
+        FROM
+                        edms_gw_dept    g
+        LEFT OUTER JOIN edms_dept_s     d ON d.u_dept_code::text = g.org_id::text
+        <where>
+            g.org_id = #{orgId}
+        </where>
+	</select>
+	
+	<select id="selectOneByCabinetCode" resultMap="VDeptMap">
+        SELECT
+            d.r_object_id
+        ,   d.u_cabinet_code
+        ,   d.u_close_state
+        ,   d.u_create_date
+        ,   d.u_update_date
+        ,   g.org_id
+        ,   g.org_nm
+        ,   g.com_org_id
+        ,   g.up_org_id
+        ,   g.manager_per_id
+        ,   g.sort_key
+        ,   g.usage_state
+        ,   g.unit_full_id
+        ,   g.unit_full_name
+        ,   g.unit_type_cd
+        ,   g.org_type
+        ,   g.community_id
+        FROM
+                        edms_gw_dept    g
+        LEFT OUTER JOIN edms_dept_s     d ON d.u_dept_code::text = g.org_id::text
+		<where>
+			d.u_cabinet_code = #{cabinetCode}
+			limit 1
+		</where>
+	</select>
+	<select id="selectOneByOrgIdDefault" resultMap="VDeptMap">
+		SELECT
+		*
+		FROM edms_v_dept_info
+		<where>
+			ORG_ID = #{orgId}
+		</where>
+	</select>
+
+	<select id="selectListByUpOrgId" resultMap="VDeptMap">
+		SELECT a.*
+		FROM edms_v_dept_info a
+		
+		<where>
+			a.USAGE_STATE = #{usageState}
+			AND a.UP_ORG_ID = #{upOrgId}
+			AND unit_type_cd = 'EMP'
+		</where>
+		order by CASE
+       WHEN ASCII(SUBSTRING(a.ORG_NM, 1)) BETWEEN 48 AND 57 THEN 3
+       WHEN ASCII(SUBSTRING(a.ORG_NM, 1)) &lt; 128 THEN 2
+       ELSE 1
+      END
+      ,SORT_KEY 
+      ,a.ORG_NM
+      <if test="direction == 'asc'">ASC</if>
+      <if test="direction == 'desc'">DESC</if> 
+      ,U_CREATE_DATE
+	</select>
+
+	<select id="selectDeptPath" resultMap="GwDeptPathMap">
+		with recursive get_dept_path as(
+		select 1 as lvl, a.org_id, a.org_nm, a.up_org_id, a.sort_key,
+		CAST(a.org_nm as character varying(500)) as DEPT_PATH,
+		CAST(a.org_id as character varying(500)) as DEPT_ID_PATH
+		from edms_v_dept_info a
+		<where>
+			a.org_id = #{orgId}
+		</where>
+		union all
+		select b.lvl + 1 as lvl, c.org_id, c.org_nm, c.up_org_id, c.sort_key,
+		cast(concat(c.org_nm, '>', b.DEPT_PATH) as character varying(500)) as
+		DEPT_PATH,
+		cast(concat(c.org_id, '>', b.DEPT_ID_PATH) as character varying(500)) as DEPT_ID_PATH
+		from get_dept_path b, edms_v_dept_info c
+		where b.up_org_id = c.org_id
+		) select DEPT_PATH, DEPT_ID_PATH
+		from get_dept_path
+		order by lvl desc
+		
+		limit 1;
+	</select>
+	<select id="selectDeptChildrenByOrgId" resultMap="VDeptMap">
+	/* DBOX-PGM-MNG-004 | 특이사용자 사전Warning 기준값 조회 | 김수연 */
+		with recursive VIEWNAME as(
+		select
+			a.org_id,
+			a.up_org_id
+		from
+			edms_v_dept_info a
+			<where>
+				a.ORG_ID = #{orgId}
+			</where>
+		union all
+		select
+			c.org_id,
+			c.up_org_id
+		from
+			VIEWNAME b,
+			edms_v_dept_info c
+		where
+			b.org_id = c.up_org_id)
+		select
+			b.*
+		from
+			VIEWNAME a
+		inner join edms_v_dept_info b on a.org_id = b.org_id
+		<where>
+			a.org_id != #{orgId}
+		</where> 
+	</select>
+	
+	<select id="selectOrgIdRecursiveUsable" resultType="String">
+		WITH RECURSIVE dept_tree AS (
+			SELECT
+				up_org_id,
+				org_id
+			FROM
+				edms_gw_dept
+			WHERE
+				org_id = #{orgId}
+			AND	usage_state = 'A'
+			
+			UNION ALL
+			
+			SELECT
+				b.up_org_id,
+				b.org_id
+			FROM
+				dept_tree		a INNER JOIN
+				edms_gw_dept	b ON a.org_id = b.up_org_id
+			WHERE
+				usage_state = 'A'
+		)
+		SELECT
+			org_id
+		FROM
+			dept_tree
+	</select>
+	 <select id="selectUserListOfPart" resultType="String">
+			SELECT
+			  user_id
+			FROM
+				edms_v_user_info
+			<where>
+				gw_org_id =#{gwOrgId}
+			</where>
+		</select>	
+
+	<select id="selectDeptMemberList" resultMap="GwDeptListManagerDto">
+		SELECT user.user_id
+		     , user.display_name
+		     , user.title_name
+		     , user.com_org_id
+		     , mgr.*
+		FROM (
+			SELECT user_id, display_name, com_org_id, org_id, title_code, title_name
+				FROM edms_v_user_info
+					WHERE org_id = #{deptId}
+					  AND usage_state = 'A'
+			UNION
+			SELECT user.user_id, user.display_name, user.com_org_id, addjob.unit_code, title.title_code, title.name
+				FROM edms_gw_job_title title, edms_gw_addjob addjob, edms_v_user_info user
+					WHERE addjob.title_code = title.title_code
+			  			AND addjob.person_code = user.user_id
+			  			AND addjob.unit_code = #{deptId}
+		) user, (
+			SELECT	mgr.r_object_id, u_user_id, u_mgr_type, u_assign_user, u_assign_date, u_assign_user_type
+				,	coalesce( ( SELECT DISTINCT(display_name) FROM edms_v_user_info WHERE user_id = mgr.u_assign_user ), u_assign_user ) AS ASSIGN_USER_NAME
+				FROM edms_dept_mgr_sp mgr
+					WHERE u_dept_code = #{deptId}
+		) mgr
+		WHERE user.user_id = mgr.u_user_id(+)
+			ORDER BY user.title_code, user.display_name
+	</select>
+
+	<select id="selectDeptManagerList" resultMap="GwDeptListManagerDto">
+		SELECT * FROM edms_dept_mgr_sp WHERE u_dept_code = #{deptId}
+	</select>
+	
+	<select id = "selectDeptManager" resultMap = "GwSelectDeptManagerDto">
+     select org_id 
+	     , org_nm 
+	     , manager_per_id 
+	     , usage_state 
+	     , unit_full_id 
+	     , unit_full_name 
+		  from edms_gw_dept egd
+		 where org_id = #{deptId}
+	</select>
+	
+	<select id="selectCheckdeptManagerList" resultMap="GwDeptListManagerDto" >
+		select  a.user_id 
+		      , a.display_name 
+		      , a.sabun 
+		      , a.com_org_id 
+		      , a.org_id 
+		      , a.gw_org_id 
+		      , a.org_nm 
+		      , a.title_name 
+		      , b.u_mgr_type 
+		      , b.u_assign_user 
+		      , b.u_assign_date 
+		      , b.u_assign_user_type 
+		  from  edms_v_user_info a LEFT OUTER JOIN
+		        edms_dept_mgr_sp b on a.org_id = b.u_dept_code
+		 where a.org_id =  #{deptId}
+		   and a.user_id = #{newUserId}
+      order by title_code
+	</select>
+	<select id="selectDeptMng" resultMap="GwDeptMap">
+	/* DBOX-PGM-MNG-018 | 부서장 조회 | 김수연 */
+		SELECT
+			*
+		FROM
+			edms_gw_dept
+		<where>
+			usage_state = 'A'
+			AND manager_per_id =#{managerPerId}
+		</where>
+	</select>
+	
+	<select id="selectDeptsInGwDept" resultMap="GwDeptMap">
+	/* DBOX-GwDeptMapper | gwdept에서 전체조회 | 유두연 */
+		SELECT
+			*
+		FROM
+			edms_gw_dept
+		<where>
+			usage_state = 'A' 
+			and ORG_TYPE != 'P'
+		</where>
+	</select>
+
+	<select id="selectGwOneByOrgId" resultMap="GwDeptMap">
+	/* DBOX-GwDeptMapper | gwdept에서 orgId로조회 | 유두연 */
+		SELECT
+		*
+		FROM edms_gw_dept
+		<where>
+			ORG_ID = #{orgId}
+		</where>
+	</select>
+	
+</mapper>

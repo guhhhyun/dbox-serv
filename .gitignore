@@ -1,0 +1,116 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+
+### custom
+
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+*.classpath
+*.gz
+*.log.gz
+
+### Java ###
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Package Files #
+# *.jar
+# *.zip
+*.war
+*.nar
+*.ear
+*.tar.gz
+*.rar
+
+#Gradle temporary files
+target/
+ 
+# STS (Spring Tool Suite)
+.springBeans
+
+### Eclipse Patch ###
+# Eclipse Core
+.project
+
+**/root/build/
+**/root/log/
+**/root/logs/
+
+
+#IntelliJ files
+**/*.iml
+**/.idea
+**/.gradle
+**/build
+**/raonkuploaddata
+
+### Eclipse ###
+**/.project
+**/.classpath
+**/.settings/
+blog/bin/
+**/.tern-project
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.target/
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# production
+src/main/resources/static/
+*.DS_Store
+.temp-*.txt

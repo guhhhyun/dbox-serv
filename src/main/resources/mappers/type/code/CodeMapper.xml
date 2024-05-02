@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.code.CodeMapper">
+	<resultMap id="CodeMap" type="com.dongkuksystems.dbox.models.type.code.Code">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uCodeType" column="U_CODE_TYPE" />
+		<result property="uTypeName" column="U_TYPE_NAME" />
+		<result property="uCodeVal1" column="U_CODE_VAL1" />
+		<result property="uCodeVal2" column="U_CODE_VAL2" />
+		<result property="uCodeVal3" column="U_CODE_VAL3" />
+		<result property="uCodeName1" column="U_CODE_NAME1" />
+		<result property="uCodeName2" column="U_CODE_NAME2" />
+		<result property="uCodeName3" column="U_CODE_NAME3" />
+		<result property="uCodeDesc" column="U_CODE_DESC" />
+		<result property="uSortOrder" column="U_SORT_ORDER" />
+		<result property="uCreateUser" column="U_CREATE_USER" />
+		<result property="uCreateDate" column="U_CREATE_DATE" />
+		<result property="uUpdateUser" column="U_UPDATE_USER" />
+		<result property="uUpdateDate" column="U_UPDATE_DATE" />
+	</resultMap>
+	<resultMap id="CodeLogviewAuthMap"
+		type="com.dongkuksystems.dbox.models.type.code.CodeLogviewAuth">
+		<result property="codeName" column="CODE_NAME" />
+		<result property="cnt" column="CNT" />
+
+		<association property="code" javaType="Code">
+			<id property="rObjectId" column="R_OBJECT_ID" />
+			<result property="uCodeType" column="U_CODE_TYPE" />
+			<result property="uTypeName" column="U_TYPE_NAME" />
+			<result property="uCodeVal1" column="U_CODE_VAL1" />
+			<result property="uCodeVal2" column="U_CODE_VAL2" />
+			<result property="uCodeVal3" column="U_CODE_VAL3" />
+			<result property="uCodeName1" column="U_CODE_NAME1" />
+			<result property="uCodeName2" column="U_CODE_NAME2" />
+			<result property="uCodeName3" column="U_CODE_NAME3" />
+			<result property="uCodeDesc" column="U_CODE_DESC" />
+			<result property="uSortOrder" column="U_SORT_ORDER" />
+			<result property="uCreateUser" column="U_CREATE_USER" />
+			<result property="uCreateDate" column="U_CREATE_DATE" />
+			<result property="uUpdateUser" column="U_UPDATE_USER" />
+			<result property="uUpdateDate" column="U_UPDATE_DATE" />
+		</association>
+	</resultMap>
+
+	<select id="selectOne" resultMap="CodeMap">
+		SELECT
+			r_object_id,
+			u_code_type,
+			u_type_name,
+			u_code_val1,
+			u_code_val2,
+			u_code_val3,
+			u_code_name1,
+			u_code_name2,
+			u_code_name3,
+			u_code_desc,
+			u_sort_order,
+			u_create_user,
+			u_create_date,
+			u_update_user,
+			u_update_date
+		FROM
+			edms_code_sp
+		<where>
+			r_object_id = #{objectId}
+		</where>
+	</select>
+	
+	<select id="selectOneByOther" resultMap="CodeMap">
+    SELECT
+      r_object_id,
+      u_code_type,
+      u_type_name,
+      u_code_val1,
+      u_code_val2,
+      u_code_val3,
+      u_code_name1,
+      u_code_name2,
+      u_code_name3,
+      u_code_desc,
+      u_sort_order,
+      u_create_user,
+      u_create_date,
+      u_update_user,
+      u_update_date
+    FROM
+      edms_code_sp
+    <where>
+      u_code_type = #{uCodeType} AND
+      u_code_val1 = #{uCodeVal1} AND
+      u_code_val2 = #{uCodeVal2} 
+    </where>
+  </select>
+	
+
+	<select id="selectList" resultMap="CodeMap">
+		SELECT
+			r_object_id,
+			u_code_type,
+			u_type_name,
+			u_code_val1,
+			u_code_val2,
+			u_code_val3,
+			u_code_name1,
+			u_code_name2,
+			u_code_name3,
+			u_code_desc,
+			u_sort_order,
+			u_create_user,
+			u_create_date,
+			u_update_user,
+			u_update_date
+		FROM
+			edms_code_sp
+		<where>
+			u_code_type = #{code.uCodeType}
+			<if test="code.uCodeVal1 != null">
+				AND u_code_val1 = #{code.uCodeVal1}
+			</if>
+			<if test="code.uCodeVal2 != null">
+				AND u_code_val2 = #{code.uCodeVal2}
+			</if>
+			<if test="code.uCodeVal3 != null">
+				AND u_code_val3 = #{code.uCodeVal3}
+			</if>
+		</where>
+		ORDER BY u_sort_order ASC
+	</select>
+	
+	<select id="selectLogview" resultMap="CodeLogviewAuthMap">
+	/* DBOX-PGM-MNG-006 | 이력 code 조회 | 김수연 */
+		SELECT
+			a.r_object_id,
+			a.u_code_type,
+			a.u_type_name,
+			a.u_code_val1,
+			a.u_code_val2,
+			a.u_code_val3,
+			a.u_code_name1,
+			a.u_code_name2,
+			a.u_code_name3,
+			a.u_code_desc,
+			a.u_sort_order,
+			a.u_create_user,
+			a.u_create_date,
+			a.u_update_user,
+			a.u_update_date,
+			(select c.u_code_name1 
+			from edms_code_sp as c 
+			where c.u_code_val1 = a.u_code_val2  
+			and  c.u_code_type = #{codeType}) as code_name,
+			(select count(*) as cnt 
+			from edms_his_view_user_sp as b 
+			where b.u_his_code = a.u_code_val2  
+			and  b.u_com_code = a.u_code_val1) as cnt
+		FROM
+			edms_code_sp as a 
+		<where>
+			a.u_code_type = #{code.uCodeType}
+			<if test="code.uCodeVal1 != null">
+				AND a.u_code_val1 = #{code.uCodeVal1}
+			</if>
+		</where>
+		ORDER BY a.u_sort_order ASC
+	</select>
+	
+	
+	<select id="selectMenuList" resultMap="CodeLogviewAuthMap">
+	/* DBOX-PGM-MNG-001 | 관리자 메뉴 권한  | 김수연 */
+		WITH menu_auth as (
+			SELECT
+				*
+			FROM
+				edms_code_sp
+			WHERE
+				u_code_desc = cast(#{code.uCodeDesc} as integer) -1
+			UNION ALL
+			SELECT
+				*
+			FROM
+				edms_code_sp 
+			WHERE
+				u_code_desc = #{code.uCodeDesc})
+			SELECT * FROM menu_auth
+		<where>
+			u_code_type = #{code.uCodeType}
+			AND u_code_val3 = #{code.uCodeVal3}
+			AND ((
+			SELECT split_part(ARRAY_TO_STRING(ARRAY_AGG(u_mgr_type),',') , ',', 1)
+			FROM
+				edms_mgr_sp
+			WHERE
+				u_user_id = #{uUserId}
+				GROUP BY u_user_id) = any (string_to_array(u_code_name2, ','))
+			or (
+			SELECT split_part(ARRAY_TO_STRING(ARRAY_AGG(u_mgr_type),',') , ',', 2)
+			FROM
+				edms_mgr_sp
+			WHERE
+				u_user_id = #{uUserId}
+			GROUP BY u_user_id) = any (string_to_array(u_code_name2, ','))
+			or (
+			SELECT
+				CASE
+					WHEN u_mgr_type = 'M' THEN 'D'
+					ELSE u_mgr_type END as u_mgr_type
+				FROM
+					edms_dept_mgr_sp
+				WHERE
+					u_user_id = #{uUserId}
+				LIMIT 1) = any (string_to_array(u_code_name2, ','))
+			OR (
+			SELECT
+				CASE
+					WHEN count(*) > 0 THEN 'P'
+					ELSE null END as u_mgr_type
+				FROM
+					edms_gw_dept
+				WHERE
+					manager_per_id = #{uUserId}
+					and usage_state = 'A'
+				LIMIT 1) = any (string_to_array(u_code_name2, ','))
+			OR (
+			SELECT
+				CASE
+					WHEN count(*) > 0 THEN 'A'
+					ELSE null END as u_mgr_type
+				FROM
+					edms_v_user_info
+				WHERE
+					user_id = #{uUserId}
+					AND usage_state = 'A') = any (string_to_array(u_code_name2, ',')))
+			<if test="code.uCodeVal2 != null">
+				AND u_code_val2 = #{code.uCodeVal2}
+			</if>
+		</where>
+		ORDER BY
+			u_code_desc ASC,
+			(
+			select
+				c.u_sort_order
+			from
+				edms_code_sp as c
+			where
+				c.u_code_type = #{code.uCodeType}
+				and c.u_code_val3 = #{code.uCodeVal3}
+				and c.u_code_desc = cast(#{code.uCodeDesc} as integer) -1
+				and c.u_code_val1 = u_code_val2) ASC,
+			u_code_val2 DESC,
+			u_sort_order ASC
+	</select>
+	
+	<select id="getHistoryMenuList" resultMap="CodeLogviewAuthMap">
+		SELECT 
+			A.R_OBJECT_ID,
+			A.U_CODE_TYPE,
+			A.U_TYPE_NAME,
+			A.U_CODE_VAL1,
+			A.U_CODE_VAL2,
+			A.U_CODE_VAL3,
+			A.U_CODE_NAME1,
+			A.U_CODE_NAME2,
+			A.U_CODE_NAME3,
+			A.U_CODE_DESC,
+			A.U_SORT_ORDER,
+			A.U_CREATE_USER,
+			A.U_CREATE_DATE,
+			A.U_UPDATE_USER,
+			A.U_UPDATE_DATE,
+			(
+				SELECT
+					C.U_CODE_NAME1
+				FROM
+					EDMS_CODE_SP AS C
+				WHERE
+					C.U_CODE_VAL1 = A.U_CODE_VAL2
+					AND C.U_CODE_TYPE = 'LOGVIEW_AUTH_ITEM') AS CODE_NAME,
+			(
+				SELECT
+					COUNT(*) AS CNT
+				FROM
+					EDMS_HIS_VIEW_USER_SP AS B
+				WHERE
+					B.U_HIS_CODE = A.U_CODE_VAL2
+					AND B.U_COM_CODE = A.U_CODE_VAL1) AS CNT
+		FROM EDMS_CODE_SP A  
+		WHERE 	U_CODE_TYPE  = #{code.uCodeType}
+		AND 	U_CODE_VAL1  = #{uUserOrgId}
+		AND 
+		(	
+			( U_CODE_VAL3 = 'Y' AND 
+					(
+						SELECT
+							COUNT(*)
+						FROM EDMS_MGR_SP
+						WHERE U_MGR_TYPE IN ('C','G')
+						AND U_USER_ID = #{uUserId}
+					)  > 0
+			)
+			-- 부서관리자
+			OR
+			( U_CODE_NAME1 = 'Y' AND 
+					(
+						SELECT
+							COUNT(*)
+						FROM
+							EDMS_DEPT_MGR_SP
+						WHERE U_USER_ID = #{uUserId}
+					) > 0
+			)
+			-- CHAIRMAN
+			OR
+			( U_CODE_NAME2 = 'Y' AND 
+					(
+						SELECT 
+							count(*)
+						FROM DM_GROUP_S S, DM_GROUP_R R, EDMS_V_USER_INFO U, EDMS_GW_JOB_PSTN T, EDMS_CODE_S C 
+						WHERE S.R_OBJECT_ID = R.R_OBJECT_ID 
+						AND U.PSTN_CODE 	= T.PSTN_CODE 
+						AND R.USERS_NAMES 	= U.USER_ID 
+						AND C.U_CODE_TYPE 	= 'COM_CODE' 
+						AND U.COM_ORG_ID 	= C.U_CODE_VAL1 
+						AND S.GROUP_NAME 	= 'g_chairman'
+						AND R.USERS_NAMES   = #{uUserId}
+					) > 0
+			)
+			-- 직속임원
+			OR
+			( U_CODE_NAME3 = 'Y' AND 
+					(
+						SELECT COUNT(*) 
+						FROM EDMS_V_USER_INFO EVUI 
+						WHERE EMP_TYPE = 0
+						AND USER_ID = #{uUserId}
+						AND USAGE_STATE = 'A'
+					) > 0
+			)
+			OR
+			( 	( SELECT COUNT(*) FROM EDMS_HIS_VIEW_USER_SP 
+					WHERE U_COM_CODE 	=  A.U_CODE_VAL1 
+					AND U_HIS_CODE 		= A.U_CODE_VAL2 
+					AND U_USER_ID 		= #{uUserId}
+					) > 0
+			)
+		)
+		ORDER BY A.U_SORT_ORDER ASC
+	</select>	
+</mapper>

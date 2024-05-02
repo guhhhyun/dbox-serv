@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.manager.lockeddata.LockedDataMapper">
+
+    <select id="selectLockedData" resultType="hashMap">
+        SELECT  doc.r_object_id
+				     ,  doc.object_name
+				     ,  doc.u_folder_path
+				     ,  doc.r_content_size
+				     ,  (SELECT display_name FROM edms_v_user_info WHERE doc.r_lock_owner = user_id) r_lock_owner
+				     ,  to_char(doc.r_lock_date, 'YYYY-MM-DD HH24:MI:SS') r_lock_date
+				     ,  to_char(doc.u_update_date, 'YYYY-MM-DD HH24:MI:SS') u_update_date
+				     ,  user.display_name
+				     ,  user.com_org_id
+				     ,  user.org_nm
+				     ,  (SELECT DISTINCT(u_code_name1) FROM edms_code_sp WHERE u_code_type = 'COM_CODE' and u_code_val1 = user.com_org_id) u_code_name1
+             FROM edms_doc_sp doc, edms_v_user_info user
+                WHERE doc.u_reg_user = user_id
+                    AND doc.r_lock_owner > ' '
+                    AND user.org_id != 'DKS50118816'
+                    <if test="comOrgId != null and comOrgId != ''">
+                        AND user.com_org_id = #{comOrgId}
+                    </if>
+                    <if test="orgId != null and orgId != ''">
+                        AND user.org_id = #{orgId}
+                    </if>
+                    <if test="uRegUser != null and uRegUser != ''">
+                        AND doc.u_reg_user = #{uRegUser}
+                    </if>
+                    <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+                        AND doc.r_lock_date BETWEEN #{startDate} AND #{endDate}
+                    </if>
+										<if test="deptCodeList != null and !deptCodeList.isEmpty()">
+												AND user.org_id IN
+											  <foreach collection="deptCodeList" item="deptCode" open="(" separator="," close=")">
+													#{deptCode}
+												</foreach>
+										</if>                    
+                    ORDER BY r_lock_date DESC, u_update_date DESC
+    </select>
+</mapper>

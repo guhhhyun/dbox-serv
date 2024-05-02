@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.user.UserMapper">
+	<resultMap id="UserMap"
+		type="com.dongkuksystems.dbox.models.type.user.User">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+	</resultMap>
+
+	<select id="selectAll" resultMap="UserMap">
+		select r_object_id
+		from edms_user_sp
+		<where>
+			1=1
+			<if test="user.userName != null">
+				AND user_name = #{user.userName}
+			</if>
+		</where>
+	</select>
+	
+	
+	
+	
+</mapper>

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+    namespace="com.dongkuksystems.dbox.daos.table.lvldown.LvlDownMapper">
+    
+     <resultMap id="LvlDownMap"
+      type="com.dongkuksystems.dbox.models.type.request.ReqLvlDown">
+      <id property="rObjectId" column="R_OBJECT_ID"/>
+      <result property="uReqDocId" column="U_REQ_DOC_ID"/>
+      <result property="uReqDocKey" column="U_REQ_DOC_KEY"/>
+      <result property="uReqUser" column="U_REQ_USER"/>
+      <result property="uReqDate" column="U_REQ_DATE"/>
+      <result property="uBeforeLevel" column="U_BEFORE_LEVEL"/>
+      <result property="uAfterLevel" column="U_AFTER_LEVEL"/>
+      <result property="uReqStatus" column="U_REQ_STATUS"/>
+      <result property="uOwnDeptCode" column="U_OWN_DEPT_CODE"/>
+      <result property="uApprover" column="U_APPROVER"/>
+      <result property="uActionDate" column="U_ACTION_DATE"/>
+      <result property="uRejectReason" column="U_REJECT_REASON"/>
+     </resultMap>
+     
+    <resultMap id="LvlDownDetailMap"
+      type="com.dongkuksystems.dbox.models.type.request.ReqLvlDown">
+      <id property="rObjectId" column="R_OBJECT_ID"/>
+	    <result property="uReqDocId" column="U_REQ_DOC_ID"/>
+	    <result property="uReqDocKey" column="U_REQ_DOC_KEY"/>
+	    <result property="uReqUser" column="U_REQ_USER"/>
+	    <result property="uReqDate" column="U_REQ_DATE"/>
+      <result property="uBeforeLevel" column="U_BEFORE_LEVEL"/>
+	    <result property="uAfterLevel" column="U_AFTER_LEVEL"/>
+	    <result property="uReqStatus" column="U_REQ_STATUS"/>
+	    <result property="uOwnDeptCode" column="U_OWN_DEPT_CODE"/>
+	    <result property="uApprover" column="U_APPROVER"/>
+	    <result property="uActionDate" column="U_ACTION_DATE"/>
+	    <result property="uRejectReason" column="U_REJECT_REASON"/>
+      
+      <association property="reqUserDetail" javaType="VUser">
+      <id property="userId" column="B_USER_ID" />
+      <result property="displayName" column="B_DISPLAY_NAME" />
+      <result property="comOrgId" column="B_COM_ORG_ID" />
+      <result property="orgId" column="B_ORG_ID" />
+      <result property="orgNm" column="B_ORG_NM" />
+      <result property="pstnCode" column="B_PSTN_CODE" />
+      <result property="levelCode" column="B_LEVEL_CODE" />
+      <result property="titleCode" column="B_TITLE_CODE" />
+      <association property="jobTitleDetail" javaType="GwJobTitle">
+        <id property="titleCode" column="B_TITLE_CODE" />
+        <result property="name" column="BA_TITLE_NAME" />
+      </association>
+      <association property="deptDetail" javaType="VDept">
+        <association property="companyDetail" javaType="Code">
+          <id property="uCodeVal1" column="B_COM_ORG_ID" />
+          <result property="uCodeName1" column="BB_COM_NAME" />
+        </association>
+      </association>
+	    </association>
+	    <association property="approverDetail" javaType="VUser">
+	      <id property="userId" column="C_USER_ID" />
+	      <result property="displayName" column="C_DISPLAY_NAME" />
+	      <result property="comOrgId" column="C_COM_ORG_ID" />
+	      <result property="orgId" column="C_ORG_ID" />
+	      <result property="orgNm" column="C_ORG_NM" />
+	      <result property="pstnCode" column="C_PSTN_CODE" />
+	      <result property="levelCode" column="C_LEVEL_CODE" />
+	      <result property="titleCode" column="C_TITLE_CODE" />
+	      <association property="jobTitleDetail" javaType="GwJobTitle">
+	        <id property="titleCode" column="C_TITLE_CODE" />
+	        <result property="name" column="CA_TITLE_NAME" />
+	      </association>
+	      <association property="deptDetail" javaType="VDept">
+	        <association property="companyDetail" javaType="Code">
+	          <id property="uCodeVal1" column="C_COM_ORG_ID" />
+	          <result property="uCodeName1" column="CC_COM_NAME" />
+	        </association>
+	      </association>
+	      
+	    </association>
+	    <association property="docDetail" javaType="Doc">
+	      <id property="rObjectId" column="D_R_OBJECT_ID" />
+	      <result property="objectName" column="D_OBJECT_NAME" />
+	      <result property="rContentSize" column="D_R_CONTENT_SIZE" />
+	      <result property="uDocKey" column="D_U_DOC_KEY" />
+	    </association>
+
+    </resultMap>
+    
+    
+    <select id="reqLvlDownDetailAll" resultMap="LvlDownDetailMap">
+  WITH com_code_temp as (
+        SELECT
+          u_code_val1,
+                u_code_name1
+        FROM
+          edms_code_s
+        WHERE
+          u_code_type = 'COM_CODE'
+      )
+      SELECT
+        a.*,
+        b.user_id   AS b_user_id,
+          b.display_name  AS b_display_name,
+          b.com_org_id  AS b_com_org_id,
+          bb.u_code_name1 AS bb_com_name,
+          b.org_id    AS b_org_id,
+          b.org_nm    AS b_org_nm,
+          b.pstn_code   AS b_pstn_code,
+          b.level_code  AS b_level_code,
+          b.title_code  AS b_title_code,
+          ba.name     AS ba_title_name,
+          c.user_id   AS c_user_id,
+          c.display_name  AS c_display_name,
+          c.com_org_id  AS c_com_org_id,
+          cc.u_code_name1 AS cc_com_name,
+          c.org_id    AS c_org_id,
+          c.org_nm    AS c_org_nm,
+          c.pstn_code   AS c_pstn_code,
+          c.level_code  AS c_level_code,
+          c.title_code  AS c_title_code,
+          ca.name     AS ca_title_name,
+          d.r_object_id   AS d_r_object_id,
+          d.object_name   AS d_object_name,
+          d.r_content_size AS d_r_content_size,
+          d.u_doc_key   AS d_u_doc_key
+         
+      FROM 
+        edms_req_sec_lvl_down_sp      a   LEFT OUTER JOIN
+        edms_v_user_info              b   ON a.u_req_user = b.user_id LEFT OUTER JOIN
+        edms_gw_job_title             ba  ON b.title_code = ba.title_code LEFT OUTER JOIN
+        com_code_temp                 bb  ON b.com_org_id = bb.u_code_val1 LEFT OUTER JOIN
+        edms_v_user_info              c   ON a.u_approver = c.user_id LEFT OUTER JOIN
+        edms_gw_job_title             ca  ON c.title_code = ca.title_code LEFT OUTER JOIN
+        com_code_temp                 cc  ON c.com_org_id = cc.u_code_val1 LEFT OUTER JOIN
+        edms_doc_sp                   d   ON a.u_req_doc_id = d.r_object_id 
+        
+      ORDER BY a.u_req_date DESC
+</select>
+
+<select id="dataByObjId" resultMap="LvlDownMap">
+  SELECT
+    *
+  FROM edms_req_sec_lvl_down_sp
+  
+  <where>
+    r_object_id = #{rObjectId}
+  </where>
+</select>
+</mapper>

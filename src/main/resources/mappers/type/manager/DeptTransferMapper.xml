@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dongkuksystems.dbox.daos.type.manager.depttransfer.DeptTransferMapper">
+
+    <!-- TODO 성능 문제 될 경우 group by 전 조건 추가 해야 할 듯. -->
+    <select id="selectDeptTransfers" resultType="hashMap">
+        SELECT 	trans.r_object_id
+             ,	trans.u_com_code
+             ,	trans.u_dept_code
+             ,	trans.u_cabinet_code
+             , 	trans.u_send_dept_name
+             ,  to_char(trans.u_reg_date, 'yyyy-mm-dd') u_reg_date
+             ,  to_char(trans.u_end_date, 'yyyy-mm-dd') u_end_date
+             ,	COALESCE(doc.content_size, 0) content_size
+             ,	COALESCE(doc.content_count, 0) content_count
+             ,	COALESCE(doc.folder_count, 0) folder_count
+            FROM (
+                    SELECT trans.r_object_id, trans.u_com_code, trans.u_dept_code, trans.u_cabinet_code, trans.u_reg_date, trans.u_end_date, dept.org_nm u_send_dept_name
+                        FROM edms_trans_dept_sp trans, edms_v_dept_info dept
+                        WHERE trans.u_dept_code = dept.org_id
+                 ) trans,
+                 (
+                    SELECT u_cabinet_code, COUNT(r_object_id) folder_count, SUM(r_object_id) content_count, SUM(doc.r_content_size) content_size
+                        FROM (
+                                SELECT doc.u_cabinet_code, COUNT(folder.r_object_id) r_object_id, SUM(doc.r_content_size) r_content_size
+                                    FROM edms_doc_sp doc, edms_folder_sp folder
+                                    WHERE doc.u_fol_id = folder.r_object_id
+                                        AND doc.i_has_folder = 1
+                                        AND doc.u_delete_status NOT IN ('D', 'E', 'T')
+                                        AND folder.u_delete_status != 'Y'
+                                        AND folder.r_object_id NOT IN
+                                        (
+                                            SELECT r.u_trans_req_id FROM edms_trans_dept_sp s, edms_trans_dept_rp r
+                                                WHERE s.r_object_id = r.r_object_id
+                                                    AND s.u_cabinet_code = doc.u_cabinet_code
+                                                    GROUP BY r.u_trans_req_id, s.u_cabinet_code
+                                        )
+                                        GROUP BY doc.u_cabinet_code, folder.r_object_id, folder.u_fol_name
+                             ) doc GROUP BY u_cabinet_code
+                 ) doc
+                WHERE trans.u_cabinet_code = doc.u_cabinet_code(+)
+    </select>
+
+    <select id="selectFolders" resultType="hashMap">
+        SELECT r_object_id as key, u_fol_name as title FROM edms_folder_sp
+            WHERE u_fol_type = #{uFolType}
+                AND u_up_fol_id = #{uUpFolId}
+                AND u_delete_status != 'Y'
+                AND u_cabinet_code = #{uCabinetCode}
+                AND r_object_id NOT IN (
+                    SELECT r.u_trans_req_id FROM edms_trans_dept_sp s, edms_trans_dept_rp r
+                        WHERE s.r_object_id = r.r_object_id
+                            AND s.u_cabinet_code = #{uCabinetCode}
+                )
+    </select>
+
+    <select id="selectDeptTransfersRequested" resultType="hashMap">
+        SELECT s.r_object_id
+             , s.u_recv_dept_code
+             , dept.org_nm
+             , SUM(doc.r_content_size) content_size
+             , COUNT(doc.r_object_id) content_count
+            FROM edms_req_trans_mgr_sp s, edms_req_trans_mgr_rp r, edms_doc_sp doc, edms_v_dept_info dept
+                WHERE s.r_object_id = r.r_object_id
+                    AND doc.u_fol_id = r.u_send_fol_id
+                    AND s.u_recv_dept_code = dept.org_id
+                    AND s.u_send_dept_code = #{uDeptCode}
+                    GROUP BY s.u_recv_dept_code, dept.org_nm, s.r_object_id
+    </select>
+
+    <select id="selectAggregateDataToTransfer" resultType="hashMap">
+        SELECT COALESCE(SUM(r_content_size), 0) r_content_size, COUNT(r_object_id) r_content_count
+            FROM edms_doc_sp
+            WHERE i_has_folder = 1
+                AND u_delete_status NOT IN ('D', 'E', 'T')
+                AND u_fol_id IN
+                <foreach collection="rObjectIds" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+    </select>
+
+    <delete id="deleteDeptTransfersRequested">
+        DELETE FROM edms_trans_dept_rp
+            WHERE u_trans_req_id IN (
+                SELECT r.u_send_fol_id FROM edms_req_trans_mgr_sp s, edms_req_trans_mgr_rp r
+                    WHERE s.r_object_id = r.r_object_id
+                        AND s.r_object_id = #{rObjectId}
+        )
+    </delete>
+
+</mapper>

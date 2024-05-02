@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.hisviewuser.HisViewUserMapper">
+	<resultMap id="HisViewUserMap"
+		type="com.dongkuksystems.dbox.models.type.manager.hisviewuser.HisViewUser">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uHisCode" column="U_HIS_CODE" />
+		<result property="uComCode" column="U_COM_CODE" />
+		<result property="uUserId" column="U_USER_ID" />
+		<result property="uCreateUser" column="U_CREATE_USER" />
+		<result property="uCreateDate" column="U_CREATE_DATE" />
+		<result property="displayName" column="DISPLAY_NAME" />
+		<result property="uCodeName" column="U_CODE_NAME" />
+	</resultMap>
+	<select id="selectAll" resultMap="HisViewUserMap">
+	/* DBOX-PGM-MNG-006 | 이력 조회 권한 조회 | 김수연 */
+		select
+			a.r_object_id
+			,a.u_his_code
+			,a.u_com_code
+			,a.u_user_id
+			,a.u_create_user
+			,a.u_create_date
+			,b.display_name 
+			,(select c.u_code_name1 
+			from edms_code_sp as c 
+			where c.u_code_type = 'COM_CODE' and c.u_code_val1 = a.u_com_code) as u_code_name
+		from
+			edms_his_view_user_sp as a
+		inner join edms_gw_user as b
+			on a.u_user_id = b.social_per_id
+		<where>
+		 	1=1
+		</where>
+		<if test="hisViewUser.uHisCode != null and hisViewUser.uHisCode != ''">
+			AND a.u_his_code = #{hisViewUser.uHisCode}
+		</if>
+		<if test="hisViewUser.uComCode != null and hisViewUser.uComCode != ''">
+			AND a.u_com_code = #{hisViewUser.uComCode}
+		</if>
+		<if test="hisViewUser.uUserId != null and hisViewUser.uUserId != ''">
+			AND a.u_user_id = #{hisViewUser.uUserId}
+		</if>
+		<if test="hisViewUser.displayName != null and hisViewUser.displayName != ''">
+			AND b.display_name LIKE CONCAT('%', #{hisViewUser.displayName}, '%')
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.gradePreservation.GradePreservationMapper">
+	<resultMap id="GradePreservationMap"
+		type="com.dongkuksystems.dbox.models.type.manager.gradePreservation.GradePreservation">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uComCode" column="U_COM_CODE" />
+		<result property="uSecSYear" column="U_SEC_S_YEAR" />
+		<result property="uSecTYear" column="U_SEC_T_YEAR" />
+		<result property="uSecCYear" column="U_SEC_C_YEAR" />
+		<result property="uSecGYear" column="U_SEC_G_YEAR" />
+		<result property="uPjtEverFlag" column="U_PJT_EVER_FLAG" />
+		<result property="uAutoExtend" column="U_AUTO_EXTEND" />
+		<result property="uCodeName1" column="U_CODE_NAME1" />
+		<result property="uNoExtDept" column="U_NO_EXT_DEPT" />
+		<result property="uNoExtRegDate" column="U_NO_EXT_REG_DATE" />
+		<result property="uNoExtUnregDate" column="U_NO_EXT_UNREG_DATE" />
+		<result property="orgId" column="ORG_ID" />
+		<result property="orgNm" column="ORG_NM" />
+	</resultMap>
+
+	<select id="selectGradePreservation" resultMap="GradePreservationMap">
+		SELECT r_object_id
+		      ,u_com_code
+		      ,u_sec_s_year
+		      ,u_sec_t_year
+		      ,u_sec_c_year
+		      ,u_sec_g_year
+		      ,u_pjt_ever_flag
+		      ,u_auto_extend
+		 FROM edms_preserve_config_sp
+		<where>
+			u_com_code   = #{uComCode}
+		</where>
+	</select>
+	
+	<select id="selectGradeExtDept" resultMap="GradePreservationMap">
+		SELECT a.r_object_id
+		      ,a.u_com_code
+		      ,d.u_code_name1  
+		      ,b.i_position
+		      ,b.u_no_ext_dept
+		      ,b.u_no_ext_reg_date
+		      ,b.u_no_ext_unreg_date
+		      ,c.org_id
+		      ,c.org_nm
+		  FROM edms_preserve_config_sp a
+		  LEFT JOIN edms_preserve_config_rp b
+		  ON
+		  b.r_object_id = a.r_object_id  
+		  LEFT JOIN edms_gw_dept as c
+		  ON
+		  b.u_no_ext_dept = c.org_id
+		  INNER JOIN edms_code_sp d
+		  ON
+		  d.u_code_val1 = a.u_com_code
+		<where>
+			a.u_com_code   = #{uComCode}
+			and d.u_code_type ='COM_CODE'
+		</where>
+	</select>
+</mapper>

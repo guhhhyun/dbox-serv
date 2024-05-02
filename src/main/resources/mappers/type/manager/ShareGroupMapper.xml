@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.dongkuksystems.dbox.daos.type.manager.sharegroup.ShareGroupMapper">
+	<resultMap id="ShareGroupMap"
+		type="com.dongkuksystems.dbox.models.type.manager.sharegroup.ShareGroup">
+		<id property="rObjectId" column="R_OBJECT_ID" />
+		<result property="uDeptCode" column="U_DEPT_CODE" />
+		<result property="uComCode" column="U_COM_CODE" />
+		<result property="comOrgId" column="COM_ORG_ID" />
+		<result property="uShareName" column="U_SHARE_NAME" />
+		<result property="uShareDesc" column="U_SHARE_DESC" />
+		<result property="uCreateUser" column="U_CREATE_USER" />
+		<result property="uCreateDate" column="U_CREATE_DATE" />
+		<result property="uModifyUser" column="U_MODIFY_USER" />
+		<result property="uModifyDate" column="U_MODIFY_DATE" />
+		<result property="orgNm" column="ORG_NM" />
+		<result property="uCodeName1" column="U_CODE_NAME1" />
+		<result property="uCabinetCode" column="U_CABINET_CODE" />
+		<result property="groupsNames" column="GROUPS_NAMES" />		
+	</resultMap>
+	
+	<select id="selectAll" resultMap="ShareGroupMap">
+		/* DBOX-PGM-MNG-003 | 공유 - 조직 공유그룹 조회 | 이성현 */	
+		SELECT
+			a.r_object_id,
+			a.u_share_name,
+			a.u_share_desc,
+			a.u_create_date,
+			b.u_com_code,
+			c.u_code_name1
+		FROM
+			edms_share_group_sp a 
+		LEFT JOIN edms_share_group_rp b ON
+			b.r_object_id = a.r_object_id
+		INNER JOIN edms_code_sp c ON
+			c.u_code_val1 = b.u_com_code
+		
+		<where>
+			b.i_position = '-1'
+			AND c.u_code_type ='COM_CODE'			
+		</where>
+			ORDER BY a.u_create_date ASC
+	</select>
+	
+	<select id="selectDeptInShareGroup" resultMap="ShareGroupMap">
+		/* DBOX-PGM-MNG-003 | 공유 - 조직 공유그룹에 속한 부서 조회 | 이성현 */
+		SELECT
+			a.r_object_id,
+			b.com_org_id,
+			a.u_dept_code,
+			b.org_nm,
+			c.u_code_name1 
+		FROM
+			edms_share_group_rp as a
+		LEFT JOIN edms_gw_dept as b ON
+			a.u_dept_code = b.org_id
+		LEFT JOIN edms_code_sp as c ON
+			c.u_code_val1 = b.com_org_id
+			
+		<where>
+			c.u_code_type ='COM_CODE'
+			AND a.r_object_id = #{rObjectId}
+		</where>
+			ORDER BY a.r_object_id ASC
+	</select>
+	
+	<select id="selectOnlyOneCabinetCode" resultMap="ShareGroupMap">
+		/* DBOX-PGM-MNG-003 | 공유 - 공유그룹 부서 캐비넷코드 조회 | 이성현 */	
+		SELECT			
+			a.r_object_id,
+			a.u_dept_code ,
+			b.u_cabinet_code
+		FROM
+			edms_share_group_rp a
+		LEFT JOIN edms_v_dept_info b ON		
+			a.u_dept_code = b.org_id
+			
+		<where>
+			a.r_object_id = #{rObjectId}
+			AND u_dept_code = #{uDeptCode}
+		</where>			
+	</select>			
+	
+	<select id="selectCabinetCodeList" resultMap="ShareGroupMap">
+		/* DBOX-PGM-MNG-003 | 공유 - 공유그룹 부서 캐비넷코드 조회 | 이성현 */	
+		SELECT			
+			a.r_object_id,
+			a.u_dept_code ,
+			b.u_cabinet_code
+		FROM
+			edms_share_group_rp a
+		LEFT JOIN edms_v_dept_info b ON		
+			a.u_dept_code = b.org_id
+			
+		<where>
+			a.r_object_id = #{rObjectId}
+			AND u_dept_code != #{uDeptCode}
+		</where>			
+	</select>				
+	
+	<select id="selectDuplicationDept" resultMap="ShareGroupMap">
+		/* DBOX-PGM-MNG-003 | 공유 - 공유그룹 중복 부서 조회 | 이성현 */	
+		SELECT			
+			a.r_object_id,
+			a.u_dept_code ,
+			b.u_cabinet_code
+		FROM
+			edms_share_group_rp a
+		LEFT JOIN edms_v_dept_info b ON		
+			a.u_dept_code = b.org_id
+			
+		<where>
+			a.r_object_id != #{rObjectId}
+			AND u_dept_code = #{uDeptCode}
+		</where>			
+	</select>
+
+	<select id="selectAclCabinetCode" resultMap="ShareGroupMap">
+		/* DBOX-PGM-MNG-003 | 공유 - 공유그룹 ACL 캐비넷코드 조회 | 이성현 */	
+		SELECT			
+			r_object_id, 
+			groups_names,
+			split_part(groups_names, '_', 2) as u_cabinet_code
+		FROM
+			dm_group_rp		
+			
+		<where>
+			r_object_id = (select r_object_id from dm_group_sp  where group_name = #{aclGroupName})
+		</where>			
+	</select>
+	
+</mapper>
